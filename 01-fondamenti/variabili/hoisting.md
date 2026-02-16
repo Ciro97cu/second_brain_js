@@ -84,7 +84,9 @@ const PI = 3.14159;
 ## Collegamenti
 
 - [[variabili]] - Dichiarazione con let, const e var
+- [[funzioni/funzioni]] - Le function declarations vengono sollevate
 - [[esecuzione]] - Come JavaScript compila ed esegue il codice
+- [[../scope/scope]] - Hoisting e scope delle variabili
 
 ## Riferimenti
 

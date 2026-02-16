@@ -46,8 +46,8 @@ function sommaNumeri(a, b) {
 
 ## Collegamenti
 
-- [[variabili]] - Le variabili in JavaScript hanno tipizzazione dinamica
-- [[che-cose-javascript]] - JavaScript è un linguaggio a tipizzazione debole e dinamica
+- [[../variabili]] - Le variabili in JavaScript hanno tipizzazione dinamica
+- [[../che-cose-javascript]] - JavaScript è un linguaggio a tipizzazione debole e dinamica
 - [[coercizione]] - Conversione esplicita e implicita tra tipi
 
 ## Riferimenti

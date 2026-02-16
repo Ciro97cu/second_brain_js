@@ -71,7 +71,7 @@ let risultato = (x + 5) * 2 - 3;
 
 - [[statement]] - Le istruzioni contengono espressioni
 - [[blocchi]] - Le espressioni sono usate nelle istruzioni dei blocchi
-- [[programma]] - Le espressioni sono elementi dei programmi
+- [[../programma]] - Le espressioni sono elementi dei programmi
 
 ## Riferimenti
 

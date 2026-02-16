@@ -75,6 +75,8 @@ console.log(obj1.x); // 20 (originale non modificato)
 
 ## Collegamenti
 
-- [[valori-tipi]] - Object è uno dei tipi fondamentali
-- [[tipizzazione-dinamica]] - Le proprietà possono avere qualsiasi tipo
-- [[coercizione]] - Conversione da/verso oggetti
+- [[tipi/valori-tipi]] - Object è uno dei tipi fondamentali
+- [[tipi/tipizzazione-dinamica]] - Le proprietà possono avere qualsiasi tipo
+- [[tipi/coercizione]] - Conversione da/verso oggetti
+- [[array/array]] - Array sono oggetti speciali per collezioni ordinate
+- [[funzioni/funzioni]] - Le funzioni sono oggetti speciali

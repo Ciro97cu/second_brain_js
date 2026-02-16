@@ -62,10 +62,10 @@ for (let i = 0; i < 3; i++) {
 
 ## Collegamenti
 
-- [[programma]] - Un insieme di istruzioni
+- [[../programma]] - Un insieme di istruzioni
 - [[blocchi]] - I blocchi raggruppano statement
-- [[variabili]] - Contenitori di valori
-- [[operatori]] - Simboli per eseguire azioni
+- [[../variabili]] - Contenitori di valori
+- [[../operatori]] - Simboli per eseguire azioni
 
 ## Riferimenti
 

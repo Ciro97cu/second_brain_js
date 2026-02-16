@@ -159,4 +159,4 @@ let isValid = !!userData.email; // chiaro intento booleano
 
 - [[operatori/logici]] - || è simile a ?? ma con comportamento diverso
 - [[operatori/confronto-uguaglianza]] - Il ternario usa espressioni booleane
-- [[tipizzazione-dinamica]] - Valori falsy/truthy per !! e ??
+- [[../tipi/tipizzazione-dinamica]] - Valori falsy/truthy per !! e ??

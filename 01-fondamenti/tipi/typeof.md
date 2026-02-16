@@ -100,4 +100,4 @@ console.log(Array.isArray(arr)); // true ✅ (metodo corretto)
 
 - [[valori-tipi]] - I tipi che typeof può identificare
 - [[tipizzazione-dinamica]] - typeof riflette il tipo corrente del valore
-- [[operatori]] - typeof è un operatore unario
+- [[../operatori]] - typeof è un operatore unario

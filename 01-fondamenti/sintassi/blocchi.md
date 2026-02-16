@@ -82,5 +82,7 @@ let funzione = function () {
 ## Collegamenti
 
 - [[statement]] - I blocchi raggruppano statement
-- [[variabili/variabili]] - let/const hanno block scope
+- [[../variabili/variabili]] - let/const hanno block scope
+- [[../funzioni/funzioni]] - Le funzioni creano scope con blocchi
 - [[expression]] - Le espressioni si usano nelle istruzioni dei blocchi
+- [[../scope/scope]] - Block scope con let/const

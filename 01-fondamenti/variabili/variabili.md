@@ -54,10 +54,11 @@ var vecchioStile = "evitare";
 
 ## Collegamenti
 
-- [[statement]] - Le variabili vengono dichiarate con istruzioni
-- [[expression]] - Le variabili sono usate nelle espressioni
-- [[blocchi]] - let/const hanno block scope
-- [[programma]] - Le variabili gestiscono lo stato del programma
+- [[../sintassi/statement]] - Le variabili vengono dichiarate con istruzioni
+- [[../sintassi/expression]] - Le variabili sono usate nelle espressioni
+- [[../sintassi/blocchi]] - let/const hanno block scope
+- [[../programma]] - Le variabili gestiscono lo stato del programma
+- [[../scope/scope]] - Ambito e visibilità delle variabili
 
 ## Riferimenti
 

@@ -110,4 +110,4 @@ let nomeGiorno = giorni[giornoCorrente % 7]; // 15 % 7 = 1 → "Mar"
 
 - [[operatori/assegnamento]] - Operatori composti combinano matematica e assegnamento
 - [[operatori/precedenza]] - Ordine di valutazione delle operazioni
-- [[valori-tipi]] - Gli operatori matematici lavorano principalmente con number
+- [[../tipi/valori-tipi]] - Gli operatori matematici lavorano principalmente con number

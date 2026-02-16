@@ -141,4 +141,4 @@ arr.length > 0 && console.log("Array non vuoto");
 
 - [[operatori/confronto-uguaglianza]] - I confronti producono booleani usati con operatori logici
 - [[operatori/speciali]] - L'operatore ?? è alternativa a || per default
-- [[tipizzazione-dinamica]] - Valori falsy/truthy nella coercizione
+- [[../tipi/tipizzazione-dinamica]] - Valori falsy/truthy nella coercizione

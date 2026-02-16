@@ -27,7 +27,7 @@ console.log("L'area del rettangolo è: " + area);
 
 ## Collegamenti
 
-- [[statement]] - Le istruzioni che compongono un programma
+- [[sintassi/statement]] - Le istruzioni che compongono un programma
 - [[variabili]] - I contenitori di valori in un programma
 - [[operatori]] - I simboli per eseguire operazioni
 

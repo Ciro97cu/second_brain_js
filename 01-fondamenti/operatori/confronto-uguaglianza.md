@@ -137,5 +137,5 @@ console.log(null >= 0); // true ⚠️ (null → 0)
 ## Collegamenti
 
 - [[operatori/logici]] - Combinare confronti nelle condizioni
-- [[coercizione]] - Differenza tra == (con coercizione) e === (senza)
-- [[valori-tipi]] - I tipi confrontabili
+- [[../tipi/coercizione]] - Differenza tra == (con coercizione) e === (senza)
+- [[../tipi/valori-tipi]] - I tipi confrontabili

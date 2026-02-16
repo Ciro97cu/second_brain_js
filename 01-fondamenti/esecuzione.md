@@ -42,7 +42,7 @@ console.log(risultato); // 8
 ## Collegamenti
 
 - [[programma]] - Il programma viene eseguito dal JavaScript engine
-- [[statement]] - Le istruzioni vengono compilate ed eseguite
+- [[sintassi/statement]] - Le istruzioni vengono compilate ed eseguite
 
 ## Riferimenti
 

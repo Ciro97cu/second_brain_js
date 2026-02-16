@@ -133,5 +133,5 @@ true.toString(); // "true"
 
 - [[valori-tipi]] - Tipi primitivi vs Object
 - [[coercizione]] - Coercizione esplicita e implicita
-- [[../oggetti]] - Differenza primitivi/oggetti
+- [[../oggetti/oggetti]] - Differenza primitivi/oggetti
 - [[typeof]] - Verificare tipo dei valori

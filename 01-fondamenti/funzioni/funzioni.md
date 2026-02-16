@@ -95,9 +95,9 @@ button.addEventListener("click", saluta); // ✅ riferimento
 
 ## Collegamenti
 
-- [[../oggetti]] - Le funzioni sono oggetti speciali
+- [[../oggetti/oggetti]] - Le funzioni sono oggetti speciali
 - [[iife]] - Pattern di funzione autoinvocante
-- [[../blocchi]] - Le funzioni creano blocchi di scope
+- [[../sintassi/blocchi]] - Le funzioni creano blocchi di scope
 - [[../variabili/hoisting]] - Comportamento hoisting delle funzioni
 - [[../array/array-iterazione]] - Funzioni come callback in map/filter/reduce
-- [[../scope]] - Le funzioni creano scope locale
+- [[../scope/scope]] - Le funzioni creano scope locale

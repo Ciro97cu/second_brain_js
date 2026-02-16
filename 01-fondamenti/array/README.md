@@ -11,5 +11,5 @@ Collezione di file dedicati agli array in JavaScript.
 
 ## Collegamenti Principali
 
-- [[../oggetti]] - Array sono oggetti speciali
+- [[../oggetti/oggetti]] - Array sono oggetti speciali
 - [[../funzioni/funzioni]] - Funzioni come callback nei metodi array

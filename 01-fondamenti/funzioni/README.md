@@ -9,6 +9,6 @@ Collezione di file dedicati alle funzioni in JavaScript.
 
 ## Collegamenti Principali
 
-- [[../oggetti]] - Le funzioni sono oggetti speciali
-- [[../scope]] - Funzioni creano scope locale
+- [[../oggetti/oggetti]] - Le funzioni sono oggetti speciali
+- [[../scope/scope]] - Funzioni creano scope locale
 - [[../variabili/hoisting]] - Hoisting delle funzioni

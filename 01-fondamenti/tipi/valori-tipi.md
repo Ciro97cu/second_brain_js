@@ -138,5 +138,5 @@ console.log(saluta()); // "Ciao Ospite"
 
 - [[typeof]] - Operatore per verificare il tipo di un valore
 - [[tipizzazione-dinamica]] - Le variabili non hanno tipo fisso
-- [[../oggetti]] - Approfondimento sul tipo object
-- [[../variabili]] - I contenitori che memorizzano valori tipizzati
+- [[../oggetti/oggetti]] - Approfondimento sul tipo object
+- [[../variabili/variabili]] - I contenitori che memorizzano valori tipizzati

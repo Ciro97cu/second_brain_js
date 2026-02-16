@@ -98,6 +98,6 @@ if (value == null) {
 
 - [[valori-tipi]] - I 7 tipi primitivi e object
 - [[tipizzazione-dinamica]] - Variabili non legate a un tipo
-- [[../oggetti]] - Conversione tra tipi e object
+- [[../oggetti/oggetti]] - Conversione tra tipi e object
 - [[../operatori/confronto-uguaglianza]] - Differenza tra == e ===
 - [[typeof]] - Determinare il tipo di un valore

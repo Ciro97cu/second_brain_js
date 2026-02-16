@@ -108,6 +108,6 @@ const config = (function () {
 ## Collegamenti
 
 - [[funzioni]] - Concetti base delle funzioni
-- [[../blocchi]] - IIFE crea scope di blocco funzione
+- [[../sintassi/blocchi]] - IIFE crea scope di blocco funzione
 - [[../variabili/variabili]] - Differenza var vs let/const con IIFE
-- [[../scope]] - IIFE per scope privato
+- [[../scope/scope]] - IIFE per scope privato

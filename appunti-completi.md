@@ -808,6 +808,1071 @@ let oggetto = {
 
 ---
 
+### 2.6 Istruzioni Condizionali (Conditionals)
+
+**Tipo**: Nuovo Topic
+
+Le **istruzioni condizionali** permettono a un programma di prendere decisioni, eseguendo blocchi di codice diversi in base al verificarsi o meno di una determinata condizione. Sono fondamentali per creare programmi dinamici che si adattano a situazioni diverse.
+
+#### L'Istruzione if
+
+L'istruzione `if` è la struttura condizionale più comune. La sua logica è: **"se una certa condizione è vera, allora esegui questo blocco di codice"**.
+
+La condizione da valutare viene inserita tra parentesi `()` e deve produrre un risultato booleano (`true` o `false`).
+
+```javascript
+/*
+ * Sintassi base if
+ */
+
+if (condizione) {
+  // codice eseguito solo se condizione è true
+}
+
+// Esempio pratico
+let eta = 18;
+
+if (eta >= 18) {
+  console.log("Sei maggiorenne");
+}
+
+let temperatura = 35;
+
+if (temperatura > 30) {
+  console.log("Fa molto caldo!");
+}
+```
+
+Se la condizione è `false`, il blocco di codice viene **saltato** e l'esecuzione continua dopo la chiusura `}`.
+
+```javascript
+/*
+ * Condizione falsa - blocco saltato
+ */
+
+let punteggio = 45;
+
+if (punteggio >= 60) {
+  console.log("Hai superato l'esame"); // NON viene eseguito
+}
+
+console.log("Fine programma"); // Viene sempre eseguito
+```
+
+#### else: L'Alternativa
+
+Spesso si vuole definire un comportamento alternativo da eseguire quando la condizione dell'`if` risulta falsa. Per questo si usa la clausola `else`.
+
+```javascript
+/*
+ * if...else
+ */
+
+let eta = 15;
+
+if (eta >= 18) {
+  console.log("Sei maggiorenne");
+} else {
+  console.log("Sei minorenne");
+}
+
+// Output: "Sei minorenne"
+```
+
+L'`else` fornisce un **percorso alternativo**: esattamente uno dei due blocchi viene eseguito, mai entrambi.
+
+```javascript
+/*
+ * Percorsi alternativi
+ */
+
+let oraCorrente = 14;
+
+if (oraCorrente < 12) {
+  console.log("Buongiorno");
+} else {
+  console.log("Buonasera");
+}
+
+// Output: "Buonasera"
+```
+
+#### else if: Condizioni Multiple
+
+Per gestire una serie di condizioni alternative in sequenza, si può usare `else if`. Il programma valuta le condizioni **una dopo l'altra** e si ferma non appena ne trova una vera, eseguendo solo il blocco di codice corrispondente.
+
+```javascript
+/*
+ * Catena if...else if...else
+ */
+
+let voto = 85;
+
+if (voto >= 90) {
+  console.log("Eccellente");
+} else if (voto >= 75) {
+  console.log("Buono");
+} else if (voto >= 60) {
+  console.log("Sufficiente");
+} else {
+  console.log("Insufficiente");
+}
+
+// Output: "Buono"
+```
+
+**Importante**: Solo il **primo blocco** la cui condizione è `true` viene eseguito, anche se più condizioni potrebbero essere vere.
+
+```javascript
+/*
+ * Solo il primo blocco true viene eseguito
+ */
+
+let numero = 100;
+
+if (numero > 50) {
+  console.log("Maggiore di 50"); // ✅ Eseguito
+} else if (numero > 75) {
+  console.log("Maggiore di 75"); // ❌ Saltato (anche se true!)
+} else if (numero > 90) {
+  console.log("Maggiore di 90"); // ❌ Saltato
+}
+
+// Output: Solo "Maggiore di 50"
+```
+
+Se **nessuna condizione** è vera, viene eseguito il blocco `else` finale, se presente.
+
+```javascript
+/*
+ * Nessuna condizione vera - else eseguito
+ */
+
+let giorno = "sabato";
+
+if (giorno === "lunedì") {
+  console.log("Inizio settimana");
+} else if (giorno === "venerdì") {
+  console.log("Fine settimana");
+} else {
+  console.log("Altro giorno"); // ✅ Eseguito
+}
+
+// Output: "Altro giorno"
+```
+
+#### Condizioni Complesse
+
+Le condizioni possono essere combinate usando **operatori logici**.
+
+```javascript
+/*
+ * Operatori logici nelle condizioni
+ */
+
+let eta = 25;
+let haPatente = true;
+
+// AND logico (&&) - entrambe devono essere true
+if (eta >= 18 && haPatente) {
+  console.log("Puoi guidare");
+}
+
+// OR logico (||) - almeno una deve essere true
+let isWeekend = true;
+let isVacanza = false;
+
+if (isWeekend || isVacanza) {
+  console.log("Giorno di riposo");
+}
+
+// NOT logico (!) - inverte il valore
+let piove = false;
+
+if (!piove) {
+  console.log("Bel tempo!");
+}
+```
+
+#### Best Practices
+
+**Sempre usare le parentesi graffe**
+
+```javascript
+// ❌ Evitare (fragile, errori facili)
+if (eta >= 18) console.log("Maggiorenne");
+
+// ✅ Preferire (chiaro e sicuro)
+if (eta >= 18) {
+  console.log("Maggiorenne");
+}
+```
+
+**Condizioni chiare ed esplicite**
+
+```javascript
+// ❌ Condizione implicita (confusa)
+let utente = "Mario";
+if (utente) {
+  // cosa stiamo verificando?
+}
+
+// ✅ Condizione esplicita (chiara)
+if (utente !== null && utente !== "") {
+  console.log("Utente valido");
+}
+```
+
+**Ordinare condizioni dalla più specifica alla più generica**
+
+```javascript
+// ✅ Ordine corretto
+if (voto >= 90) {
+  console.log("Eccellente");
+} else if (voto >= 75) {
+  console.log("Buono");
+} else if (voto >= 60) {
+  console.log("Sufficiente");
+} else {
+  console.log("Insufficiente");
+}
+
+// ❌ Ordine errato (la prima cattura tutto!)
+if (voto >= 60) {
+  console.log("Sufficiente"); // Anche voti alti finiscono qui!
+} else if (voto >= 75) {
+  // Mai eseguito
+} else if (voto >= 90) {
+  // Mai eseguito
+}
+```
+
+**Approfondisci**:
+
+- [[01-fondamenti/sintassi/condizionali]] - Istruzioni condizionali (if, else, else if)
+
+---
+
+### 2.7 Switch
+
+**Tipo**: Nuovo Topic
+
+Quando si ha la necessità di confrontare una singola variabile o espressione con una serie di valori specifici, una lunga catena di `if...else if` può diventare verbosa. In questi scenari, l'istruzione **switch** offre un'alternativa più pulita e strutturata.
+
+#### Sintassi Base
+
+La struttura dello switch si basa su:
+
+- **`case`** → Un'etichetta che rappresenta un possibile valore per l'espressione
+- **`break`** → Un'istruzione che interrompe l'esecuzione dello switch (fondamentale!)
+- **`default`** → Un caso opzionale eseguito se nessun `case` corrisponde
+
+```javascript
+/*
+ * Struttura dello switch
+ */
+
+switch (espressione) {
+  case valore1:
+    // codice eseguito se espressione === valore1
+    break;
+  case valore2:
+    // codice eseguito se espressione === valore2
+    break;
+  default:
+  // codice eseguito se nessun case corrisponde
+}
+
+// Esempio pratico
+let giorno = "Lunedì";
+
+switch (giorno) {
+  case "Lunedì":
+    console.log("Inizio settimana");
+    break;
+  case "Mercoledì":
+    console.log("Metà settimana");
+    break;
+  case "Venerdì":
+    console.log("Quasi weekend!");
+    break;
+  case "Sabato":
+  case "Domenica":
+    console.log("È il weekend!");
+    break;
+  default:
+    console.log("Un giorno normale");
+}
+```
+
+#### Confronto con if...else if
+
+**Usando if...else if**:
+
+```javascript
+/*
+ * Approccio con if...else if
+ */
+
+let colore = "rosso";
+
+if (colore === "rosso") {
+  console.log("Stop");
+} else if (colore === "giallo") {
+  console.log("Rallenta");
+} else if (colore === "verde") {
+  console.log("Vai");
+} else {
+  console.log("Colore non valido");
+}
+```
+
+**Usando switch** (più pulito per confronti di uguaglianza):
+
+```javascript
+/*
+ * Approccio con switch
+ */
+
+let colore = "rosso";
+
+switch (colore) {
+  case "rosso":
+    console.log("Stop");
+    break;
+  case "giallo":
+    console.log("Rallenta");
+    break;
+  case "verde":
+    console.log("Vai");
+    break;
+  default:
+    console.log("Colore non valido");
+}
+```
+
+#### L'Importanza del break
+
+Il **`break`** è fondamentale per evitare il **fall through** (caduta) nel caso successivo.
+
+```javascript
+/*
+ * Senza break - Fall Through pericoloso
+ */
+
+let numero = 1;
+
+switch (numero) {
+  case 1:
+    console.log("Uno"); // ✅ Eseguito
+  // MANCA break!
+  case 2:
+    console.log("Due"); // ⚠️ Eseguito anche se numero !== 2
+    break;
+}
+
+// Output:
+// "Uno"
+// "Due"
+```
+
+**Con break** (comportamento corretto):
+
+```javascript
+/*
+ * Con break - Comportamento normale
+ */
+
+let numero = 1;
+
+switch (numero) {
+  case 1:
+    console.log("Uno"); // ✅ Eseguito
+    break; // ✅ Esce dallo switch
+  case 2:
+    console.log("Due"); // ❌ NON eseguito
+    break;
+}
+
+// Output: "Uno"
+```
+
+#### Raggruppare i case
+
+Una caratteristica utile dello switch è la possibilità di **raggruppare più case** per eseguire lo stesso blocco di codice, omettendo deliberatamente il `break`.
+
+```javascript
+/*
+ * Raggruppamento case - Fall Through Intenzionale
+ */
+
+let giorno = "Sabato";
+
+switch (giorno) {
+  case "Lunedì":
+  case "Martedì":
+  case "Mercoledì":
+  case "Giovedì":
+  case "Venerdì":
+    console.log("Giorno lavorativo");
+    break;
+  case "Sabato":
+  case "Domenica":
+    console.log("È il weekend!");
+    break;
+  default:
+    console.log("Giorno non valido");
+}
+
+// Output: "È il weekend!"
+```
+
+In questo esempio, se `giorno` è `"Sabato"`, l'esecuzione "cade" fino al blocco di codice del caso `"Domenica"` ed esegue il codice condiviso.
+
+#### Confronto Strict (===)
+
+**Importante**: Lo switch usa il confronto **strict** (`===`), non il confronto loose (`==`).
+
+```javascript
+/*
+ * Switch usa ===
+ */
+
+let numero = "2"; // stringa
+
+switch (numero) {
+  case 2: // number
+    console.log("Due (number)"); // ❌ NON eseguito
+    break;
+  case "2": // string
+    console.log("Due (string)"); // ✅ Eseguito
+    break;
+}
+```
+
+#### Quando Usare switch vs if...else
+
+**Usa switch quando**:
+
+- Confronti una **singola variabile/espressione** con molti valori specifici
+- I confronti sono di **uguaglianza** (`===`)
+- Hai **3 o più casi** da gestire
+- Vuoi codice più **leggibile e strutturato**
+
+**Usa if...else quando**:
+
+- Hai **condizioni complesse** (range, confronti multipli)
+- Usi **operatori diversi** (`>`, `<`, `>=`, `&&`, `||`)
+- Hai **pochi casi** (1-2)
+
+```javascript
+// ✅ Buon caso per if...else (condizioni complesse)
+if (eta >= 18 && haPatente) {
+  console.log("Puoi guidare");
+} else if (eta >= 16) {
+  console.log("Puoi guidare con supervisione");
+} else {
+  console.log("Non puoi guidare");
+}
+
+// switch non può gestire condizioni complesse come questa
+```
+
+#### Best Practices
+
+**Sempre usare break**:
+
+```javascript
+// ✅ Corretto - break in ogni case
+switch (valore) {
+  case 1:
+    console.log("Uno");
+    break; // ✅
+  case 2:
+    console.log("Due");
+    break; // ✅
+}
+```
+
+**Includere sempre default**:
+
+```javascript
+// ✅ Con default (robusto)
+switch (azione) {
+  case "salva":
+    salva();
+    break;
+  case "elimina":
+    elimina();
+    break;
+  default:
+    console.log("Azione non riconosciuta");
+}
+```
+
+**Documentare fall through intenzionale**:
+
+```javascript
+// ✅ Commentare fall through intenzionali
+switch (livello) {
+  case "admin":
+    abilitaGestioneUtenti();
+  // fall through - admin ha anche permessi editor
+  case "editor":
+    abilitaModificaContenuti();
+    break;
+}
+```
+
+**Approfondisci**:
+
+- [[01-fondamenti/sintassi/switch]] - Switch statement
+
+### 2.8 Cicli (Loops)
+
+**Tipo**: Nuovo Topic
+
+I **cicli** (loops) sono strutture fondamentali in programmazione che permettono di eseguire un blocco di codice ripetutamente, finché una determinata condizione rimane vera. Ogni esecuzione del blocco di codice all'interno di un ciclo è chiamata **iterazione** (iteration). I cicli sono essenziali per automatizzare compiti ripetitivi.
+
+#### Il Ciclo while
+
+Il ciclo `while` è una delle forme più semplici di ciclo. La sua logica è: **"mentre questa condizione è vera, continua a eseguire il blocco di codice"**. La condizione viene controllata **prima** di ogni iterazione. Se la condizione risulta falsa fin dall'inizio, il blocco di codice non verrà mai eseguito.
+
+```javascript
+/*
+ * Sintassi while
+ */
+
+while (condizione) {
+  // codice eseguito finché condizione è true
+}
+
+// Esempio: contare da 1 a 5
+let i = 1;
+
+while (i <= 5) {
+  console.log(i);
+  i++; // Fondamentale per evitare cicli infiniti!
+}
+
+// Output:
+// 1
+// 2
+// 3
+// 4
+// 5
+```
+
+**⚠️ Attenzione**: Il ciclo `while` può creare **cicli infiniti** se la condizione non diventa mai falsa.
+
+```javascript
+/*
+ * Ciclo infinito - EVITARE!
+ */
+
+let x = 1;
+
+while (x <= 5) {
+  console.log(x);
+  // MANCA x++! Il ciclo non terminerà mai
+}
+```
+
+#### Il Ciclo do...while
+
+Il ciclo `do...while` è molto simile al `while`, ma con una differenza cruciale: la condizione viene controllata **dopo** ogni iterazione. Questo garantisce che il blocco di codice venga eseguito **almeno una volta**, anche se la condizione iniziale è falsa.
+
+```javascript
+/*
+ * Sintassi do...while
+ */
+
+do {
+  // codice eseguito almeno una volta
+} while (condizione);
+
+// Esempio: eseguito almeno una volta
+let numero = 10;
+
+do {
+  console.log("Numero:", numero);
+  numero++;
+} while (numero < 5);
+
+// Output: "Numero: 10"
+// Il blocco viene eseguito una volta, poi la condizione (10 < 5) è falsa
+```
+
+**Confronto while vs do...while**:
+
+```javascript
+/*
+ * while - può non eseguire mai
+ */
+
+let a = 10;
+
+while (a < 5) {
+  console.log("while:", a); // MAI eseguito
+}
+
+/*
+ * do...while - esegue almeno una volta
+ */
+
+let b = 10;
+
+do {
+  console.log("do...while:", b); // Eseguito UNA volta
+} while (b < 5);
+
+// Output:
+// "do...while: 10"
+```
+
+#### Il Ciclo for
+
+Quando il numero di iterazioni è noto in anticipo o si deve contare, il ciclo `for` è spesso la scelta più chiara e compatta. La sua sintassi concentra in un'unica riga **tre parti fondamentali**:
+
+- **Inizializzazione** → Eseguita una sola volta prima del ciclo (es. `let i = 0`)
+- **Condizione** → Valutata prima di ogni iterazione. Se falsa, il ciclo termina (es. `i < 10`)
+- **Aggiornamento** → Eseguito alla fine di ogni iterazione (es. `i++`)
+
+```javascript
+/*
+ * Sintassi for
+ */
+
+for (inizializzazione; condizione; aggiornamento) {
+  // codice eseguito ad ogni iterazione
+}
+
+// Esempio: contare da 0 a 4
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}
+
+// Output:
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+**Come funziona il ciclo for**:
+
+```javascript
+/*
+ * Flusso di esecuzione
+ */
+
+for (let i = 0; i < 3; i++) {
+  console.log("Iterazione:", i);
+}
+
+// 1. let i = 0           → Inizializzazione (una volta)
+// 2. i < 3?              → Condizione (true)
+// 3. console.log(...)    → Esecuzione blocco
+// 4. i++                 → Aggiornamento
+// 5. i < 3?              → Condizione (true)
+// 6. console.log(...)    → Esecuzione blocco
+// 7. i++                 → Aggiornamento
+// 8. i < 3?              → Condizione (true)
+// 9. console.log(...)    → Esecuzione blocco
+// 10. i++                → Aggiornamento
+// 11. i < 3?             → Condizione (false) → FINE
+```
+
+**Esempi pratici**:
+
+```javascript
+/*
+ * Iterare all'indietro
+ */
+
+for (let i = 5; i > 0; i--) {
+  console.log(i);
+}
+// Output: 5, 4, 3, 2, 1
+
+/*
+ * Incrementi diversi
+ */
+
+for (let i = 0; i <= 10; i += 2) {
+  console.log(i);
+}
+// Output: 0, 2, 4, 6, 8, 10
+
+/*
+ * Iterare su array
+ */
+
+let colori = ["rosso", "verde", "blu"];
+
+for (let i = 0; i < colori.length; i++) {
+  console.log(colori[i]);
+}
+// Output: "rosso", "verde", "blu"
+```
+
+#### Il Ciclo for...of
+
+Introdotto in **ES6**, il ciclo `for...of` è il modo moderno e più leggibile per iterare sugli elementi di una **struttura iterabile**, come un array o una stringa. Ad ogni iterazione, la variabile del ciclo assume il **valore** dell'elemento corrente.
+
+```javascript
+/*
+ * Sintassi for...of
+ */
+
+for (let elemento of iterabile) {
+  // lavora con elemento
+}
+
+// Esempio: iterare su array
+let frutti = ["mela", "banana", "arancia"];
+
+for (let frutto of frutti) {
+  console.log(frutto);
+}
+
+// Output:
+// "mela"
+// "banana"
+// "arancia"
+```
+
+**for...of con stringhe**:
+
+```javascript
+/*
+ * Iterare sui caratteri di una stringa
+ */
+
+let parola = "ciao";
+
+for (let carattere of parola) {
+  console.log(carattere);
+}
+
+// Output:
+// "c"
+// "i"
+// "a"
+// "o"
+```
+
+**Confronto for vs for...of**:
+
+```javascript
+/*
+ * for tradizionale (con indice)
+ */
+
+let numeri = [10, 20, 30];
+
+for (let i = 0; i < numeri.length; i++) {
+  console.log(numeri[i]); // Devi accedere con [i]
+}
+
+/*
+ * for...of (diretto sul valore)
+ */
+
+for (let numero of numeri) {
+  console.log(numero); // Hai direttamente il valore
+}
+```
+
+**Vantaggi di for...of**:
+
+- Più leggibile
+- Meno propenso agli errori (niente indici fuori range)
+- Funziona con qualsiasi iterabile (array, stringhe, Set, Map, ecc.)
+
+#### Il Ciclo for...in
+
+Il ciclo `for...in` è specifico per iterare sulle **proprietà enumerabili** di un oggetto. Ad ogni iterazione, la variabile del ciclo assume il **nome** (la chiave) della proprietà corrente, come stringa.
+
+```javascript
+/*
+ * Sintassi for...in
+ */
+
+for (let chiave in oggetto) {
+  // lavora con chiave
+}
+
+// Esempio: iterare su oggetto
+let persona = {
+  nome: "Mario",
+  cognome: "Rossi",
+  eta: 30,
+};
+
+for (let proprieta in persona) {
+  console.log(proprieta + ":", persona[proprieta]);
+}
+
+// Output:
+// "nome: Mario"
+// "cognome: Rossi"
+// "eta: 30"
+```
+
+**⚠️ Importante**: `for...in` **non è raccomandato per array**.
+
+```javascript
+/*
+ * for...in con array (SCONSIGLIATO)
+ */
+
+let numeri = [10, 20, 30];
+
+for (let indice in numeri) {
+  console.log(typeof indice); // "string" (!)
+  console.log(indice, numeri[indice]);
+}
+
+// Output:
+// "string"
+// "0" 10
+// "1" 20
+// "2" 30
+
+// Problemi:
+// - indice è una stringa, non un numero
+// - Potrebbe includere proprietà inaspettate
+// - Non garantisce l'ordine
+```
+
+**Per array, usare for...of**:
+
+```javascript
+/*
+ * for...of con array (CONSIGLIATO)
+ */
+
+let numeri = [10, 20, 30];
+
+for (let numero of numeri) {
+  console.log(numero);
+}
+```
+
+**Tabella Riepilogativa**:
+
+| Ciclo      | Uso                        | Itera su   |
+| ---------- | -------------------------- | ---------- |
+| `for...of` | Array, stringhe, iterabili | **Valori** |
+| `for...in` | Oggetti                    | **Chiavi** |
+
+#### Interrompere un Ciclo: break
+
+A volte è necessario interrompere un ciclo **prima** che la sua condizione diventi falsa. Per questo si usa l'istruzione `break`. Appena il programma incontra `break`, **esce immediatamente** dal ciclo e continua l'esecuzione dal codice successivo.
+
+```javascript
+/*
+ * Uso di break
+ */
+
+for (let i = 0; i < 10; i++) {
+  if (i === 5) {
+    break; // Interrompe il ciclo quando i è 5
+  }
+  console.log(i);
+}
+
+// Output:
+// 0
+// 1
+// 2
+// 3
+// 4
+// (il ciclo si ferma, NON stampa 5, 6, 7, 8, 9)
+```
+
+**break con while**:
+
+```javascript
+/*
+ * break per uscire da while
+ */
+
+let counter = 0;
+
+while (true) {
+  // Ciclo infinito!
+  console.log(counter);
+  counter++;
+
+  if (counter >= 3) {
+    break; // Uscita dal ciclo infinito
+  }
+}
+
+console.log("Ciclo terminato");
+
+// Output:
+// 0
+// 1
+// 2
+// "Ciclo terminato"
+```
+
+**Esempio pratico**: cercare un elemento
+
+```javascript
+/*
+ * Cercare in un array e fermarsi quando trovato
+ */
+
+let numeri = [10, 20, 30, 40, 50];
+let cercato = 30;
+let trovato = false;
+
+for (let numero of numeri) {
+  if (numero === cercato) {
+    trovato = true;
+    console.log("Trovato:", numero);
+    break; // Non serve continuare a cercare
+  }
+}
+
+if (trovato) {
+  console.log("Elemento presente");
+}
+```
+
+#### Saltare un'Iterazione: continue
+
+L'istruzione `continue` **salta** l'iterazione corrente e passa alla successiva, senza uscire dal ciclo.
+
+```javascript
+/*
+ * Uso di continue
+ */
+
+for (let i = 0; i < 5; i++) {
+  if (i === 2) {
+    continue; // Salta quando i è 2
+  }
+  console.log(i);
+}
+
+// Output:
+// 0
+// 1
+// (salta 2)
+// 3
+// 4
+```
+
+**Esempio pratico**: filtrare valori
+
+```javascript
+/*
+ * Stampare solo numeri pari
+ */
+
+for (let i = 0; i < 10; i++) {
+  if (i % 2 !== 0) {
+    continue; // Salta i numeri dispari
+  }
+  console.log(i); // Stampa solo pari
+}
+
+// Output: 0, 2, 4, 6, 8
+```
+
+#### Best Practices
+
+**Scegliere il ciclo giusto**:
+
+```javascript
+// ✅ for - quando sai quante iterazioni
+for (let i = 0; i < 10; i++) {
+  // ...
+}
+
+// ✅ for...of - per iterare su array/stringhe
+for (let item of array) {
+  // ...
+}
+
+// ✅ for...in - per proprietà di oggetti
+for (let key in object) {
+  // ...
+}
+
+// ✅ while - quando non sai quante iterazioni
+while (condizione) {
+  // ...
+}
+```
+
+**Evitare cicli infiniti**:
+
+```javascript
+// ❌ Ciclo infinito
+for (let i = 0; i < 10; ) {
+  // MANCA i++!
+  console.log(i);
+}
+
+// ✅ Incremento presente
+for (let i = 0; i < 10; i++) {
+  console.log(i);
+}
+```
+
+**Usare const in for...of quando possibile**:
+
+```javascript
+// ✅ const quando non riassegni
+for (const item of array) {
+  console.log(item);
+}
+
+// let solo se devi modificare
+for (let item of array) {
+  item = item * 2; // Riassegnazione
+}
+```
+
+**Limitare lavoro nei cicli**:
+
+```javascript
+// ❌ Calcolo ripetuto
+for (let i = 0; i < array.length; i++) {
+  // array.length calcolato ogni volta!
+}
+
+// ✅ Calcolo una volta
+let len = array.length;
+for (let i = 0; i < len; i++) {
+  // Più efficiente
+}
+
+// ✅ Oppure usa for...of
+for (let item of array) {
+  // Nessun calcolo length
+}
+```
+
+**Approfondisci**:
+
+- [[01-fondamenti/sintassi/cicli]] - Cicli (Loops) - Panoramica
+- [[01-fondamenti/sintassi/while]] - Ciclo while
+- [[01-fondamenti/sintassi/do-while]] - Ciclo do...while
+- [[01-fondamenti/sintassi/for]] - Ciclo for
+- [[01-fondamenti/sintassi/for-of]] - Ciclo for...of
+- [[01-fondamenti/sintassi/for-in]] - Ciclo for...in
+- [[01-fondamenti/sintassi/break-continue]] - break e continue
+
+---
+
 ## 3. Tipi e Dati
 
 ### 3.1 Valori e Tipi (Values & Types)
@@ -1218,7 +2283,196 @@ function isNullOrUndefinedVerboso(value) {
 }
 ```
 
-### 3.4 Boxing e Metodi dei Primitivi
+### 3.4 Valori Truthy e Falsy
+
+**Tipo**: Nuovo Topic
+
+In JavaScript, quando un valore non booleano viene usato in un **contesto che si aspetta un booleano** (come la condizione di un `if` o l'operando di un operatore logico), il linguaggio lo converte implicitamente in `true` o `false`. Questo processo è chiamato **coercizione booleana**, e i valori vengono classificati come **truthy** o **falsy** in base al risultato.
+
+#### Valori Falsy
+
+I valori **falsy** sono quelli che, quando forzati a diventare booleani, si convertono in `false`. La lista dei valori falsy è **breve e ben definita**:
+
+```javascript
+/*
+ * Lista COMPLETA dei valori falsy
+ */
+
+false; // ovviamente falsy
+0 - // zero
+  0; // zero negativo
+0n; // BigInt zero
+(""); // stringa vuota
+"" // stringa vuota (apici singoli)
+``; // stringa vuota (template literal)
+null; // assenza intenzionale di valore
+undefined; // valore non definito/assegnato
+NaN; // Not a Number
+```
+
+**Qualsiasi valore che non rientra in questa lista è considerato truthy**.
+
+#### Valori Truthy
+
+Un valore **truthy** è qualsiasi valore che, quando convertito in booleano, diventa `true`. Questo include praticamente **tutto il resto**.
+
+```javascript
+/*
+ * Esempi di valori truthy
+ */
+
+// Stringhe non vuote
+"ciao"          // truthy
+"0"             // truthy (stringa, non numero!)
+"false"         // truthy (stringa, non boolean!)
+" "             // truthy (spazio non è stringa vuota)
+
+// Numeri diversi da zero
+42              // truthy
+-1              // truthy
+3.14            // truthy
+Infinity        // truthy
+
+// Array (anche vuoti!)
+[]              // truthy ⚠️
+[0]             // truthy
+
+// Oggetti (anche vuoti!)
+{}              // truthy ⚠️
+{a: 0}          // truthy
+
+// Funzioni
+function() {}   // truthy
+```
+
+**⚠️ Attenzione**: Anche un **array vuoto** `[]` o un **oggetto vuoto** `{}` sono **truthy**. Questo può generare confusione.
+
+```javascript
+/*
+ * Array e oggetti vuoti sono truthy!
+ */
+
+let arrayVuoto = [];
+
+if (arrayVuoto) {
+  console.log("Questo VIENE eseguito!"); // ✅
+}
+
+// Per controllare se un array è vuoto:
+if (arrayVuoto.length === 0) {
+  console.log("Array vuoto"); // ✅ Modo corretto
+}
+```
+
+#### Utilizzo Pratico
+
+La conoscenza dei valori truthy e falsy permette di scrivere codice più **conciso e leggibile**.
+
+**Controllo Esistenza Valore**
+
+```javascript
+/*
+ * Controllo se una variabile ha un valore
+ */
+
+let nomeUtente = "Mario";
+
+// ❌ Modo verboso
+if (nomeUtente !== null && nomeUtente !== undefined && nomeUtente !== "") {
+  console.log("Benvenuto, " + nomeUtente);
+}
+
+// ✅ Modo conciso (sfrutta truthy/falsy)
+if (nomeUtente) {
+  console.log("Benvenuto, " + nomeUtente);
+}
+```
+
+Se `nomeUtente` contiene una stringa non vuota (valore truthy), la condizione è vera. Se contiene `""`, `null`, o `undefined` (valori falsy), la condizione è falsa.
+
+**Default Values**
+
+```javascript
+/*
+ * Assegnare valori di default
+ */
+
+let userInput = "";
+let messaggio = userInput || "Messaggio di default";
+
+console.log(messaggio); // "Messaggio di default"
+```
+
+**Conversione Esplicita a Boolean**
+
+```javascript
+/*
+ * Conversione esplicita
+ */
+
+// Usando Boolean()
+let valore1 = Boolean("ciao"); // true
+let valore2 = Boolean(""); // false
+
+// Usando doppia negazione !!
+let valore3 = !!"ciao"; // true
+let valore4 = !!""; // false
+
+// Come funziona !!
+// !"ciao" → !true → false
+// !!"ciao" → !false → true
+```
+
+#### Best Practices
+
+**Uso Consapevole**
+
+```javascript
+/*
+ * Attenzione con numeri - 0 è falsy!
+ */
+
+// ⚠️ Problema
+function calcola(numero) {
+  if (!numero) {
+    // ❌ Salta anche se numero === 0!
+    numero = 10;
+  }
+  return numero * 2;
+}
+
+// ✅ Controllo esplicito per numeri
+function calcolaCorretto(numero) {
+  if (numero === undefined || numero === null) {
+    numero = 10;
+  }
+  return numero * 2;
+}
+```
+
+**Chiarezza vs Concisione**
+
+```javascript
+// ✅ Conciso per stringhe/oggetti
+if (user.nome) {
+  // lavora con nome
+}
+
+// ✅ Esplicito per numeri/booleani
+if (counter !== 0) {
+  // 0 è valore valido
+}
+```
+
+**Approfondisci**:
+
+- [[01-fondamenti/tipi/truthy-falsy]] - Valori truthy e falsy
+- [[01-fondamenti/tipi/coercizione]] - Coercizione di tipo
+- [[01-fondamenti/sintassi/condizionali]] - Uso nelle condizioni
+
+---
+
+### 3.5 Boxing e Metodi dei Primitivi
 
 **Tipo**: Nuovo Topic
 
@@ -1390,7 +2644,7 @@ true.toString(); // "true"
 
 ---
 
-### 3.5 Oggetti (Objects)
+### 3.6 Oggetti (Objects)
 
 **Tipo**: Nuovo Topic
 
@@ -1726,7 +2980,7 @@ let copiaProfonda = JSON.parse(JSON.stringify(utente));
 // Oppure librerie come lodash (_.cloneDeep)
 ```
 
-### 3.6 Array
+### 3.7 Array
 
 **Tipo**: Nuovo Topic
 
@@ -1890,7 +3144,7 @@ let trovato = numeri.find(function (n) {
 console.log(trovato); // 12
 ```
 
-### 3.7 Funzioni (Functions)
+### 3.8 Funzioni (Functions)
 
 **Tipo**: Nuovo Topic
 

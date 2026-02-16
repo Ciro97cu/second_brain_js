@@ -8,10 +8,11 @@ Collezione di file dedicati ai tipi di dati in JavaScript.
 - **[[tipizzazione-dinamica]]** - Tipizzazione dinamica e debole
 - **[[typeof]]** - Operatore typeof e verifiche di tipo
 - **[[coercizione]]** - Coercizione esplicita e implicita
+- **[[truthy-falsy]]** - Valori truthy e falsy, coercizione booleana
 - **[[boxing]]** - Boxing e metodi dei primitivi
 
 ## Collegamenti Principali
 
-- [[../oggetti]] - Object è un tipo fondamentale
+- [[../oggetti/oggetti]] - Object è un tipo fondamentale
 - [[../array/array]] - Array è un sottotipo di Object
 - [[../funzioni/funzioni]] - Function è un tipo speciale

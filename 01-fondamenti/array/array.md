@@ -51,7 +51,7 @@ Array.isArray({ a: 1 }); // false
 
 ## Collegamenti
 
-- [[oggetti]] - Array sono oggetti speciali
+- [[../oggetti/oggetti]] - Array sono oggetti speciali
 - [[array-manipolazione]] - Aggiungere/rimuovere elementi
 - [[array-iterazione]] - forEach, map, filter, reduce
 - [[array-metodi]] - slice, includes, find

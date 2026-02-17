@@ -1,5 +1,7 @@
 # Oggetti (Objects)
 
+**Appunti Completi**: [[../../appunti-completi#36-oggetti-objects]]
+
 Il tipo **object** è un valore composto che raggruppa dati e funzionalità correlate. Organizza i dati come collezione di **proprietà** (coppie chiave-valore).
 
 ## Creazione e Accesso

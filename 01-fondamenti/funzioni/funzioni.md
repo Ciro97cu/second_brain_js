@@ -1,5 +1,7 @@
 # Funzioni (Functions)
 
+**Appunti Completi**: [[../../appunti-completi#38-funzioni-functions]]
+
 Una **funzione** è un blocco di codice riutilizzabile progettato per eseguire un compito specifico. Organizza il codice in pezzi logici evitando ripetizioni.
 
 ## Anatomia di una Funzione

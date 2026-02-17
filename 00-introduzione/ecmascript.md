@@ -1,7 +1,8 @@
 # ECMAScript
 
 **Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026
+**Data**: 13 Febbraio 2026  
+**Appunti Completi**: [[../appunti-completi#12-ecmascript]]
 
 ---
 

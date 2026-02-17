@@ -1,5 +1,7 @@
 # Operatori Matematici (Arithmetic)
 
+**Appunti Completi**: [[../../appunti-completi#5-operatori]]
+
 Gli operatori matematici eseguono operazioni aritmetiche su valori numerici.
 
 ## Operatori Binari

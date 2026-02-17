@@ -5,6 +5,7 @@ Collezione di file dedicati agli oggetti in JavaScript.
 ## File
 
 - **[[oggetti]]** - Oggetti, proprietà, metodi, valore vs riferimento
+- **[[prototypes]]** - Prototipi, prototype chain, delega, behavior delegation
 
 ## Collegamenti Principali
 

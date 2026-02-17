@@ -1,5 +1,7 @@
 # Iterazione e Trasformazione Array
 
+**Appunti Completi**: [[../../appunti-completi#37-array]]
+
 Metodi **higher-order functions** che eseguono operazioni su ogni elemento. Molti creano **nuovo array** senza modificare l'originale.
 
 ## forEach (esecuzione)

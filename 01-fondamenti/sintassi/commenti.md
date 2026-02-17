@@ -1,5 +1,7 @@
 # Commenti nel Codice
 
+**Appunti Completi**: [[../../appunti-completi#22-commenti-nel-codice-code-comments]]
+
 Il codice non viene scritto solo per il computer, ma anche e soprattutto per gli **esseri umani** (altri sviluppatori o il "te stesso" del futuro). Per questo, è fondamentale scrivere codice che sia non solo funzionante, ma anche **chiaro e comprensibile**.
 
 I **commenti** sono porzioni di testo inserite nel codice che vengono completamente **ignorate dal motore JavaScript**. Il loro unico scopo è fornire spiegazioni a chi legge il codice.

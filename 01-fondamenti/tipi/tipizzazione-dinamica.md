@@ -3,6 +3,8 @@
 **Tipo**: Nuovo Topic  
 **Data**: 13 Febbraio 2026
 
+**Appunti Completi**: [[../../appunti-completi#32-tipizzazione-dinamica-dynamic-typing]]
+
 ---
 
 ## Descrizione

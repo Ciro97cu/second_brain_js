@@ -1,5 +1,7 @@
 # Ciclo for...in
 
+**Appunti Completi**: [[../../appunti-completi#28-cicli-loops]]
+
 Il ciclo `for...in` è specifico per iterare sulle **proprietà enumerabili** di un oggetto.
 
 Ad ogni iterazione, la variabile del ciclo assume il **nome** (la chiave) della proprietà corrente, come stringa.

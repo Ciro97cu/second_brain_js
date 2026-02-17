@@ -1,5 +1,7 @@
 # Switch
 
+**Appunti Completi**: [[../../appunti-completi#27-switch]]
+
 Quando si ha la necessità di confrontare una singola variabile o espressione con una serie di valori specifici, una lunga catena di `if...else if` può diventare verbosa.
 
 In questi scenari, l'istruzione **switch** offre un'alternativa più pulita e strutturata. La sua logica è: **"valuta questa espressione e, in base al suo valore, esegui il blocco di codice corrispondente"**.

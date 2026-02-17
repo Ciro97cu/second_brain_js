@@ -1,5 +1,7 @@
 # Ciclo while
 
+**Appunti Completi**: [[../../appunti-completi#28-cicli-loops]]
+
 Il ciclo `while` è una delle forme più semplici di ciclo. La sua logica è: **"mentre questa condizione è vera, continua a eseguire il blocco di codice"**.
 
 La condizione viene controllata **prima** di ogni iterazione. Se la condizione risulta falsa fin dall'inizio, il blocco di codice non verrà mai eseguito.

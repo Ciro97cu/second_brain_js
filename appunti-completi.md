@@ -1871,6 +1871,197 @@ for (let item of array) {
 - [[01-fondamenti/sintassi/for-in]] - Ciclo for...in
 - [[01-fondamenti/sintassi/break-continue]] - break e continue
 
+### 2.9 Strict Mode ("Modalità Stretta")
+
+**Tipo**: Nuovo Topic
+
+Introdotta in **ECMAScript 5 (ES5)**, la **strict mode** ("modalità stretta") è una funzionalità che permette di attivare un insieme di regole più restrittive per il codice JavaScript. L'obiettivo è rendere il codice più **sicuro**, **robusto** e meno incline a errori comuni, trasformando "errori silenziosi" in errori espliciti che bloccano l'esecuzione.
+
+#### Perché Usare Strict Mode
+
+L'uso dello strict mode è considerato una **best practice** per tutti i programmi JavaScript moderni, per diverse ragioni:
+
+- **Sicurezza** → Previene pratiche rischiose, come la creazione accidentale di variabili globali
+- **Ottimizzazione** → Un codice che aderisce allo strict mode è generalmente più facile da ottimizzare per i motori JavaScript
+- **Futuro del Linguaggio** → Rappresenta la direzione in cui il linguaggio si sta evolvendo. Abituarsi a scrivere codice in modalità stretta facilita l'adozione delle future funzionalità di JavaScript
+
+#### Come Attivare lo Strict Mode
+
+Per attivare lo strict mode, è sufficiente inserire la direttiva `"use strict";` (una semplice stringa) all'inizio di un file o di una funzione. La sua **posizione** ne determina l'**ambito di applicazione**.
+
+```javascript
+/*
+ * Strict mode a livello di file
+ */
+
+"use strict";
+
+// Tutto il codice in questo file è in strict mode
+
+let nome = "Mario";
+x = 10; // ❌ ReferenceError: x is not defined
+```
+
+**A livello di funzione**:
+
+```javascript
+/*
+ * Strict mode a livello di funzione
+ */
+
+function modalitaStretta() {
+  "use strict";
+
+  // Solo questa funzione è in strict mode
+  y = 5; // ❌ ReferenceError: y is not defined
+}
+
+function modalitaNormale() {
+  // Questa funzione NON è in strict mode
+  z = 10; // ✅ Funziona (crea variabile globale)
+}
+
+modalitaStretta(); // Errore
+modalitaNormale(); // OK ma sconsigliato
+console.log(z); // 10
+```
+
+#### Prevenire le Globali Accidentali
+
+Uno dei benefici più importanti dello strict mode è che **impedisce la creazione implicita di variabili globali**. In modalità non-stretta, assegnare un valore a una variabile non dichiarata crea una nuova variabile nello scope globale. In strict mode, questo comportamento è vietato e genera un `ReferenceError`.
+
+```javascript
+/*
+ * Modalità non-stretta (comportamento pericoloso)
+ */
+
+function nonStrictMode() {
+  // Nessun "use strict"
+
+  contatore = 0; // ❌ Crea variabile GLOBALE accidentalmente
+  contatore++;
+}
+
+nonStrictMode();
+console.log(contatore); // 1 (variabile globale!)
+```
+
+```javascript
+/*
+ * Strict mode (comportamento sicuro)
+ */
+
+function strictMode() {
+  "use strict";
+
+  contatore = 0; // ❌ ReferenceError: contatore is not defined
+  contatore++;
+}
+
+strictMode(); // Errore bloccato subito
+```
+
+Questo costringe lo sviluppatore a **dichiarare sempre esplicitamente** le proprie variabili (con `let`, `const` o `var`), prevenendo bug difficili da tracciare.
+
+```javascript
+/*
+ * ✅ Versione corretta con strict mode
+ */
+
+function strictModeCorrretto() {
+  "use strict";
+
+  let contatore = 0; // ✅ Dichiarazione esplicita
+  contatore++;
+  console.log(contatore); // 1
+}
+
+strictModeCorrretto(); // Funziona correttamente
+```
+
+#### Altre Restrizioni dello Strict Mode
+
+Lo strict mode introduce molte altre regole. Ecco alcuni esempi comuni:
+
+**Niente duplicati nei parametri**:
+
+```javascript
+/*
+ * Parametri duplicati vietati
+ */
+
+"use strict";
+
+function esempio(a, a, b) {
+  // ❌ SyntaxError: Duplicate parameter name
+  return a + b;
+}
+```
+
+**Niente assegnamenti a proprietà read-only**:
+
+```javascript
+/*
+ * Assegnamenti non validi vietati
+ */
+
+"use strict";
+
+let obj = {};
+Object.defineProperty(obj, "prop", {
+  value: 42,
+  writable: false,
+});
+
+obj.prop = 77; // ❌ TypeError: Cannot assign to read only property
+```
+
+**Niente delete su variabili**:
+
+```javascript
+/*
+ * Delete su variabili vietato
+ */
+
+"use strict";
+
+let x = 10;
+delete x; // ❌ SyntaxError: Delete of an unqualified identifier
+```
+
+#### Best Practices
+
+- **Attiva strict mode** in tutti i nuovi progetti
+- **Dichiarate sempre variabili** con `let`, `const` o `var`
+- **Usa moduli ES6** (automaticamente strict)
+- **Non mischiare strict e non-strict** nello stesso file
+
+```javascript
+/*
+ * ✅ Struttura consigliata
+ */
+
+"use strict";
+
+// Tutto il file in strict mode
+// Codice pulito e sicuro
+
+let dati = [];
+
+function elabora(item) {
+  let risultato = item * 2;
+  return risultato;
+}
+```
+
+#### Affrontare i Problemi
+
+Se l'attivazione dello strict mode causa problemi nel tuo programma, **non è un motivo per evitarlo**. Al contrario, è un **segnale** che il tuo codice contiene delle "cattive pratiche" che devono essere corrette. Affrontare questi problemi rende il codice più affidabile e allineato agli standard moderni.
+
+**Approfondisci**:
+
+- [[01-fondamenti/sintassi/strict-mode]] - Strict Mode
+
 ---
 
 ## 3. Tipi e Dati
@@ -3756,6 +3947,489 @@ creaWidget({ colore: "rosso" }); // override solo colore
 ```
 
 In questo esempio, la IIFE viene eseguita immediatamente, calcola il risultato e lo restituisce. Il valore restituito (50) viene quindi assegnato alla costante `risultato`. Le variabili `moltiplicatore` e `valoreBase` esistono solo durante l'esecuzione della IIFE e poi scompaiono.
+
+**Approfondisci**:
+
+- [[01-fondamenti/funzioni/funzioni]] - Funzioni in JavaScript
+- [[01-fondamenti/funzioni/iife]] - IIFE (Immediately Invoked Function Expressions)
+
+### 3.9 Closure (Chiusura)
+
+**Tipo**: Nuovo Topic
+
+La **Closure** (o chiusura) è uno dei concetti più importanti e spesso meno compresi in JavaScript. Si può considerare come la capacità di una funzione di **"ricordare"** e continuare ad accedere al proprio scope (le sue variabili) anche dopo che la funzione ha terminato la sua esecuzione.
+
+Questo meccanismo permette a una **funzione interna** di mantenere un riferimento vivo alle variabili della **funzione esterna** che la contiene.
+
+#### Esempio Base
+
+```javascript
+/*
+ * Esempio classico di closure
+ */
+
+function makeAdder(x) {
+  // x è una variabile nello scope di makeAdder
+
+  function add(y) {
+    // La funzione interna 'add' ha accesso a 'x'
+    return x + y;
+  }
+
+  return add; // Restituisce la funzione interna
+}
+
+// Creiamo due closure diverse
+let plusOne = makeAdder(1); // Crea una closure che "ricorda" x = 1
+let plusTen = makeAdder(10); // Crea una closure che "ricorda" x = 10
+
+console.log(plusOne(3)); // 4  (1 + 3)
+console.log(plusOne(41)); // 42 (1 + 41)
+
+console.log(plusTen(13)); // 23 (10 + 13)
+console.log(plusTen(90)); // 100 (10 + 90)
+```
+
+Analizzando il codice:
+
+1. **Quando viene chiamata `makeAdder(1)`**, si ottiene un riferimento alla sua funzione interna `add`, la quale "ricorda" che `x` è `1`. Questo riferimento viene assegnato alla variabile `plusOne`.
+
+2. **Quando viene chiamata `makeAdder(10)`**, si ottiene un altro riferimento alla sua funzione interna `add`, che in questo caso "ricorda" che `x` è `10`. Questo nuovo riferimento viene assegnato a `plusTen`.
+
+3. **Quando si esegue `plusOne(3)`**, la funzione aggiunge `3` (il suo parametro `y`) al valore `1` (la `x` che ha "ricordato"), restituendo `4`.
+
+4. **Quando si esegue `plusTen(13)`**, la funzione aggiunge `13` (il suo `y`) al valore `10` (la `x` che ha "ricordato"), restituendo `23`.
+
+In sostanza, ogni volta che `makeAdder` viene eseguita, viene creato un **nuovo scope** e la funzione `add` interna mantiene un collegamento a quello **specifico scope**.
+
+#### Dati Privati con Closure
+
+Le closure permettono di creare **dati privati** e **funzioni factory** potenti.
+
+```javascript
+/*
+ * Contatore con dati privati
+ */
+
+function creaContatore() {
+  let count = 0; // Variabile privata
+
+  return {
+    incrementa: function () {
+      count++;
+      return count;
+    },
+    decrementa: function () {
+      count--;
+      return count;
+    },
+    valore: function () {
+      return count;
+    },
+  };
+}
+
+let contatore = creaContatore();
+
+console.log(contatore.incrementa()); // 1
+console.log(contatore.incrementa()); // 2
+console.log(contatore.incrementa()); // 3
+console.log(contatore.decrementa()); // 2
+console.log(contatore.valore()); // 2
+
+// ❌ Non possiamo accedere direttamente a 'count'
+console.log(contatore.count); // undefined
+
+// Ogni contatore ha il suo scope privato
+let contatore2 = creaContatore();
+console.log(contatore2.incrementa()); // 1 (indipendente!)
+console.log(contatore.valore()); // 2 (non influenzato)
+```
+
+#### Closure nei Loop
+
+Un caso comune dove le closure possono causare confusione è all'interno dei loop.
+
+```javascript
+/*
+ * ❌ Problema comune con var nei loop
+ */
+
+function creaFunzioni() {
+  let funzioni = [];
+
+  for (var i = 0; i < 3; i++) {
+    funzioni.push(function () {
+      console.log(i); // Tutte le funzioni condividono lo stesso 'i'
+    });
+  }
+
+  return funzioni;
+}
+
+let funz = creaFunzioni();
+funz[0](); // 3 (non 0!)
+funz[1](); // 3 (non 1!)
+funz[2](); // 3 (non 2!)
+
+// Perché? Tutte le funzioni "ricordano" lo stesso 'i',
+// che alla fine del loop ha valore 3
+```
+
+**Soluzione con let**:
+
+```javascript
+/*
+ * ✅ Soluzione: Usare let (block scope)
+ */
+
+function creaFunzioniCorretto() {
+  let funzioni = [];
+
+  for (let i = 0; i < 3; i++) {
+    // let invece di var
+    funzioni.push(function () {
+      console.log(i); // Ogni iterazione ha il suo 'i'
+    });
+  }
+
+  return funzioni;
+}
+
+let funz2 = creaFunzioniCorretto();
+funz2[0](); // 0 ✅
+funz2[1](); // 1 ✅
+funz2[2](); // 2 ✅
+```
+
+**Soluzione con IIFE**:
+
+```javascript
+/*
+ * ✅ Soluzione: IIFE per creare scope separati
+ */
+
+function creaFunzioniIIFE() {
+  let funzioni = [];
+
+  for (var i = 0; i < 3; i++) {
+    funzioni.push(
+      (function (indice) {
+        return function () {
+          console.log(indice);
+        };
+      })(i),
+    ); // IIFE che cattura il valore corrente di i
+  }
+
+  return funzioni;
+}
+
+let funz3 = creaFunzioniIIFE();
+funz3[0](); // 0 ✅
+funz3[1](); // 1 ✅
+funz3[2](); // 2 ✅
+```
+
+#### Importanza delle Closure
+
+La closure è una delle tecniche più **potenti** e **versatili** della programmazione, e padroneggiarla è fondamentale per uno sviluppatore JavaScript.
+
+Le closure sono alla base di molti pattern avanzati come:
+
+- **Module pattern** (moduli privati)
+- **Factory functions** (funzioni fabbrica)
+- **Event handlers** (gestori eventi)
+- **Callbacks** e programmazione asincrona
+- **Currying** e programmazione funzionale
+
+**Approfondisci**:
+
+- [[01-fondamenti/funzioni/closure]] - Closure (Chiusura)
+
+### 3.10 Module Pattern
+
+**Tipo**: Nuovo Topic
+
+L'uso più comune della closure in JavaScript è il **Module Pattern**. Questo pattern permette di definire dettagli implementativi **privati** (variabili e funzioni) che sono nascosti al mondo esterno, e allo stesso tempo di esporre un'**interfaccia pubblica** (public API) che può essere utilizzata per interagire con essi.
+
+È una tecnica fondamentale per l'**incapsulamento** e l'**organizzazione del codice**.
+
+#### Esempio Base
+
+```javascript
+/*
+ * Module Pattern classico
+ */
+
+function User() {
+  // Variabili private
+  let username;
+  let password;
+
+  // Funzione privata
+  function doLogin(user, pw) {
+    username = user;
+    password = pw;
+
+    console.log("Login effettuato per:", username);
+    // Password non viene mai esposta
+  }
+
+  // API pubblica (ciò che viene esposto)
+  let publicAPI = {
+    login: doLogin, // Riferimento alla funzione privata
+  };
+
+  return publicAPI;
+}
+
+// Creiamo un'istanza del modulo
+let fred = User();
+
+// Possiamo chiamare il metodo pubblico
+fred.login("fred", "12Battery34!");
+// Output: "Login effettuato per: fred"
+
+// ❌ Non possiamo accedere alle variabili private
+console.log(fred.username); // undefined
+console.log(fred.password); // undefined
+console.log(fred.doLogin); // undefined
+```
+
+#### Come Funziona
+
+Analizziamo il funzionamento passo per passo:
+
+**Scope Esterno** → La funzione `User()` agisce come uno **scope esterno** che contiene le variabili `username` e `password`, e la funzione `doLogin()`. Questi elementi sono **privati** e non possono essere raggiunti direttamente dall'esterno.
+
+**Creazione dell'Istanza** → Eseguendo `User()`, si crea un'**istanza del modulo**. Viene generato un **nuovo scope** e, di conseguenza, una **nuova copia** di tutte le variabili e funzioni interne. L'oggetto restituito, `publicAPI`, viene assegnato alla variabile `fred`. Se si eseguisse di nuovo `User()`, si otterrebbe una nuova istanza **completamente separata** da `fred`.
+
+```javascript
+/*
+ * Istanze separate
+ */
+
+let user1 = User();
+let user2 = User();
+
+user1.login("alice", "pass123");
+user2.login("bob", "pass456");
+
+// user1 e user2 sono completamente indipendenti
+console.log(user1 === user2); // false
+```
+
+**Nota** → Si usa `User()` e **NON** `new User()` perché `User` è una semplice funzione che funge da **factory**, non una classe da istanziare. L'uso di `new` in questo contesto sarebbe inappropriato.
+
+**API Pubblica** → L'oggetto `publicAPI` contiene i metodi che si vogliono **rendere pubblici**. In questo caso, ha una sola proprietà, `login`, che è un riferimento alla funzione interna `doLogin()`.
+
+**Il Ruolo della Closure** → Quando la funzione `User()` termina la sua esecuzione, le sue variabili interne (`username`, `password`) **non vengono distrutte**. Esse vengono **"mantenute in vita"** dalla closure creata dalla funzione `doLogin()`. Per questo motivo, quando si chiama `fred.login(...)`, la funzione `doLogin` può ancora accedere e modificare le variabili `username` e `password` definite nel suo scope genitore.
+
+```javascript
+/*
+ * La closure mantiene vivo lo stato privato
+ */
+
+function createWallet() {
+  let balance = 0; // Privato
+
+  return {
+    deposit: function (amount) {
+      balance += amount;
+      console.log("Deposito:", amount);
+      return balance;
+    },
+    withdraw: function (amount) {
+      if (amount > balance) {
+        console.log("Fondi insufficienti");
+        return balance;
+      }
+      balance -= amount;
+      console.log("Prelievo:", amount);
+      return balance;
+    },
+    getBalance: function () {
+      return balance;
+    },
+  };
+}
+
+let wallet = createWallet();
+wallet.deposit(100); // "Deposito: 100"
+wallet.withdraw(30); // "Prelievo: 30"
+console.log(wallet.getBalance()); // 70
+
+// ❌ Non possiamo manipolare balance direttamente
+console.log(wallet.balance); // undefined
+wallet.balance = 1000000; // Non ha effetto
+console.log(wallet.getBalance()); // 70 (intatto!)
+```
+
+#### Module Pattern con IIFE
+
+Una variante comune usa una **IIFE** per creare un modulo **singleton** (istanza unica).
+
+```javascript
+/*
+ * Module Pattern con IIFE (singleton)
+ */
+
+let bankAccount = (function () {
+  // Stato privato
+  let balance = 0;
+  let transactions = [];
+
+  // Funzioni private
+  function recordTransaction(type, amount) {
+    transactions.push({
+      type: type,
+      amount: amount,
+      date: new Date(),
+    });
+  }
+
+  // API pubblica
+  return {
+    deposit: function (amount) {
+      balance += amount;
+      recordTransaction("deposit", amount);
+      return balance;
+    },
+    withdraw: function (amount) {
+      if (amount > balance) {
+        console.log("Fondi insufficienti");
+        return balance;
+      }
+      balance -= amount;
+      recordTransaction("withdraw", amount);
+      return balance;
+    },
+    getBalance: function () {
+      return balance;
+    },
+    getTransactions: function () {
+      // Ritorna una copia per evitare modifiche esterne
+      return [...transactions];
+    },
+  };
+})();
+
+// Usiamo il modulo singleton
+bankAccount.deposit(500);
+bankAccount.withdraw(100);
+console.log(bankAccount.getBalance()); // 400
+console.log(bankAccount.getTransactions()); // Array con 2 transazioni
+
+// ❌ Non possiamo accedere ai dati privati
+console.log(bankAccount.balance); // undefined
+console.log(bankAccount.transactions); // undefined
+```
+
+#### Vantaggi del Module Pattern
+
+- **Incapsulamento** → Dati privati veramente privati, implementazione nascosta
+- **Organizzazione** → Codice strutturato e modulare, chiara separazione tra pubblico e privato
+- **Namespace** → Evita inquinamento dello scope globale, riduce conflitti di nomi
+- **Manutenibilità** → Modifiche interne senza impatto sul codice esterno, API stabile e ben definita
+
+#### Riepilogo
+
+In sintesi, il **Module Pattern** sfrutta le closure per creare uno **stato privato** (variabili e funzioni nascoste) e un'**interfaccia pubblica** (API esposta). È un concetto chiave per scrivere codice **robusto** e **manutenibile**.
+
+**Approfondisci**:
+
+- [[01-fondamenti/funzioni/module-pattern]] - Module Pattern
+
+### 3.11 L'identificatore this
+
+**Tipo**: Concetto Fondamentale
+
+La parola chiave `this` punta a un **oggetto**, ma l'**oggetto dipende da come la funzione è chiamata** (call-site).
+
+**Equivoco comune**: `this` **NON** è la funzione stessa.
+
+#### Le Quattro Regole del Binding
+
+1. **Default Binding** → `foo()` → `this` = globale (o `undefined` in strict mode)
+2. **Implicit Binding** → `obj.foo()` → `this` = `obj`  
+   ⚠️ Si perde estraendo il metodo: `let fn = obj.foo; fn();`
+3. **Explicit Binding** → `.call(obj)`, `.apply(obj)`, `.bind(obj)` → `this` = `obj`
+4. **New Binding** → `new foo()` → `this` = nuovo oggetto vuoto creato
+
+**Ordine di precedenza**: new > explicit > implicit > default
+
+```javascript
+function foo() {
+  console.log(this.bar);
+}
+
+var bar = "global";
+var obj = { bar: "obj1", foo: foo };
+
+foo(); // "global" - default
+obj.foo(); // "obj1" - implicit
+foo.call(obj); // "obj1" - explicit
+new foo(); // undefined - new
+```
+
+**Approfondisci**:
+
+- [[01-fondamenti/funzioni/this]] - L'identificatore this
+
+### 3.12 Prototipi (Prototypes)
+
+**Tipo**: Concetto Fondamentale
+
+I **prototipi** sono un sistema di **fallback** per le proprietà degli oggetti. Quando una proprietà non viene trovata su un oggetto, JavaScript cerca nella **catena dei prototipi** (prototype chain) fino a trovarla. Questo è chiamato **delega** (delegation).
+
+```javascript
+var foo = { a: 42 };
+var bar = Object.create(foo); // bar collegato a foo
+
+console.log(bar.a); // 42 (delegato a foo)
+console.log(bar.hasOwnProperty("a")); // false
+```
+
+#### Classi ES6 e Prototipi
+
+La sintassi `class` di ES6 è **zucchero sintattico** sui prototipi:
+
+```javascript
+// ES6
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  greet() {
+    console.log("Ciao, sono " + this.name);
+  }
+}
+
+// Equivalente pre-ES6
+function Person(name) {
+  this.name = name;
+}
+Person.prototype.greet = function () {
+  console.log("Ciao, sono " + this.name);
+};
+```
+
+#### Uso Implicito
+
+- **Array**: `.map()`, `.filter()` sono su `Array.prototype`
+- **Object**: `.toString()`, `.hasOwnProperty()` sono su `Object.prototype`
+- **DOM**: `.addEventListener()` è su `EventTarget.prototype`
+
+#### Perché Sono Importanti
+
+- **Debugging** → Diagnosticare `TypeError: is not a function`
+- **Performance** → Metodi condivisi tra istanze (risparmio memoria)
+- **Polyfilling** → Estendere prototipi nativi per compatibilità
+
+**Approfondisci**:
+
+- [[01-fondamenti/oggetti/prototypes]] - Prototipi (Prototypes)
 
 ---
 

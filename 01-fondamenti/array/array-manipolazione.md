@@ -1,5 +1,7 @@
 # Manipolazione Array
 
+**Appunti Completi**: [[../../appunti-completi#37-array]]
+
 Metodi per **aggiungere** o **rimuovere** elementi da un array. Tutti questi metodi **modificano l'array originale**.
 
 ## Push e Pop (fine array)

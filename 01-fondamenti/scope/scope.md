@@ -1,5 +1,7 @@
 # Scope (Ambito)
 
+**Appunti Completi**: [[../../appunti-completi#44-scope-ambito]]
+
 Lo **scope** (ambito lessicale) definisce il **contesto in cui una variabile è visibile** e accessibile.
 
 ## Concetto Fondamentale

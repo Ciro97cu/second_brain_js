@@ -1,5 +1,7 @@
 # Array
 
+**Appunti Completi**: [[../../appunti-completi#37-array]]
+
 Un **array** è un **tipo speciale di oggetto** progettato per contenere una **collezione ordinata di elementi**.
 
 ## Struttura

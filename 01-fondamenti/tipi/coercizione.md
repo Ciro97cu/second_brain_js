@@ -1,5 +1,7 @@
 # Coercizione (Type Coercion)
 
+**Appunti Completi**: [[../../appunti-completi#33-coercizione-type-coercion]]
+
 La **coercizione** è il processo di conversione di un valore da un tipo a un altro in JavaScript. Può essere esplicita (richiesta dal programmatore) o implicita (eseguita automaticamente dal linguaggio).
 
 ## Coercizione Esplicita

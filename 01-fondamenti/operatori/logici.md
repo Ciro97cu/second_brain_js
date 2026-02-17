@@ -1,5 +1,7 @@
 # Operatori Logici
 
+**Appunti Completi**: [[../../appunti-completi#5-operatori]]
+
 Gli operatori logici combinano o invertono valori booleani. Sono fondamentali per costruire condizioni complesse.
 
 ## Operatori

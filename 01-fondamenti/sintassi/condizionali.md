@@ -1,5 +1,7 @@
 # Istruzioni Condizionali
 
+**Appunti Completi**: [[../../appunti-completi#26-istruzioni-condizionali-conditionals]]
+
 Le **istruzioni condizionali** permettono a un programma di prendere decisioni, eseguendo blocchi di codice diversi in base al verificarsi o meno di una determinata condizione.
 
 Sono fondamentali per creare programmi dinamici che si adattano a situazioni diverse.

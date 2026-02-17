@@ -1,5 +1,7 @@
 # Operatori di Confronto ed Uguaglianza
 
+**Appunti Completi**: [[../../appunti-completi#5-operatori]]
+
 Gli operatori di confronto restituiscono un valore booleano (`true`/`false`) basato sulla relazione tra due valori.
 
 ## Uguaglianza/Disuguaglianza

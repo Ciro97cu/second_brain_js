@@ -18,6 +18,7 @@ Collezione di file dedicati alla sintassi base di JavaScript.
   - **[[for-of]]** - Ciclo for...of (ES6)
   - **[[for-in]]** - Ciclo for...in (oggetti)
   - **[[break-continue]]** - break e continue
+- **[[strict-mode]]** - Strict Mode ("use strict")
 
 ## Collegamenti Principali
 

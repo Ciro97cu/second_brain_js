@@ -1,5 +1,7 @@
 # IIFE (Immediately Invoked Function Expressions)
 
+**Appunti Completi**: [[../../appunti-completi#38-funzioni-functions]]
+
 Una **IIFE** (pronunciata "iffy") è un'Espressione di Funzione Invocata Immediatamente: una funzione dichiarata ed eseguita subito dopo la creazione.
 
 ## Sintassi

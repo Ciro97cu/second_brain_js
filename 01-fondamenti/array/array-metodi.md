@@ -1,5 +1,7 @@
 # Metodi Utility Array
 
+**Appunti Completi**: [[../../appunti-completi#37-array]]
+
 Metodi utili per **ricerca**, **verifica** e **copia** di array.
 
 ## slice (copia porzione)

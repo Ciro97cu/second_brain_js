@@ -1,7 +1,8 @@
 # Che cos'è Javascript
 
 **Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026
+**Data**: 13 Febbraio 2026  
+**Appunti Completi**: [[../appunti-completi#11-che-cosè-javascript]]
 
 ---
 

@@ -1,5 +1,7 @@
 # Precedenza degli Operatori
 
+**Appunti Completi**: [[../../appunti-completi#5-operatori]]
+
 La precedenza (operator precedence) stabilisce l'ordine in cui gli operatori vengono valutati in un'espressione complessa.
 
 ## Principio Base

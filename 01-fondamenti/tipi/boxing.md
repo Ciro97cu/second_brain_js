@@ -1,5 +1,7 @@
 # Boxing e Metodi dei Primitivi
 
+**Appunti Completi**: [[../../appunti-completi#35-boxing-e-metodi-dei-primitivi]]
+
 In JavaScript, i **tipi primitivi** (string, number, boolean) espongono metodi e proprietà utili per manipolarli, nonostante non siano oggetti.
 
 ## Metodi dei Tipi Primitivi

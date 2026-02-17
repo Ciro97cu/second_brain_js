@@ -1,7 +1,8 @@
 # Dove Inserire il Codice JavaScript in HTML
 
 **Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026
+**Data**: 13 Febbraio 2026  
+**Appunti Completi**: [[../appunti-completi#13-dove-inserire-il-codice-javascript-in-html]]
 
 ---
 

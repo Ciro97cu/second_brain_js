@@ -1,5 +1,7 @@
 # Valori Truthy e Falsy
 
+**Appunti Completi**: [[../../appunti-completi#34-valori-truthy-e-falsy]]
+
 In JavaScript, quando un valore non booleano viene usato in un **contesto che si aspetta un booleano** (come la condizione di un `if` o l'operando di un operatore logico), il linguaggio lo converte implicitamente in `true` o `false`.
 
 Questo processo è chiamato **coercizione booleana**, e i valori vengono classificati come **truthy** o **falsy** in base al risultato.

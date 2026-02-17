@@ -6,6 +6,9 @@ Collezione di file dedicati alle funzioni in JavaScript.
 
 - **[[funzioni]]** - Anatomia, first-class citizens, hoisting, esecuzione
 - **[[iife]]** - Immediately Invoked Function Expressions, scope privato, module pattern
+- **[[closure]]** - Closure (chiusura), scope lessicale, dati privati
+- **[[module-pattern]]** - Module Pattern, incapsulamento, API pubblica/privata
+- **[[this]]** - L'identificatore this, binding, call-site
 
 ## Collegamenti Principali
 

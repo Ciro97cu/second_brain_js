@@ -1,5 +1,7 @@
 # typeof
 
+**Appunti Completi**: [[../../appunti-completi#31-valori-e-tipi-values--types]]
+
 L'operatore `typeof` è un operatore unario che esamina un valore e restituisce una stringa indicante il tipo di quel valore.
 
 ## Caratteristica Fondamentale

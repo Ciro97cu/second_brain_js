@@ -1,5 +1,7 @@
 # Ciclo for...of
 
+**Appunti Completi**: [[../../appunti-completi#28-cicli-loops]]
+
 Introdotto in **ES6**, il ciclo `for...of` è il modo moderno e più leggibile per iterare sugli elementi di una **struttura iterabile**, come un array o una stringa.
 
 Ad ogni iterazione, la variabile del ciclo assume il **valore** dell'elemento corrente.

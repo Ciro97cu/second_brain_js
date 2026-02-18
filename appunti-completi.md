@@ -308,9 +308,9 @@ bottone.addEventListener("click", function () {
 
 Per poter eseguire (to execute o run) le istruzioni, un programma deve essere tradotto in un formato che il computer possa comprendere. Questo compito è svolto da programmi speciali chiamati interpreti (interpreters) o compilatori (compilers).
 
-L'**interpretazione** (interpreting) consiste nel tradurre ed eseguire il codice sorgente (source code) riga per riga, ogni volta che il programma viene avviato.
+- **L'interpretazione** (interpreting) consiste nel tradurre ed eseguire il codice sorgente (source code) riga per riga, ogni volta che il programma viene avviato.
 
-La **compilazione** (compiling) traduce l'intero programma in anticipo. Quando il programma viene eseguito, è la versione già compilata (in linguaggio macchina) ad essere avviata.
+- **La compilazione** (compiling) traduce l'intero programma in anticipo. Quando il programma viene eseguito, è la versione già compilata (in linguaggio macchina) ad essere avviata.
 
 Comunemente si dice che JavaScript sia un linguaggio interpretato, ma questa è un'imprecisione. Il motore JavaScript (JavaScript engine) in realtà compila (compiles) il codice "al volo" (on the fly) e poi esegue immediatamente il risultato. Questo processo è noto come **compilazione JIT (Just-In-Time)**.
 
@@ -383,72 +383,32 @@ console.log("L'area del rettangolo è: " + area);
 
 ### 2.2 Commenti nel Codice (Code Comments)
 
-**Tipo**: Nuovo Topic
+Il codice non viene scritto solo per il computer, ma anche e soprattutto per gli esseri umani (altri sviluppatori o il "te stesso" del futuro). Per questo, è fondamentale scrivere codice che sia non solo funzionante, ma anche chiaro e comprensibile.
 
-Il codice non viene scritto solo per il computer, ma anche e soprattutto per gli **esseri umani** (altri sviluppatori o il "te stesso" del futuro). Per questo, è fondamentale scrivere codice che sia non solo funzionante, ma anche **chiaro e comprensibile**.
-
-I **commenti** sono porzioni di testo inserite nel codice che vengono completamente **ignorate dal motore JavaScript**. Il loro unico scopo è fornire spiegazioni a chi legge il codice.
+I commenti sono porzioni di testo inserite nel codice che vengono completamente ignorate dal motore JavaScript. Il loro unico scopo è fornire spiegazioni a chi legge il codice.
 
 #### Principi per un Buon Uso dei Commenti
 
-**Perché, non cosa**
+- **Perché, non cosa** → Un buon commento dovrebbe spiegare perché una certa scelta è stata fatta, non cosa fa il codice. Il "cosa" dovrebbe essere reso evidente da un codice scritto in modo chiaro (es. nomi di variabili e funzioni significativi). Un commento può spiegare il come solo se il codice è particolarmente complesso o insolito.
 
-Un buon commento dovrebbe spiegare **perché** una certa scelta è stata fatta, non **cosa** fa il codice. Il "cosa" dovrebbe essere reso evidente da un codice scritto in modo chiaro (nomi di variabili e funzioni significativi).
-
-```javascript
-/*
- * Cattivo vs Buon Commento
- */
-
-// ❌ Cattivo commento - dice solo COSA
-let p = d * 0.2; // moltiplica d per 0.2
-
-// ✅ Buon commento - spiega PERCHÉ
-// Sconto del 20% applicato per ordini superiori a €100
-let sconto = totale * 0.2;
-```
-
-Un commento può spiegare il **come** solo se il codice è particolarmente complesso o insolito.
-
-**Il giusto equilibrio**
-
-- Un codice **senza commenti** è incompleto e difficile da mantenere
-- Troppi commenti (es. uno per ogni riga) sono spesso sintomo di un **codice scritto male** e poco leggibile
-
-```javascript
-/*
- * Troppi commenti vs codice chiaro
- */
-
-// ❌ Troppi commenti ovvi
-let x = 10; // assegna 10 a x
-let y = 20; // assegna 20 a y
-let somma = x + y; // somma x e y
-
-// ✅ Codice chiaro, commenti solo quando necessario
-let larghezza = 10;
-let altezza = 20;
-let area = larghezza * altezza;
-```
+- **Il giusto equilibrio** → Un codice senza commenti è incompleto. Al contrario, troppi commenti (es. uno per ogni riga) sono spesso sintomo di un codice scritto male e poco leggibile.
 
 #### Tipi di Commenti in JavaScript
 
-**Commento su Riga Singola (//)** - Tutto ciò che segue `//` fino alla fine della riga viene considerato un commento. Ideale per note brevi.
+Esistono due sintassi principali per inserire commenti.
+
+- **Commento su Riga Singola (//)** - Tutto ciò che segue `//` fino alla fine della riga viene considerato un commento. È ideale per note brevi, posizionate sopra un'istruzione o alla fine di una riga.
 
 ```javascript
-/*
- * Commenti su singola riga
- */
-
 // Questo è un commento su singola riga
 let nome = "Mario"; // Commento a fine riga
 
-// Commenti multipli
-// possono essere messi
-// su righe consecutive
+// Più commenti consecutivi
+// possono essere usati per
+// spiegazioni più lunghe
 ```
 
-**Commento Multiriga (/_ ... _/)** - Tutto ciò che si trova tra `/*` e `*/` è un commento, anche se si estende su più righe.
+- **Commento Multiriga (/_ ... _/)** - Tutto ciò che si trova tra `/*` e `*/` è un commento, anche se si estende su più righe. È utile per spiegazioni più lunghe.
 
 ```javascript
 /*
@@ -457,22 +417,10 @@ let nome = "Mario"; // Commento a fine riga
  * più righe
  */
 
-let risultato = calcolaComplesso(
-  /* parametro1 */ valore1,
-  /* parametro2 */ valore2,
-);
-
-/*
-NOTA: Questo algoritmo è basato sul paper
-"Efficient Sorting Algorithm" (Smith, 2020)
-Complessità: O(n log n)
-*/
-function ordinaAvanzato(array) {
-  // implementazione...
-}
+let risultato = calcola(/* parametro */ valore);
 ```
 
-**Commenti di Documentazione (JSDoc)** - Un tipo speciale di commento multiriga che inizia con `/**` e termina con `*/`. Segue una **sintassi strutturata** per descrivere funzioni, classi e variabili in modo formale.
+**Commenti di Documentazione (JSDoc)** - Un tipo speciale di commento multiriga è il JSDoc, che inizia con `/**` e termina con `*/`. Segue una sintassi strutturata per descrivere funzioni, classi e variabili in modo formale. Questi commenti sono estremamente utili perché possono essere letti da strumenti automatici per generare documentazione o per fornire suggerimenti intelligenti negli editor di codice.
 
 ```javascript
 /**
@@ -485,75 +433,7 @@ function ordinaAvanzato(array) {
 function calcolaArea(larghezza, altezza) {
   return larghezza * altezza;
 }
-
-/**
- * Rappresenta un utente del sistema
- *
- * @typedef {Object} User
- * @property {string} nome - Nome dell'utente
- * @property {string} email - Email dell'utente
- * @property {number} eta - Età dell'utente
- */
 ```
-
-I commenti JSDoc sono **estremamente utili** perché:
-
-- Possono essere letti da strumenti automatici per **generare documentazione**
-- Forniscono **suggerimenti intelligenti** negli editor di codice (IntelliSense)
-- Aiutano a verificare la **correttezza dei tipi** in fase di sviluppo
-
-#### Best Practices
-
-**Mantieni i commenti aggiornati**
-
-```javascript
-/*
- * Importanza di commenti aggiornati
- */
-
-// ❌ Commento obsoleto - confonde!
-// Calcola il totale con IVA al 20%
-let totale = prezzoBase * 1.22; // IVA ora è 22%
-
-// ✅ Commento aggiornato
-// Calcola il totale con IVA al 22%
-let totale = prezzoBase * 1.22;
-```
-
-**Codice auto-esplicativo > Commenti**
-
-```javascript
-/*
- * Preferire codice chiaro ai commenti
- */
-
-// ❌ Commento necessario per codice poco chiaro
-let d = new Date();
-let y = d.getFullYear(); // ottiene anno corrente
-
-// ✅ Codice chiaro senza bisogno di commenti
-let oggi = new Date();
-let annoCorrente = oggi.getFullYear();
-```
-
-**Usa commenti per spiegazioni complesse**
-
-```javascript
-/*
- * Commenti utili per logica complessa
- */
-
-// Algoritmo di Luhn per validare numeri di carta di credito
-// Moltiplica per 2 ogni seconda cifra da destra,
-// se il risultato > 9, sottrai 9
-function validaCartaCredito(numero) {
-  // implementazione complessa...
-}
-```
-
-**Approfondisci**:
-
-- [[01-fondamenti/sintassi/commenti]] - Commenti nel codice
 
 ---
 
@@ -961,129 +841,21 @@ if (giorno === "lunedì") {
 // Output: "Altro giorno"
 ```
 
-#### Condizioni Complesse
-
-Le condizioni possono essere combinate usando **operatori logici**.
-
-```javascript
-/*
- * Operatori logici nelle condizioni
- */
-
-let eta = 25;
-let haPatente = true;
-
-// AND logico (&&) - entrambe devono essere true
-if (eta >= 18 && haPatente) {
-  console.log("Puoi guidare");
-}
-
-// OR logico (||) - almeno una deve essere true
-let isWeekend = true;
-let isVacanza = false;
-
-if (isWeekend || isVacanza) {
-  console.log("Giorno di riposo");
-}
-
-// NOT logico (!) - inverte il valore
-let piove = false;
-
-if (!piove) {
-  console.log("Bel tempo!");
-}
-```
-
-#### Best Practices
-
-**Sempre usare le parentesi graffe**
-
-```javascript
-// ❌ Evitare (fragile, errori facili)
-if (eta >= 18) console.log("Maggiorenne");
-
-// ✅ Preferire (chiaro e sicuro)
-if (eta >= 18) {
-  console.log("Maggiorenne");
-}
-```
-
-**Condizioni chiare ed esplicite**
-
-```javascript
-// ❌ Condizione implicita (confusa)
-let utente = "Mario";
-if (utente) {
-  // cosa stiamo verificando?
-}
-
-// ✅ Condizione esplicita (chiara)
-if (utente !== null && utente !== "") {
-  console.log("Utente valido");
-}
-```
-
-**Ordinare condizioni dalla più specifica alla più generica**
-
-```javascript
-// ✅ Ordine corretto
-if (voto >= 90) {
-  console.log("Eccellente");
-} else if (voto >= 75) {
-  console.log("Buono");
-} else if (voto >= 60) {
-  console.log("Sufficiente");
-} else {
-  console.log("Insufficiente");
-}
-
-// ❌ Ordine errato (la prima cattura tutto!)
-if (voto >= 60) {
-  console.log("Sufficiente"); // Anche voti alti finiscono qui!
-} else if (voto >= 75) {
-  // Mai eseguito
-} else if (voto >= 90) {
-  // Mai eseguito
-}
-```
-
-**Approfondisci**:
-
-- [[01-fondamenti/sintassi/condizionali]] - Istruzioni condizionali (if, else, else if)
-
 ---
 
 ### 2.7 Switch
 
-**Tipo**: Nuovo Topic
+Quando si ha la necessità di confrontare una singola variabile o espressione con una serie di valori specifici, una lunga catena di `if...else if` può diventare verbosa.
 
-Quando si ha la necessità di confrontare una singola variabile o espressione con una serie di valori specifici, una lunga catena di `if...else if` può diventare verbosa. In questi scenari, l'istruzione **switch** offre un'alternativa più pulita e strutturata.
+In questi scenari, l'istruzione **switch** offre un'alternativa più pulita e strutturata. La sua logica è: "valuta questa espressione e, in base al suo valore, esegui il blocco di codice corrispondente".
 
-#### Sintassi Base
+La sua struttura si basa su:
 
-La struttura dello switch si basa su:
-
-- **`case`** → Un'etichetta che rappresenta un possibile valore per l'espressione
-- **`break`** → Un'istruzione che interrompe l'esecuzione dello switch (fondamentale!)
-- **`default`** → Un caso opzionale eseguito se nessun `case` corrisponde
+- **`case`** → Un'etichetta che rappresenta un possibile valore per l'espressione.
+- **`break`** → Un'istruzione che interrompe l'esecuzione dello switch. È fondamentale per evitare che il codice "cada" (fall through) nel caso successivo.
+- **`default`** → Un caso opzionale che viene eseguito se nessuno dei case precedenti corrisponde al valore dell'espressione.
 
 ```javascript
-/*
- * Struttura dello switch
- */
-
-switch (espressione) {
-  case valore1:
-    // codice eseguito se espressione === valore1
-    break;
-  case valore2:
-    // codice eseguito se espressione === valore2
-    break;
-  default:
-  // codice eseguito se nessun case corrisponde
-}
-
-// Esempio pratico
 let giorno = "Lunedì";
 
 switch (giorno) {
@@ -1105,107 +877,11 @@ switch (giorno) {
 }
 ```
 
-#### Confronto con if...else if
-
-**Usando if...else if**:
-
-```javascript
-/*
- * Approccio con if...else if
- */
-
-let colore = "rosso";
-
-if (colore === "rosso") {
-  console.log("Stop");
-} else if (colore === "giallo") {
-  console.log("Rallenta");
-} else if (colore === "verde") {
-  console.log("Vai");
-} else {
-  console.log("Colore non valido");
-}
-```
-
-**Usando switch** (più pulito per confronti di uguaglianza):
-
-```javascript
-/*
- * Approccio con switch
- */
-
-let colore = "rosso";
-
-switch (colore) {
-  case "rosso":
-    console.log("Stop");
-    break;
-  case "giallo":
-    console.log("Rallenta");
-    break;
-  case "verde":
-    console.log("Vai");
-    break;
-  default:
-    console.log("Colore non valido");
-}
-```
-
-#### L'Importanza del break
-
-Il **`break`** è fondamentale per evitare il **fall through** (caduta) nel caso successivo.
-
-```javascript
-/*
- * Senza break - Fall Through pericoloso
- */
-
-let numero = 1;
-
-switch (numero) {
-  case 1:
-    console.log("Uno"); // ✅ Eseguito
-  // MANCA break!
-  case 2:
-    console.log("Due"); // ⚠️ Eseguito anche se numero !== 2
-    break;
-}
-
-// Output:
-// "Uno"
-// "Due"
-```
-
-**Con break** (comportamento corretto):
-
-```javascript
-/*
- * Con break - Comportamento normale
- */
-
-let numero = 1;
-
-switch (numero) {
-  case 1:
-    console.log("Uno"); // ✅ Eseguito
-    break; // ✅ Esce dallo switch
-  case 2:
-    console.log("Due"); // ❌ NON eseguito
-    break;
-}
-
-// Output: "Uno"
-```
-
 #### Raggruppare i case
 
-Una caratteristica utile dello switch è la possibilità di **raggruppare più case** per eseguire lo stesso blocco di codice, omettendo deliberatamente il `break`.
+Una caratteristica utile dello switch è la possibilità di raggruppare più case per eseguire lo stesso blocco di codice, omettendo deliberatamente il `break`.
 
 ```javascript
-/*
- * Raggruppamento case - Fall Through Intenzionale
- */
-
 let giorno = "Sabato";
 
 switch (giorno) {
@@ -1223,126 +899,20 @@ switch (giorno) {
   default:
     console.log("Giorno non valido");
 }
-
-// Output: "È il weekend!"
 ```
 
-In questo esempio, se `giorno` è `"Sabato"`, l'esecuzione "cade" fino al blocco di codice del caso `"Domenica"` ed esegue il codice condiviso.
-
-#### Confronto Strict (===)
-
-**Importante**: Lo switch usa il confronto **strict** (`===`), non il confronto loose (`==`).
-
-```javascript
-/*
- * Switch usa ===
- */
-
-let numero = "2"; // stringa
-
-switch (numero) {
-  case 2: // number
-    console.log("Due (number)"); // ❌ NON eseguito
-    break;
-  case "2": // string
-    console.log("Due (string)"); // ✅ Eseguito
-    break;
-}
-```
-
-#### Quando Usare switch vs if...else
-
-**Usa switch quando**:
-
-- Confronti una **singola variabile/espressione** con molti valori specifici
-- I confronti sono di **uguaglianza** (`===`)
-- Hai **3 o più casi** da gestire
-- Vuoi codice più **leggibile e strutturato**
-
-**Usa if...else quando**:
-
-- Hai **condizioni complesse** (range, confronti multipli)
-- Usi **operatori diversi** (`>`, `<`, `>=`, `&&`, `||`)
-- Hai **pochi casi** (1-2)
-
-```javascript
-// ✅ Buon caso per if...else (condizioni complesse)
-if (eta >= 18 && haPatente) {
-  console.log("Puoi guidare");
-} else if (eta >= 16) {
-  console.log("Puoi guidare con supervisione");
-} else {
-  console.log("Non puoi guidare");
-}
-
-// switch non può gestire condizioni complesse come questa
-```
-
-#### Best Practices
-
-**Sempre usare break**:
-
-```javascript
-// ✅ Corretto - break in ogni case
-switch (valore) {
-  case 1:
-    console.log("Uno");
-    break; // ✅
-  case 2:
-    console.log("Due");
-    break; // ✅
-}
-```
-
-**Includere sempre default**:
-
-```javascript
-// ✅ Con default (robusto)
-switch (azione) {
-  case "salva":
-    salva();
-    break;
-  case "elimina":
-    elimina();
-    break;
-  default:
-    console.log("Azione non riconosciuta");
-}
-```
-
-**Documentare fall through intenzionale**:
-
-```javascript
-// ✅ Commentare fall through intenzionali
-switch (livello) {
-  case "admin":
-    abilitaGestioneUtenti();
-  // fall through - admin ha anche permessi editor
-  case "editor":
-    abilitaModificaContenuti();
-    break;
-}
-```
-
-**Approfondisci**:
-
-- [[01-fondamenti/sintassi/switch]] - Switch statement
+In questo esempio, se `giorno` è `"Sabato"`, l'esecuzione "cade" fino al blocco di codice del caso `"Domenica"` ed esegue `console.log("È il weekend!")`.
 
 ### 2.8 Cicli (Loops)
 
-**Tipo**: Nuovo Topic
-
-I **cicli** (loops) sono strutture fondamentali in programmazione che permettono di eseguire un blocco di codice ripetutamente, finché una determinata condizione rimane vera. Ogni esecuzione del blocco di codice all'interno di un ciclo è chiamata **iterazione** (iteration). I cicli sono essenziali per automatizzare compiti ripetitivi.
+I cicli (loops) sono strutture fondamentali in programmazione che permettono di eseguire un blocco di codice ripetutamente, finché una determinata condizione rimane vera. Ogni esecuzione del blocco di codice all'interno di un ciclo è chiamata iterazione (iteration). I cicli sono essenziali per automatizzare compiti ripetitivi.
 
 #### Il Ciclo while
 
-Il ciclo `while` è una delle forme più semplici di ciclo. La sua logica è: **"mentre questa condizione è vera, continua a eseguire il blocco di codice"**. La condizione viene controllata **prima** di ogni iterazione. Se la condizione risulta falsa fin dall'inizio, il blocco di codice non verrà mai eseguito.
+Il ciclo `while` è una delle forme più semplici di ciclo. La sua logica è: "mentre questa condizione è vera, continua a eseguire il blocco di codice". La condizione viene controllata prima di ogni iterazione. Se la condizione risulta falsa fin dall'inizio, il blocco di codice non verrà mai eseguito.
 
 ```javascript
-/*
- * Sintassi while
- */
-
+// Sintassi
 while (condizione) {
   // codice eseguito finché condizione è true
 }
@@ -1352,46 +922,21 @@ let i = 1;
 
 while (i <= 5) {
   console.log(i);
-  i++; // Fondamentale per evitare cicli infiniti!
-}
-
-// Output:
-// 1
-// 2
-// 3
-// 4
-// 5
-```
-
-**⚠️ Attenzione**: Il ciclo `while` può creare **cicli infiniti** se la condizione non diventa mai falsa.
-
-```javascript
-/*
- * Ciclo infinito - EVITARE!
- */
-
-let x = 1;
-
-while (x <= 5) {
-  console.log(x);
-  // MANCA x++! Il ciclo non terminerà mai
+  i++;
 }
 ```
 
 #### Il Ciclo do...while
 
-Il ciclo `do...while` è molto simile al `while`, ma con una differenza cruciale: la condizione viene controllata **dopo** ogni iterazione. Questo garantisce che il blocco di codice venga eseguito **almeno una volta**, anche se la condizione iniziale è falsa.
+Il ciclo `do...while` è molto simile al `while`, ma con una differenza cruciale: la condizione viene controllata dopo ogni iterazione. Questo garantisce che il blocco di codice venga eseguito almeno una volta, anche se la condizione iniziale è falsa.
 
 ```javascript
-/*
- * Sintassi do...while
- */
-
+// Sintassi
 do {
   // codice eseguito almeno una volta
 } while (condizione);
 
-// Esempio: eseguito almeno una volta
+// Esempio
 let numero = 10;
 
 do {
@@ -1403,46 +948,16 @@ do {
 // Il blocco viene eseguito una volta, poi la condizione (10 < 5) è falsa
 ```
 
-**Confronto while vs do...while**:
-
-```javascript
-/*
- * while - può non eseguire mai
- */
-
-let a = 10;
-
-while (a < 5) {
-  console.log("while:", a); // MAI eseguito
-}
-
-/*
- * do...while - esegue almeno una volta
- */
-
-let b = 10;
-
-do {
-  console.log("do...while:", b); // Eseguito UNA volta
-} while (b < 5);
-
-// Output:
-// "do...while: 10"
-```
-
 #### Il Ciclo for
 
-Quando il numero di iterazioni è noto in anticipo o si deve contare, il ciclo `for` è spesso la scelta più chiara e compatta. La sua sintassi concentra in un'unica riga **tre parti fondamentali**:
+Quando il numero di iterazioni è noto in anticipo o si deve contare, il ciclo `for` è spesso la scelta più chiara e compatta. La sua sintassi concentra in un'unica riga tre parti fondamentali:
 
-- **Inizializzazione** → Eseguita una sola volta prima del ciclo (es. `let i = 0`)
-- **Condizione** → Valutata prima di ogni iterazione. Se falsa, il ciclo termina (es. `i < 10`)
-- **Aggiornamento** → Eseguito alla fine di ogni iterazione (es. `i++`)
+- **Inizializzazione** → Un'espressione eseguita una sola volta prima dell'inizio del ciclo (es. `let i = 0`).
+- **Condizione** → Un'espressione valutata prima di ogni iterazione. Se diventa falsa, il ciclo termina (es. `i < 10`).
+- **Aggiornamento** → Un'espressione eseguita alla fine di ogni iterazione (es. `i++`).
 
 ```javascript
-/*
- * Sintassi for
- */
-
+// Sintassi
 for (inizializzazione; condizione; aggiornamento) {
   // codice eseguito ad ogni iterazione
 }
@@ -1452,80 +967,15 @@ for (let i = 0; i < 5; i++) {
   console.log(i);
 }
 
-// Output:
-// 0
-// 1
-// 2
-// 3
-// 4
-```
-
-**Come funziona il ciclo for**:
-
-```javascript
-/*
- * Flusso di esecuzione
- */
-
-for (let i = 0; i < 3; i++) {
-  console.log("Iterazione:", i);
-}
-
-// 1. let i = 0           → Inizializzazione (una volta)
-// 2. i < 3?              → Condizione (true)
-// 3. console.log(...)    → Esecuzione blocco
-// 4. i++                 → Aggiornamento
-// 5. i < 3?              → Condizione (true)
-// 6. console.log(...)    → Esecuzione blocco
-// 7. i++                 → Aggiornamento
-// 8. i < 3?              → Condizione (true)
-// 9. console.log(...)    → Esecuzione blocco
-// 10. i++                → Aggiornamento
-// 11. i < 3?             → Condizione (false) → FINE
-```
-
-**Esempi pratici**:
-
-```javascript
-/*
- * Iterare all'indietro
- */
-
-for (let i = 5; i > 0; i--) {
-  console.log(i);
-}
-// Output: 5, 4, 3, 2, 1
-
-/*
- * Incrementi diversi
- */
-
-for (let i = 0; i <= 10; i += 2) {
-  console.log(i);
-}
-// Output: 0, 2, 4, 6, 8, 10
-
-/*
- * Iterare su array
- */
-
-let colori = ["rosso", "verde", "blu"];
-
-for (let i = 0; i < colori.length; i++) {
-  console.log(colori[i]);
-}
-// Output: "rosso", "verde", "blu"
+// Output: 0, 1, 2, 3, 4
 ```
 
 #### Il Ciclo for...of
 
-Introdotto in **ES6**, il ciclo `for...of` è il modo moderno e più leggibile per iterare sugli elementi di una **struttura iterabile**, come un array o una stringa. Ad ogni iterazione, la variabile del ciclo assume il **valore** dell'elemento corrente.
+Introdotto in ES6, il ciclo `for...of` è il modo moderno e più leggibile per iterare sugli elementi di una struttura iterabile, come un array o una stringa. Ad ogni iterazione, la variabile del ciclo assume il valore dell'elemento corrente.
 
 ```javascript
-/*
- * Sintassi for...of
- */
-
+// Sintassi
 for (let elemento of iterabile) {
   // lavora con elemento
 }
@@ -1537,69 +987,15 @@ for (let frutto of frutti) {
   console.log(frutto);
 }
 
-// Output:
-// "mela"
-// "banana"
-// "arancia"
+// Output: "mela", "banana", "arancia"
 ```
-
-**for...of con stringhe**:
-
-```javascript
-/*
- * Iterare sui caratteri di una stringa
- */
-
-let parola = "ciao";
-
-for (let carattere of parola) {
-  console.log(carattere);
-}
-
-// Output:
-// "c"
-// "i"
-// "a"
-// "o"
-```
-
-**Confronto for vs for...of**:
-
-```javascript
-/*
- * for tradizionale (con indice)
- */
-
-let numeri = [10, 20, 30];
-
-for (let i = 0; i < numeri.length; i++) {
-  console.log(numeri[i]); // Devi accedere con [i]
-}
-
-/*
- * for...of (diretto sul valore)
- */
-
-for (let numero of numeri) {
-  console.log(numero); // Hai direttamente il valore
-}
-```
-
-**Vantaggi di for...of**:
-
-- Più leggibile
-- Meno propenso agli errori (niente indici fuori range)
-- Funziona con qualsiasi iterabile (array, stringhe, Set, Map, ecc.)
 
 #### Il Ciclo for...in
 
-Il ciclo `for...in` è specifico per iterare sulle **proprietà enumerabili** di un oggetto. Ad ogni iterazione, la variabile del ciclo assume il **nome** (la chiave) della proprietà corrente, come stringa.
+Il ciclo `for...in` è specifico per iterare sulle proprietà enumerabili di un oggetto. Ad ogni iterazione, la variabile del ciclo assume il nome (la chiave) della proprietà corrente, come stringa.
 
 ```javascript
-/*
- * Sintassi for...in
- */
-
+// Sintassi
 for (let chiave in oggetto) {
   // lavora con chiave
 }
@@ -1621,62 +1017,14 @@ for (let proprieta in persona) {
 // "eta: 30"
 ```
 
-**⚠️ Importante**: `for...in` **non è raccomandato per array**.
-
-```javascript
-/*
- * for...in con array (SCONSIGLIATO)
- */
-
-let numeri = [10, 20, 30];
-
-for (let indice in numeri) {
-  console.log(typeof indice); // "string" (!)
-  console.log(indice, numeri[indice]);
-}
-
-// Output:
-// "string"
-// "0" 10
-// "1" 20
-// "2" 30
-
-// Problemi:
-// - indice è una stringa, non un numero
-// - Potrebbe includere proprietà inaspettate
-// - Non garantisce l'ordine
-```
-
-**Per array, usare for...of**:
-
-```javascript
-/*
- * for...of con array (CONSIGLIATO)
- */
-
-let numeri = [10, 20, 30];
-
-for (let numero of numeri) {
-  console.log(numero);
-}
-```
-
-**Tabella Riepilogativa**:
-
-| Ciclo      | Uso                        | Itera su   |
-| ---------- | -------------------------- | ---------- |
-| `for...of` | Array, stringhe, iterabili | **Valori** |
-| `for...in` | Oggetti                    | **Chiavi** |
+È importante notare che `for...in` non è raccomandato per iterare sugli array, perché potrebbe includere proprietà inaspettate e non garantisce l'ordine degli elementi. Per gli array, `for...of` è la scelta corretta.
 
 #### Interrompere un Ciclo: break
 
-A volte è necessario interrompere un ciclo **prima** che la sua condizione diventi falsa. Per questo si usa l'istruzione `break`. Appena il programma incontra `break`, **esce immediatamente** dal ciclo e continua l'esecuzione dal codice successivo.
+A volte è necessario interrompere un ciclo prima che la sua condizione diventi falsa. Per questo si usa l'istruzione `break`. Appena il programma incontra `break`, esce immediatamente dal ciclo e continua l'esecuzione dal codice successivo.
 
 ```javascript
-/*
- * Uso di break
- */
-
+// Uso di break
 for (let i = 0; i < 10; i++) {
   if (i === 5) {
     break; // Interrompe il ciclo quando i è 5
@@ -1684,234 +1032,39 @@ for (let i = 0; i < 10; i++) {
   console.log(i);
 }
 
-// Output:
-// 0
-// 1
-// 2
-// 3
-// 4
+// Output: 0, 1, 2, 3, 4
 // (il ciclo si ferma, NON stampa 5, 6, 7, 8, 9)
 ```
 
-**break con while**:
-
-```javascript
-/*
- * break per uscire da while
- */
-
-let counter = 0;
-
-while (true) {
-  // Ciclo infinito!
-  console.log(counter);
-  counter++;
-
-  if (counter >= 3) {
-    break; // Uscita dal ciclo infinito
-  }
-}
-
-console.log("Ciclo terminato");
-
-// Output:
-// 0
-// 1
-// 2
-// "Ciclo terminato"
-```
-
-**Esempio pratico**: cercare un elemento
-
-```javascript
-/*
- * Cercare in un array e fermarsi quando trovato
- */
-
-let numeri = [10, 20, 30, 40, 50];
-let cercato = 30;
-let trovato = false;
-
-for (let numero of numeri) {
-  if (numero === cercato) {
-    trovato = true;
-    console.log("Trovato:", numero);
-    break; // Non serve continuare a cercare
-  }
-}
-
-if (trovato) {
-  console.log("Elemento presente");
-}
-```
-
-#### Saltare un'Iterazione: continue
-
-L'istruzione `continue` **salta** l'iterazione corrente e passa alla successiva, senza uscire dal ciclo.
-
-```javascript
-/*
- * Uso di continue
- */
-
-for (let i = 0; i < 5; i++) {
-  if (i === 2) {
-    continue; // Salta quando i è 2
-  }
-  console.log(i);
-}
-
-// Output:
-// 0
-// 1
-// (salta 2)
-// 3
-// 4
-```
-
-**Esempio pratico**: filtrare valori
-
-```javascript
-/*
- * Stampare solo numeri pari
- */
-
-for (let i = 0; i < 10; i++) {
-  if (i % 2 !== 0) {
-    continue; // Salta i numeri dispari
-  }
-  console.log(i); // Stampa solo pari
-}
-
-// Output: 0, 2, 4, 6, 8
-```
-
-#### Best Practices
-
-**Scegliere il ciclo giusto**:
-
-```javascript
-// ✅ for - quando sai quante iterazioni
-for (let i = 0; i < 10; i++) {
-  // ...
-}
-
-// ✅ for...of - per iterare su array/stringhe
-for (let item of array) {
-  // ...
-}
-
-// ✅ for...in - per proprietà di oggetti
-for (let key in object) {
-  // ...
-}
-
-// ✅ while - quando non sai quante iterazioni
-while (condizione) {
-  // ...
-}
-```
-
-**Evitare cicli infiniti**:
-
-```javascript
-// ❌ Ciclo infinito
-for (let i = 0; i < 10; ) {
-  // MANCA i++!
-  console.log(i);
-}
-
-// ✅ Incremento presente
-for (let i = 0; i < 10; i++) {
-  console.log(i);
-}
-```
-
-**Usare const in for...of quando possibile**:
-
-```javascript
-// ✅ const quando non riassegni
-for (const item of array) {
-  console.log(item);
-}
-
-// let solo se devi modificare
-for (let item of array) {
-  item = item * 2; // Riassegnazione
-}
-```
-
-**Limitare lavoro nei cicli**:
-
-```javascript
-// ❌ Calcolo ripetuto
-for (let i = 0; i < array.length; i++) {
-  // array.length calcolato ogni volta!
-}
-
-// ✅ Calcolo una volta
-let len = array.length;
-for (let i = 0; i < len; i++) {
-  // Più efficiente
-}
-
-// ✅ Oppure usa for...of
-for (let item of array) {
-  // Nessun calcolo length
-}
-```
-
-**Approfondisci**:
-
-- [[01-fondamenti/sintassi/cicli]] - Cicli (Loops) - Panoramica
-- [[01-fondamenti/sintassi/while]] - Ciclo while
-- [[01-fondamenti/sintassi/do-while]] - Ciclo do...while
-- [[01-fondamenti/sintassi/for]] - Ciclo for
-- [[01-fondamenti/sintassi/for-of]] - Ciclo for...of
-- [[01-fondamenti/sintassi/for-in]] - Ciclo for...in
-- [[01-fondamenti/sintassi/break-continue]] - break e continue
-
 ### 2.9 Strict Mode ("Modalità Stretta")
 
-**Tipo**: Nuovo Topic
+Introdotta in ECMAScript 5 (ES5), la strict mode ("modalità stretta") è una funzionalità che permette di attivare un insieme di regole più restrittive per il codice JavaScript. L'obiettivo è rendere il codice più sicuro, robusto e meno incline a errori comuni, trasformando "errori silenziosi" in errori espliciti che bloccano l'esecuzione.
 
-Introdotta in **ECMAScript 5 (ES5)**, la **strict mode** ("modalità stretta") è una funzionalità che permette di attivare un insieme di regole più restrittive per il codice JavaScript. L'obiettivo è rendere il codice più **sicuro**, **robusto** e meno incline a errori comuni, trasformando "errori silenziosi" in errori espliciti che bloccano l'esecuzione.
+L'uso dello strict mode è considerato una best practice per tutti i programmi JavaScript moderni, per diverse ragioni:
 
-#### Perché Usare Strict Mode
-
-L'uso dello strict mode è considerato una **best practice** per tutti i programmi JavaScript moderni, per diverse ragioni:
-
-- **Sicurezza** → Previene pratiche rischiose, come la creazione accidentale di variabili globali
-- **Ottimizzazione** → Un codice che aderisce allo strict mode è generalmente più facile da ottimizzare per i motori JavaScript
-- **Futuro del Linguaggio** → Rappresenta la direzione in cui il linguaggio si sta evolvendo. Abituarsi a scrivere codice in modalità stretta facilita l'adozione delle future funzionalità di JavaScript
+- **Sicurezza** → Previene pratiche rischiose, come la creazione accidentale di variabili globali.
+- **Ottimizzazione** → Un codice che aderisce allo strict mode è generalmente più facile da ottimizzare per i motori JavaScript.
+- **Futuro del Linguaggio** → Rappresenta la direzione in cui il linguaggio si sta evolvendo. Abituarsi a scrivere codice in modalità stretta facilita l'adozione delle future funzionalità di JavaScript.
 
 #### Come Attivare lo Strict Mode
 
-Per attivare lo strict mode, è sufficiente inserire la direttiva `"use strict";` (una semplice stringa) all'inizio di un file o di una funzione. La sua **posizione** ne determina l'**ambito di applicazione**.
+Per attivare lo strict mode, è sufficiente inserire la direttiva `"use strict";` (una semplice stringa) all'inizio di un file o di una funzione. La sua posizione ne determina l'ambito di applicazione.
+
+- **A livello di file (globale)** → Se inserita all'inizio di un file, l'intera sceneggiatura verrà eseguita in modalità stretta.
 
 ```javascript
-/*
- * Strict mode a livello di file
- */
-
 "use strict";
 
 // Tutto il codice in questo file è in strict mode
-
 let nome = "Mario";
 x = 10; // ❌ ReferenceError: x is not defined
 ```
 
-**A livello di funzione**:
+- **A livello di funzione** → Se inserita all'inizio del corpo di una funzione, solo quella funzione (e tutte le funzioni annidate al suo interno) verrà eseguita in modalità stretta.
 
 ```javascript
-/*
- * Strict mode a livello di funzione
- */
-
 function modalitaStretta() {
   "use strict";
-
   // Solo questa funzione è in strict mode
   y = 5; // ❌ ReferenceError: y is not defined
 }
@@ -1920,40 +1073,25 @@ function modalitaNormale() {
   // Questa funzione NON è in strict mode
   z = 10; // ✅ Funziona (crea variabile globale)
 }
-
-modalitaStretta(); // Errore
-modalitaNormale(); // OK ma sconsigliato
-console.log(z); // 10
 ```
 
-#### Prevenire le Globali Accidentali
+#### Un Esempio Chiave: Prevenire le Globali Accidentali
 
-Uno dei benefici più importanti dello strict mode è che **impedisce la creazione implicita di variabili globali**. In modalità non-stretta, assegnare un valore a una variabile non dichiarata crea una nuova variabile nello scope globale. In strict mode, questo comportamento è vietato e genera un `ReferenceError`.
+Uno dei benefici più importanti dello strict mode è che impedisce la creazione implicita di variabili globali. In modalità non-stretta, assegnare un valore a una variabile non dichiarata crea una nuova variabile nello scope globale. In strict mode, questo comportamento è vietato e genera un ReferenceError.
 
 ```javascript
-/*
- * Modalità non-stretta (comportamento pericoloso)
- */
-
+// Modalità non-stretta (comportamento pericoloso)
 function nonStrictMode() {
-  // Nessun "use strict"
-
   contatore = 0; // ❌ Crea variabile GLOBALE accidentalmente
   contatore++;
 }
 
 nonStrictMode();
 console.log(contatore); // 1 (variabile globale!)
-```
 
-```javascript
-/*
- * Strict mode (comportamento sicuro)
- */
-
+// Strict mode (comportamento sicuro)
 function strictMode() {
   "use strict";
-
   contatore = 0; // ❌ ReferenceError: contatore is not defined
   contatore++;
 }
@@ -1961,114 +1099,15 @@ function strictMode() {
 strictMode(); // Errore bloccato subito
 ```
 
-Questo costringe lo sviluppatore a **dichiarare sempre esplicitamente** le proprie variabili (con `let`, `const` o `var`), prevenendo bug difficili da tracciare.
+Questo costringe lo sviluppatore a dichiarare sempre esplicitamente le proprie variabili (con `let`, `const` o `var`), prevenendo bug difficili da tracciare.
 
-```javascript
-/*
- * ✅ Versione corretta con strict mode
- */
-
-function strictModeCorrretto() {
-  "use strict";
-
-  let contatore = 0; // ✅ Dichiarazione esplicita
-  contatore++;
-  console.log(contatore); // 1
-}
-
-strictModeCorrretto(); // Funziona correttamente
-```
-
-#### Altre Restrizioni dello Strict Mode
-
-Lo strict mode introduce molte altre regole. Ecco alcuni esempi comuni:
-
-**Niente duplicati nei parametri**:
-
-```javascript
-/*
- * Parametri duplicati vietati
- */
-
-"use strict";
-
-function esempio(a, a, b) {
-  // ❌ SyntaxError: Duplicate parameter name
-  return a + b;
-}
-```
-
-**Niente assegnamenti a proprietà read-only**:
-
-```javascript
-/*
- * Assegnamenti non validi vietati
- */
-
-"use strict";
-
-let obj = {};
-Object.defineProperty(obj, "prop", {
-  value: 42,
-  writable: false,
-});
-
-obj.prop = 77; // ❌ TypeError: Cannot assign to read only property
-```
-
-**Niente delete su variabili**:
-
-```javascript
-/*
- * Delete su variabili vietato
- */
-
-"use strict";
-
-let x = 10;
-delete x; // ❌ SyntaxError: Delete of an unqualified identifier
-```
-
-#### Best Practices
-
-- **Attiva strict mode** in tutti i nuovi progetti
-- **Dichiarate sempre variabili** con `let`, `const` o `var`
-- **Usa moduli ES6** (automaticamente strict)
-- **Non mischiare strict e non-strict** nello stesso file
-
-```javascript
-/*
- * ✅ Struttura consigliata
- */
-
-"use strict";
-
-// Tutto il file in strict mode
-// Codice pulito e sicuro
-
-let dati = [];
-
-function elabora(item) {
-  let risultato = item * 2;
-  return risultato;
-}
-```
-
-#### Affrontare i Problemi
-
-Se l'attivazione dello strict mode causa problemi nel tuo programma, **non è un motivo per evitarlo**. Al contrario, è un **segnale** che il tuo codice contiene delle "cattive pratiche" che devono essere corrette. Affrontare questi problemi rende il codice più affidabile e allineato agli standard moderni.
-
-**Approfondisci**:
-
-- [[01-fondamenti/sintassi/strict-mode]] - Strict Mode
+Se l'attivazione dello strict mode causa problemi nel tuo programma, non è un motivo per evitarlo. Al contrario, è un segnale che il tuo codice contiene delle "cattive pratiche" che devono essere corrette. Affrontare questi problemi rende il codice più affidabile e allineato agli standard moderni.
 
 ---
 
 ## 3. Tipi e Dati
 
 ### 3.1 Valori e Tipi (Values & Types)
-
-**Tipo**: Nuovo Topic
 
 In un programma, i dati vengono rappresentati in modi diversi a seconda dello scopo per cui vengono usati. Queste diverse rappresentazioni sono chiamate tipi (types). JavaScript definisce alcuni tipi di dati primitivi e fondamentali (built-in types) per gestire le informazioni e sono:
 
@@ -2079,107 +1118,34 @@ In un programma, i dati vengono rappresentati in modi diversi a seconda dello sc
 - **object** (per strutture di dati complesse)
 - **symbol** (un tipo speciale introdotto in ES6 per creare identificatori unici)
 
+#### L'Operatore typeof
+
+Per determinare il tipo di un valore durante l'esecuzione del programma, JavaScript fornisce l'operatore `typeof`. Questo operatore unario esamina un valore e restituisce una stringa che ne descrive il tipo.
+
 ```javascript
-/*
- * Tipi primitivi in JavaScript
- */
-
-// string - Testo racchiuso tra virgolette
 let nome = "Mario";
-let cognome = "Rossi";
-let frase = `Ciao, ${nome}!`; // Template literal (ES6)
+console.log(typeof nome); // "string"
 
-// number - Numeri interi o decimali
-let intero = 42;
-let decimale = 3.14;
-let negativo = -10;
-let infinito = Infinity;
-let nonUnNumero = NaN; // Not a Number
+let eta = 30;
+console.log(typeof eta); // "number"
 
-// boolean - Valori logici
-let isVero = true;
-let isFalso = false;
-let maggiorenne = eta >= 18; // risultato di un confronto
+let isAttivo = true;
+console.log(typeof isAttivo); // "boolean"
 
-// null - Assenza intenzionale di valore
-let valoreSconosciuto = null;
+let utente = { nome: "Mario" };
+console.log(typeof utente); // "object"
 
-// undefined - Variabile dichiarata ma non inizializzata
-let valoreNonDefinito;
-console.log(valoreNonDefinito); // undefined
+let valoreNullo = null;
+console.log(typeof valoreNullo); // "object" (anomalia storica di JavaScript)
 
-let proprieta = obj.propInesistente; // undefined
+let nonDefinito;
+console.log(typeof nonDefinito); // "undefined"
 
-// object - Strutture dati complesse
-let persona = {
-  nome: "Mario",
-  eta: 30,
-  citta: "Roma",
-};
-
-let numeri = [1, 2, 3, 4, 5]; // Gli array sono oggetti
-
-let data = new Date(); // Anche Date è un oggetto
-
-// symbol - Identificatori unici (ES6)
-let id1 = Symbol("id");
-let id2 = Symbol("id");
-console.log(id1 === id2); // false (symbol sono sempre unici)
-
-/*
- * Esempi pratici di utilizzo
- */
-
-// Stringhe per contenuto testuale
-let benvenuto = "Benvenuto nel sistema";
-let email = "utente@example.com";
-
-// Numeri per calcoli
-let prezzo = 99.99;
-let quantita = 3;
-let totale = prezzo * quantita; // 299.97
-
-// Boolean per logica condizionale
-let isLoggedIn = true;
-if (isLoggedIn) {
-  console.log("Accesso consentito");
-}
-
-// null per assenza esplicita
-let risultatoRicerca = null; // nessun risultato trovato
-if (risultatoRicerca === null) {
-  console.log("Ricerca senza risultati");
-}
-
-// undefined per valori non ancora assegnati
-function saluta(nome) {
-  if (nome === undefined) {
-    nome = "Ospite"; // valore di default
-  }
-  return "Ciao " + nome;
-}
-console.log(saluta()); // "Ciao Ospite"
-
-// Object per dati strutturati
-let prodotto = {
-  codice: "ABC123",
-  nome: "Laptop",
-  prezzo: 899.99,
-  disponibile: true,
-};
-
-// Symbol per chiavi uniche di oggetti
-let ID_UTENTE = Symbol("userId");
-let utente = {
-  [ID_UTENTE]: 12345,
-  nome: "Anna",
-};
-console.log(utente[ID_UTENTE]); // 12345
+let simbolo = Symbol("id");
+console.log(typeof simbolo); // "symbol"
 ```
 
-Per determinare il tipo di un valore durante l'esecuzione del programma, si utilizza l'operatore `typeof`. Vedere la sezione dedicata in [[typeof]] per i dettagli completi.
-
----
+È importante notare che `typeof` agisce sul valore contenuto nella variabile in quel momento, non sulla variabile stessa.
 
 ### 3.2 Tipizzazione Dinamica (Dynamic Typing)
 
@@ -2279,9 +1245,7 @@ console.log(sommaNumeri(5, 3)); // 8
 // console.log(sommaNumeri("5", 3)); // ❌ Error: Entrambi gli argomenti devono essere numeri
 ```
 
-### 3.3 Coercizione (Type Coercion)
-
-**Tipo**: Nuovo Topic
+### 3.3 Conversione tra Tipi: Coercizione (Coercion)
 
 Spesso è necessario convertire un valore da un tipo a un altro. Ad esempio, un number deve diventare una string per essere visualizzato, o una string inserita in un form deve diventare un number per essere usata in un calcolo. Questo processo di conversione in JavaScript è chiamato **coercizione** (coercion).
 
@@ -2289,549 +1253,154 @@ Esistono due tipi di coercizione: **esplicita** e **implicita**.
 
 #### Coercizione Esplicita (Explicit Coercion)
 
-Si ha una coercizione esplicita quando il programmatore chiede deliberatamente di convertire un tipo. Si usano costrutti del linguaggio fatti apposta per questo scopo, come le funzioni `Number()`, `String()`, `Boolean()`, `parseInt()` e `parseFloat()`. L'intenzione è chiara e il risultato prevedibile.
+Si ha una coercizione esplicita quando il programmatore chiede deliberatamente di convertire un tipo. Si usano costrutti del linguaggio fatti apposta per questo scopo, come la funzione `Number()`. L'intenzione è chiara e il risultato prevedibile.
 
 ```javascript
-/*
- * Esempi di coercizione esplicita
- */
+let a = "42";
+let b = Number(a);
 
-// String → Number
-let prezzo = "99.99";
-let prezzoNumerico = Number(prezzo);
-console.log(prezzoNumerico); // 99.99
-console.log(typeof prezzoNumerico); // "number"
-
-let quantita = "42";
-let quantitaInt = parseInt(quantita);
-console.log(quantitaInt); // 42
-
-let valore = "3.14159";
-let valoreFloat = parseFloat(valore);
-console.log(valoreFloat); // 3.14159
-
-// Number → String
-let numero = 42;
-let numeroStringa = String(numero);
-console.log(numeroStringa); // "42"
-console.log(typeof numeroStringa); // "string"
-
-// Alternativa con .toString()
-let eta = 25;
-let etaStringa = eta.toString();
-console.log(etaStringa); // "25"
-
-// Boolean → String/Number
-let attivo = true;
-console.log(String(attivo)); // "true"
-console.log(Number(attivo)); // 1
-console.log(Number(false)); // 0
-
-// Any → Boolean
-console.log(Boolean(1)); // true
-console.log(Boolean(0)); // false
-console.log(Boolean("testo")); // true
-console.log(Boolean("")); // false
-console.log(Boolean(null)); // false
-console.log(Boolean(undefined)); // false
-console.log(Boolean({})); // true
-console.log(Boolean([])); // true
-
-/*
- * Caso pratico: validazione input utente
- */
-function calcolaTotale(prezzoInput, quantitaInput) {
-  // Conversione esplicita da string a number
-  const prezzo = parseFloat(prezzoInput);
-  const quantita = parseInt(quantitaInput);
-
-  // Validazione
-  if (isNaN(prezzo) || isNaN(quantita)) {
-    return "Input non valido";
-  }
-
-  return prezzo * quantita;
-}
-
-console.log(calcolaTotale("19.99", "3")); // 59.97
-console.log(calcolaTotale("abc", "3")); // "Input non valido"
+console.log(a); // "42"
+console.log(b); // 42
 ```
 
 #### Coercizione Implicita (Implicit Coercion)
 
-La coercizione implicita avviene automaticamente quando JavaScript incontra un'operazione tra tipi diversi. Gli esempi più comuni sono:
-
-- L'uso dell'operatore di uguaglianza lasca (`==`)
-- L'operatore `+` con string e number
-- Contesti booleani (if, while, etc.)
+La coercizione implicita avviene automaticamente quando JavaScript incontra un'operazione tra tipi diversi. L'esempio più comune è l'uso dell'operatore di uguaglianza lasca (`==`).
 
 Quando si confrontano due valori di tipo diverso con `==`, JavaScript tenta di "aiutare" convertendone uno per farli corrispondere, prima di eseguire il confronto.
 
 ```javascript
-/*
- * Esempi di coercizione implicita
- */
+let a = "99.99";
+let b = 99.99;
 
-// == con tipi diversi
-console.log("99.99" == 99.99); // true (string → number)
-console.log(42 == "42"); // true (string → number)
-console.log(true == 1); // true (boolean → number)
-console.log(false == 0); // true (boolean → number)
-console.log(null == undefined); // true (caso speciale)
-
-// Operatore + con string
-console.log(5 + 3); // 8 (number + number)
-console.log("5" + 3); // "53" (number → string, concatenazione)
-console.log(5 + "3"); // "53" (number → string, concatenazione)
-console.log("Il risultato è " + 42); // "Il risultato è 42"
-
-// Altri operatori matematici con string
-console.log("10" - 5); // 5 (string → number)
-console.log("10" * "2"); // 20 (entrambe string → number)
-console.log("20" / "4"); // 5 (entrambe string → number)
-
-// Contesto booleano (if, while, etc.)
-if ("testo") {
-  // string non vuota → true
-  console.log("Eseguito");
-}
-
-if (0) {
-  // 0 → false
-  console.log("Non eseguito");
-}
-
-if ([]) {
-  // array vuoto → true
-  console.log("Array vuoto è truthy!");
-}
-
-// Casi complessi e ingannevoli
-console.log([] + []); // "" (entrambi → string vuota)
-console.log([] + {}); // "[object Object]"
-console.log({} + []); // 0 (in alcuni contesti)
-console.log("" == 0); // true
-console.log(false == ""); // true
-console.log(false == []); // true
-
-/*
- * Esempio pratico con coercizione implicita
- */
-function verificaAccesso(userId) {
-  // null e undefined vengono entrambi catturati con ==
-  if (userId == null) {
-    console.log("Utente non autenticato");
-    return false;
-  }
-
-  console.log("Accesso consentito per utente:", userId);
-  return true;
-}
-
-verificaAccesso(123); // Accesso consentito per utente: 123
-verificaAccesso(null); // Utente non autenticato
-verificaAccesso(undefined); // Utente non autenticato
+console.log(a == b); // true
 ```
+
+In questo caso, JavaScript converte implicitamente la stringa `"99.99"` nel numero `99.99` e poi confronta `99.99` con `99.99`, ottenendo `true`.
 
 #### La Controversia sulla Coercizione Implicita
 
 La coercizione implicita è uno degli argomenti più controversi in JavaScript.
 
-- **La Critica** → Molti sviluppatori la considerano una fonte di bug e confusione. Poiché le sue regole non sono sempre intuitive, il consiglio diffuso è di evitarla completamente, preferendo sempre l'operatore di uguaglianza stretta (`===`), che non esegue coercizione.
+**La critica comune** è che molti sviluppatori la considerano una fonte di bug e confusione. Poiché le sue regole non sono sempre intuitive, il consiglio diffuso è di evitarla completamente, preferendo sempre l'operatore di uguaglianza stretta (`===`), che non esegue coercizione.
 
-- **L'Altra Prospettiva** → Evitare la coercizione implicita a priori significa non padroneggiare completamente il linguaggio. Se compresa, può rendere il codice più leggibile ed espressivo. Ad esempio, `userId == null` cattura sia `null` che `undefined` in un solo confronto elegante.
+**Evitarla a priori** d'altro canto significa non padroneggiare completamente il linguaggio.
 
-**Best Practice**:
-
-- Preferire `===` quando si vuole evitare sorprese
-- Usare `==` consapevolmente quando la coercizione è vantaggiosa (es. `value == null`)
-- Evitare `==` con valori che possono essere `true`, `false`, `0`, `""`, `[]`
-- Usare sempre coercizione **esplicita** quando la conversione è il cuore della logica
-
-```javascript
-/*
- * Confronto tra approcci
- */
-
-// ❌ Coercizione implicita confusa
-if (prezzoInput == 0) {
-  // problematico: cattura "", [], false
-}
-
-// ✅ Coercizione esplicita chiara
-if (Number(prezzoInput) === 0) {
-  // esplicito e prevedibile
-}
-
-// ✅ Caso valido per ==
-function isNullOrUndefined(value) {
-  return value == null; // cattura entrambi elegantemente
-}
-
-// Alternativa più verbosa
-function isNullOrUndefinedVerboso(value) {
-  return value === null || value === undefined;
-}
-```
+---
 
 ### 3.4 Valori Truthy e Falsy
 
-**Tipo**: Nuovo Topic
-
-In JavaScript, quando un valore non booleano viene usato in un **contesto che si aspetta un booleano** (come la condizione di un `if` o l'operando di un operatore logico), il linguaggio lo converte implicitamente in `true` o `false`. Questo processo è chiamato **coercizione booleana**, e i valori vengono classificati come **truthy** o **falsy** in base al risultato.
+In JavaScript, quando un valore non booleano viene usato in un contesto che si aspetta un booleano (come la condizione di un `if` o l'operando di un operatore logico), il linguaggio lo converte implicitamente in `true` o `false`. Questo processo è chiamato **coercizione booleana**, e i valori vengono classificati come **truthy** o **falsy** in base al risultato.
 
 #### Valori Falsy
 
-I valori **falsy** sono quelli che, quando forzati a diventare booleani, si convertono in `false`. La lista dei valori falsy è **breve e ben definita**:
+I valori **falsy** sono quelli che, quando forzati a diventare booleani, si convertono in `false`. La lista dei valori falsy è breve e ben definita:
 
-```javascript
-/*
- * Lista COMPLETA dei valori falsy
- */
+- `false`
+- `0` (zero)
+- `""` (stringa vuota)
+- `null`
+- `undefined`
+- `NaN` (Not a Number)
 
-false; // ovviamente falsy
-0 - // zero
-  0; // zero negativo
-0n; // BigInt zero
-(""); // stringa vuota
-"" // stringa vuota (apici singoli)
-``; // stringa vuota (template literal)
-null; // assenza intenzionale di valore
-undefined; // valore non definito/assegnato
-NaN; // Not a Number
-```
-
-**Qualsiasi valore che non rientra in questa lista è considerato truthy**.
+Qualsiasi valore che non rientra in questa lista è considerato **truthy**.
 
 #### Valori Truthy
 
-Un valore **truthy** è qualsiasi valore che, quando convertito in booleano, diventa `true`. Questo include praticamente **tutto il resto**.
+Un valore **truthy** è qualsiasi valore che, quando convertito in booleano, diventa `true`. Questo include praticamente tutto il resto:
 
-```javascript
-/*
- * Esempi di valori truthy
- */
+- Stringhe non vuote (es. `"ciao"`, `"false"`)
+- Numeri diversi da zero (es. `42`, `-1`)
+- Array, anche se vuoti (`[]`)
+- Oggetti, anche se vuoti (`{}`)
+- Funzioni
 
-// Stringhe non vuote
-"ciao"          // truthy
-"0"             // truthy (stringa, non numero!)
-"false"         // truthy (stringa, non boolean!)
-" "             // truthy (spazio non è stringa vuota)
-
-// Numeri diversi da zero
-42              // truthy
--1              // truthy
-3.14            // truthy
-Infinity        // truthy
-
-// Array (anche vuoti!)
-[]              // truthy ⚠️
-[0]             // truthy
-
-// Oggetti (anche vuoti!)
-{}              // truthy ⚠️
-{a: 0}          // truthy
-
-// Funzioni
-function() {}   // truthy
-```
-
-**⚠️ Attenzione**: Anche un **array vuoto** `[]` o un **oggetto vuoto** `{}` sono **truthy**. Questo può generare confusione.
-
-```javascript
-/*
- * Array e oggetti vuoti sono truthy!
- */
-
-let arrayVuoto = [];
-
-if (arrayVuoto) {
-  console.log("Questo VIENE eseguito!"); // ✅
-}
-
-// Per controllare se un array è vuoto:
-if (arrayVuoto.length === 0) {
-  console.log("Array vuoto"); // ✅ Modo corretto
-}
-```
+È importante notare che anche un **array vuoto** o un **oggetto vuoto** sono **truthy**. Questo può a volte generare confusione.
 
 #### Utilizzo Pratico
 
-La conoscenza dei valori truthy e falsy permette di scrivere codice più **conciso e leggibile**.
-
-**Controllo Esistenza Valore**
+La conoscenza dei valori truthy e falsy permette di scrivere codice più conciso e leggibile, specialmente nelle istruzioni condizionali. Ad esempio, invece di controllare se una variabile non è `null` o `undefined`, si può semplicemente usare la variabile stessa come condizione.
 
 ```javascript
-/*
- * Controllo se una variabile ha un valore
- */
-
 let nomeUtente = "Mario";
 
-// ❌ Modo verboso
-if (nomeUtente !== null && nomeUtente !== undefined && nomeUtente !== "") {
-  console.log("Benvenuto, " + nomeUtente);
-}
-
-// ✅ Modo conciso (sfrutta truthy/falsy)
 if (nomeUtente) {
   console.log("Benvenuto, " + nomeUtente);
+} else {
+  console.log("Nome non fornito");
 }
 ```
 
-Se `nomeUtente` contiene una stringa non vuota (valore truthy), la condizione è vera. Se contiene `""`, `null`, o `undefined` (valori falsy), la condizione è falsa.
-
-**Default Values**
-
-```javascript
-/*
- * Assegnare valori di default
- */
-
-let userInput = "";
-let messaggio = userInput || "Messaggio di default";
-
-console.log(messaggio); // "Messaggio di default"
-```
-
-**Conversione Esplicita a Boolean**
-
-```javascript
-/*
- * Conversione esplicita
- */
-
-// Usando Boolean()
-let valore1 = Boolean("ciao"); // true
-let valore2 = Boolean(""); // false
-
-// Usando doppia negazione !!
-let valore3 = !!"ciao"; // true
-let valore4 = !!""; // false
-
-// Come funziona !!
-// !"ciao" → !true → false
-// !!"ciao" → !false → true
-```
-
-#### Best Practices
-
-**Uso Consapevole**
-
-```javascript
-/*
- * Attenzione con numeri - 0 è falsy!
- */
-
-// ⚠️ Problema
-function calcola(numero) {
-  if (!numero) {
-    // ❌ Salta anche se numero === 0!
-    numero = 10;
-  }
-  return numero * 2;
-}
-
-// ✅ Controllo esplicito per numeri
-function calcolaCorretto(numero) {
-  if (numero === undefined || numero === null) {
-    numero = 10;
-  }
-  return numero * 2;
-}
-```
-
-**Chiarezza vs Concisione**
-
-```javascript
-// ✅ Conciso per stringhe/oggetti
-if (user.nome) {
-  // lavora con nome
-}
-
-// ✅ Esplicito per numeri/booleani
-if (counter !== 0) {
-  // 0 è valore valido
-}
-```
-
-**Approfondisci**:
-
-- [[01-fondamenti/tipi/truthy-falsy]] - Valori truthy e falsy
-- [[01-fondamenti/tipi/coercizione]] - Coercizione di tipo
-- [[01-fondamenti/sintassi/condizionali]] - Uso nelle condizioni
+In questo esempio, se `nomeUtente` contiene una stringa non vuota (un valore truthy), la condizione è vera. Se invece contiene una stringa vuota o `null` (valori falsy), la condizione è falsa e viene eseguito il blocco `else`.
 
 ---
 
 ### 3.5 Boxing e Metodi dei Primitivi
 
-**Tipo**: Nuovo Topic
-
-In JavaScript, anche i **tipi primitivi** (string, number, boolean) possono esporre metodi e proprietà utili per manipolarli, nonostante non siano oggetti. Questo avviene grazie al meccanismo del **boxing**.
+In JavaScript, anche i tipi primitivi (string, number, boolean) possono esporre metodi e proprietà utili per manipolarli, nonostante non siano oggetti. Questo avviene grazie al meccanismo del **boxing**.
 
 ```javascript
-/*
- * Metodi sui tipi primitivi
- */
-
 let testo = "javascript";
-console.log(testo.length); // 10 (proprietà)
-console.log(testo.toUpperCase()); // "JAVASCRIPT" (metodo)
+console.log(testo.toUpperCase()); // "JAVASCRIPT"
 
 let numero = 3.14159;
-console.log(numero.toFixed(2)); // "3.14" (metodo)
-
-// Come è possibile? I primitivi non sono oggetti!
+console.log(numero.toFixed(2)); // "3.14"
 ```
 
-#### Il Meccanismo del Boxing
+#### Il Meccanismo del "Boxing"
 
-Il **boxing** è il processo automatico con cui JavaScript "avvolge" temporaneamente un valore primitivo in un oggetto wrapper quando si tenta di accedere a una proprietà o metodo.
+Potrebbe sembrare strano che un valore primitivo, come una semplice stringa, possa avere dei metodi come un oggetto. Questo è possibile grazie a un meccanismo automatico chiamato **boxing**.
 
-**Processo**:
+Quando si tenta di accedere a una proprietà o a un metodo su un valore primitivo (es. `a.toUpperCase()`), JavaScript "avvolge" temporaneamente il valore primitivo in un oggetto corrispondente (un oggetto `String` per una string, un `Number` per un number, etc.). Questo oggetto "wrapper" contiene i metodi. Una volta che il metodo è stato eseguito, l'oggetto temporaneo viene scartato.
 
-- JavaScript crea automaticamente un oggetto wrapper temporaneo (String, Number, Boolean)
-- L'oggetto wrapper contiene i metodi del tipo corrispondente
-- Il metodo viene eseguito
-- L'oggetto wrapper viene immediatamente scartato
+Questo processo è completamente trasparente per lo sviluppatore. La regola generale è **preferire sempre l'uso dei valori primitivi** e lasciare che JavaScript gestisca il boxing quando necessario.
+
+#### Conversione Esplicita dei Tipi (Explicit Coercion)
+
+Oltre a questi metodi integrati, JavaScript fornisce strumenti specifici per convertire esplicitamente un valore da un tipo a un altro.
+
+**Convertire in Number**
+
+Per trasformare una stringa o un altro valore in un numero, si possono usare diversi approcci.
+
+- **Operatore Unario +** → È il modo più moderno e conciso per forzare la conversione di una stringa in un numero.
 
 ```javascript
-/*
- * Cosa succede dietro le quinte
- */
-
-let a = "ciao";
-
-// Quando scrivi a.toUpperCase():
-// 1. new String("ciao") creato temporaneamente
-// 2. String.prototype.toUpperCase() viene chiamato
-// 3. Risultato "CIAO" restituito
-// 4. Oggetto String temporaneo eliminato
-
-console.log(a.toUpperCase()); // "CIAO"
-console.log(typeof a); // "string" (ancora primitivo!)
+let a = "42";
+console.log(+a); // 42
 ```
 
-Il processo è **completamente trasparente** per lo sviluppatore, ma comprendere questo meccanismo aiuta a capire come funziona JavaScript internamente.
-
-#### Wrapper Objects vs Primitivi
-
-**Regola fondamentale**: Preferire sempre i **valori primitivi**, lasciare il boxing automatico a JavaScript.
+- **parseInt() e parseFloat()** → Queste funzioni analizzano una stringa e restituiscono un numero. `parseInt()` estrae solo la parte intera, mentre `parseFloat()` gestisce anche i decimali.
 
 ```javascript
-/*
- * Differenza tra primitivo e wrapper object
- */
+let b = parseInt("99.99");
+console.log(b); // 99
 
-// ✅ Primitivo (consigliato)
-let str1 = "testo";
-let num1 = 42;
-let bool1 = true;
-
-// ❌ Wrapper object (sconsigliato)
-let str2 = new String("testo");
-let num2 = new Number(42);
-let bool2 = new Boolean(true);
-
-console.log(typeof str1); // "string"
-console.log(typeof str2); // "object" (!)
-
-// Problemi con wrapper objects
-console.log(str1 === "testo"); // true
-console.log(str2 === "testo"); // false (object vs string)
+let c = parseFloat("99.99");
+console.log(c); // 99.99
 ```
 
-#### Conversione Esplicita a Number
+**Convertire in String**
 
-**Operatore Unario +** - Modo moderno e conciso:
+Per trasformare un numero o un booleano in una stringa, ci sono due metodi principali.
+
+- **La funzione String()** → Questa è una funzione globale sicura che funziona con qualsiasi valore, inclusi `null` e `undefined`, senza generare errori.
 
 ```javascript
-/*
- * Operatore unario +
- */
-
-let str = "42";
-let num = +str; // 42
-
-console.log(+"99.99"); // 99.99
-console.log(+true); // 1
-console.log(+false); // 0
-console.log(+""); // 0
-console.log(+"testo"); // NaN
+let a = 42;
+console.log(String(a)); // "42"
 ```
 
-**parseInt() e parseFloat()** - Per parsare stringhe:
+- **Il metodo .toString()** → Questo è un metodo disponibile su quasi tutti gli oggetti e valori primitivi. Tuttavia, chiamarlo su `null` o `undefined` provocherà un errore, perché questi valori non hanno metodi.
 
 ```javascript
-/*
- * Parsing di stringhe a numeri
- */
+let b = 42;
+console.log(b.toString()); // "42"
 
-// parseInt(string, radix)
-console.log(parseInt("42")); // 42
-console.log(parseInt("42.99")); // 42 (solo parte intera)
-console.log(parseInt("42px")); // 42 (ignora il resto)
-console.log(parseInt("3.14")); // 3
-
-// parseFloat(string)
-console.log(parseFloat("3.14")); // 3.14
-console.log(parseFloat("99.99€")); // 99.99 (ignora simboli)
+// null.toString(); // ❌ TypeError
 ```
 
-**Number()** - Conversione completa:
-
-```javascript
-/*
- * Conversione con Number()
- */
-
-Number("42"); // 42
-Number("3.14"); // 3.14
-Number("42px"); // NaN (stringa non valida)
-Number(true); // 1
-Number(false); // 0
-```
-
-#### Conversione Esplicita a String
-
-**String()** - Sicura con tutti i valori:
-
-```javascript
-/*
- * Conversione con String()
- */
-
-String(42); // "42"
-String(true); // "true"
-String(null); // "null"
-String(undefined); // "undefined"
-String([1, 2]); // "1,2"
-```
-
-**.toString()** - Metodo su valori (non su null/undefined):
-
-```javascript
-/*
- * Conversione con .toString()
- */
-
-let num = 42;
-num.toString(); // "42"
-
-true.toString(); // "true"
-
-// ❌ Errori con null/undefined
-// null.toString();      // TypeError
-// undefined.toString(); // TypeError
-```
-
-**Raccomandazione**: Usare **String()** per robustezza, evita errori con `null` e `undefined`.
-
-**Approfondisci**:
-
-- [[01-fondamenti/tipi/boxing]] - Boxing e metodi dei primitivi
-- [[01-fondamenti/tipi/coercizione]] - Coercizione esplicita e implicita
-- [[01-fondamenti/tipi/valori-tipi]] - Tipi primitivi vs Object
+Per questo motivo, **String() è generalmente la scelta più robusta e sicura** per la conversione a stringa.
 
 ---
 
@@ -3955,19 +2524,13 @@ In questo esempio, la IIFE viene eseguita immediatamente, calcola il risultato e
 
 ### 3.9 Closure (Chiusura)
 
-**Tipo**: Nuovo Topic
+La Closure (o chiusura) è uno dei concetti più importanti e spesso meno compresi in JavaScript. Si può considerare come la capacità di una funzione di "ricordare" e continuare ad accedere al proprio scope (le sue variabili) anche dopo che la funzione ha terminato la sua esecuzione.
 
-La **Closure** (o chiusura) è uno dei concetti più importanti e spesso meno compresi in JavaScript. Si può considerare come la capacità di una funzione di **"ricordare"** e continuare ad accedere al proprio scope (le sue variabili) anche dopo che la funzione ha terminato la sua esecuzione.
+Questo meccanismo permette a una funzione interna di mantenere un riferimento vivo alle variabili della funzione esterna che la contiene.
 
-Questo meccanismo permette a una **funzione interna** di mantenere un riferimento vivo alle variabili della **funzione esterna** che la contiene.
-
-#### Esempio Base
+#### Consideriamo questo esempio:
 
 ```javascript
-/*
- * Esempio classico di closure
- */
-
 function makeAdder(x) {
   // x è una variabile nello scope di makeAdder
 
@@ -3992,176 +2555,25 @@ console.log(plusTen(90)); // 100 (10 + 90)
 
 Analizzando il codice:
 
-1. **Quando viene chiamata `makeAdder(1)`**, si ottiene un riferimento alla sua funzione interna `add`, la quale "ricorda" che `x` è `1`. Questo riferimento viene assegnato alla variabile `plusOne`.
+1. Quando viene chiamata `makeAdder(1)`, si ottiene un riferimento alla sua funzione interna `add`, la quale "ricorda" che `x` è `1`. Questo riferimento viene assegnato alla variabile `plusOne`.
 
-2. **Quando viene chiamata `makeAdder(10)`**, si ottiene un altro riferimento alla sua funzione interna `add`, che in questo caso "ricorda" che `x` è `10`. Questo nuovo riferimento viene assegnato a `plusTen`.
+2. Quando viene chiamata `makeAdder(10)`, si ottiene un altro riferimento alla sua funzione interna `add`, che in questo caso "ricorda" che `x` è `10`. Questo nuovo riferimento viene assegnato a `plusTen`.
 
-3. **Quando si esegue `plusOne(3)`**, la funzione aggiunge `3` (il suo parametro `y`) al valore `1` (la `x` che ha "ricordato"), restituendo `4`.
+3. Quando si esegue `plusOne(3)`, la funzione aggiunge `3` (il suo parametro `y`) al valore `1` (la `x` che ha "ricordato"), restituendo `4`.
 
-4. **Quando si esegue `plusTen(13)`**, la funzione aggiunge `13` (il suo `y`) al valore `10` (la `x` che ha "ricordato"), restituendo `23`.
+4. Quando si esegue `plusTen(13)`, la funzione aggiunge `13` (il suo `y`) al valore `10` (la `x` che ha "ricordato"), restituendo `23`.
 
-In sostanza, ogni volta che `makeAdder` viene eseguita, viene creato un **nuovo scope** e la funzione `add` interna mantiene un collegamento a quello **specifico scope**.
-
-#### Dati Privati con Closure
-
-Le closure permettono di creare **dati privati** e **funzioni factory** potenti.
-
-```javascript
-/*
- * Contatore con dati privati
- */
-
-function creaContatore() {
-  let count = 0; // Variabile privata
-
-  return {
-    incrementa: function () {
-      count++;
-      return count;
-    },
-    decrementa: function () {
-      count--;
-      return count;
-    },
-    valore: function () {
-      return count;
-    },
-  };
-}
-
-let contatore = creaContatore();
-
-console.log(contatore.incrementa()); // 1
-console.log(contatore.incrementa()); // 2
-console.log(contatore.incrementa()); // 3
-console.log(contatore.decrementa()); // 2
-console.log(contatore.valore()); // 2
-
-// ❌ Non possiamo accedere direttamente a 'count'
-console.log(contatore.count); // undefined
-
-// Ogni contatore ha il suo scope privato
-let contatore2 = creaContatore();
-console.log(contatore2.incrementa()); // 1 (indipendente!)
-console.log(contatore.valore()); // 2 (non influenzato)
-```
-
-#### Closure nei Loop
-
-Un caso comune dove le closure possono causare confusione è all'interno dei loop.
-
-```javascript
-/*
- * ❌ Problema comune con var nei loop
- */
-
-function creaFunzioni() {
-  let funzioni = [];
-
-  for (var i = 0; i < 3; i++) {
-    funzioni.push(function () {
-      console.log(i); // Tutte le funzioni condividono lo stesso 'i'
-    });
-  }
-
-  return funzioni;
-}
-
-let funz = creaFunzioni();
-funz[0](); // 3 (non 0!)
-funz[1](); // 3 (non 1!)
-funz[2](); // 3 (non 2!)
-
-// Perché? Tutte le funzioni "ricordano" lo stesso 'i',
-// che alla fine del loop ha valore 3
-```
-
-**Soluzione con let**:
-
-```javascript
-/*
- * ✅ Soluzione: Usare let (block scope)
- */
-
-function creaFunzioniCorretto() {
-  let funzioni = [];
-
-  for (let i = 0; i < 3; i++) {
-    // let invece di var
-    funzioni.push(function () {
-      console.log(i); // Ogni iterazione ha il suo 'i'
-    });
-  }
-
-  return funzioni;
-}
-
-let funz2 = creaFunzioniCorretto();
-funz2[0](); // 0 ✅
-funz2[1](); // 1 ✅
-funz2[2](); // 2 ✅
-```
-
-**Soluzione con IIFE**:
-
-```javascript
-/*
- * ✅ Soluzione: IIFE per creare scope separati
- */
-
-function creaFunzioniIIFE() {
-  let funzioni = [];
-
-  for (var i = 0; i < 3; i++) {
-    funzioni.push(
-      (function (indice) {
-        return function () {
-          console.log(indice);
-        };
-      })(i),
-    ); // IIFE che cattura il valore corrente di i
-  }
-
-  return funzioni;
-}
-
-let funz3 = creaFunzioniIIFE();
-funz3[0](); // 0 ✅
-funz3[1](); // 1 ✅
-funz3[2](); // 2 ✅
-```
-
-#### Importanza delle Closure
-
-La closure è una delle tecniche più **potenti** e **versatili** della programmazione, e padroneggiarla è fondamentale per uno sviluppatore JavaScript.
-
-Le closure sono alla base di molti pattern avanzati come:
-
-- **Module pattern** (moduli privati)
-- **Factory functions** (funzioni fabbrica)
-- **Event handlers** (gestori eventi)
-- **Callbacks** e programmazione asincrona
-- **Currying** e programmazione funzionale
-
-**Approfondisci**:
-
-- [[01-fondamenti/funzioni/closure]] - Closure (Chiusura)
+In sostanza, ogni volta che `makeAdder` viene eseguita, viene creato un nuovo scope e la funzione `add` interna mantiene un collegamento a quello specifico scope. La closure è una delle tecniche più potenti e versatili della programmazione, e padroneggiarla è fondamentale per uno sviluppatore JavaScript.
 
 ### 3.10 Module Pattern
 
-**Tipo**: Nuovo Topic
+L'uso più comune della closure in JavaScript è il Module Pattern. Questo pattern permette di definire dettagli implementativi privati (variabili e funzioni) che sono nascosti al mondo esterno, e allo stesso tempo di esporre un'interfaccia pubblica (public API) che può essere utilizzata per interagire con essi.
 
-L'uso più comune della closure in JavaScript è il **Module Pattern**. Questo pattern permette di definire dettagli implementativi **privati** (variabili e funzioni) che sono nascosti al mondo esterno, e allo stesso tempo di esporre un'**interfaccia pubblica** (public API) che può essere utilizzata per interagire con essi.
+È una tecnica fondamentale per l'incapsulamento e l'organizzazione del codice.
 
-È una tecnica fondamentale per l'**incapsulamento** e l'**organizzazione del codice**.
-
-#### Esempio Base
+Consideriamo il seguente esempio:
 
 ```javascript
-/*
- * Module Pattern classico
- */
-
 function User() {
   // Variabili private
   let username;
@@ -4171,14 +2583,12 @@ function User() {
   function doLogin(user, pw) {
     username = user;
     password = pw;
-
     console.log("Login effettuato per:", username);
-    // Password non viene mai esposta
   }
 
-  // API pubblica (ciò che viene esposto)
+  // API pubblica
   let publicAPI = {
-    login: doLogin, // Riferimento alla funzione privata
+    login: doLogin,
   };
 
   return publicAPI;
@@ -4186,178 +2596,32 @@ function User() {
 
 // Creiamo un'istanza del modulo
 let fred = User();
+fred.login("fred", "12Battery34!"); // Login effettuato per: fred
 
-// Possiamo chiamare il metodo pubblico
-fred.login("fred", "12Battery34!");
-// Output: "Login effettuato per: fred"
-
-// ❌ Non possiamo accedere alle variabili private
+// Non possiamo accedere alle variabili private
 console.log(fred.username); // undefined
 console.log(fred.password); // undefined
-console.log(fred.doLogin); // undefined
 ```
 
-#### Come Funziona
+Analizziamo il funzionamento:
 
-Analizziamo il funzionamento passo per passo:
+**Scope Esterno** → La funzione `User()` agisce come uno scope esterno che contiene le variabili `username` e `password`, e la funzione `doLogin()`. Questi elementi sono privati e non possono essere raggiunti direttamente dall'esterno.
 
-**Scope Esterno** → La funzione `User()` agisce come uno **scope esterno** che contiene le variabili `username` e `password`, e la funzione `doLogin()`. Questi elementi sono **privati** e non possono essere raggiunti direttamente dall'esterno.
+**Creazione dell'Istanza** → Eseguendo `User()`, si crea un'istanza del modulo. Viene generato un nuovo scope e, di conseguenza, una nuova copia di tutte le variabili e funzioni interne. L'oggetto restituito, `publicAPI`, viene assegnato alla variabile `fred`. Se si eseguisse di nuovo `User()`, si otterrebbe una nuova istanza completamente separata da `fred`.
 
-**Creazione dell'Istanza** → Eseguendo `User()`, si crea un'**istanza del modulo**. Viene generato un **nuovo scope** e, di conseguenza, una **nuova copia** di tutte le variabili e funzioni interne. L'oggetto restituito, `publicAPI`, viene assegnato alla variabile `fred`. Se si eseguisse di nuovo `User()`, si otterrebbe una nuova istanza **completamente separata** da `fred`.
+**Nota** → Si usa `User()` e non `new User()` perché `User` è una semplice funzione che funge da factory, non una classe da istanziare. L'uso di `new` in questo contesto sarebbe inappropriato.
 
-```javascript
-/*
- * Istanze separate
- */
+**API Pubblica** → L'oggetto `publicAPI` contiene i metodi che si vogliono rendere pubblici. In questo caso, ha una sola proprietà, `login`, che è un riferimento alla funzione interna `doLogin()`.
 
-let user1 = User();
-let user2 = User();
+**Il Ruolo della Closure** → Quando la funzione `User()` termina la sua esecuzione, le sue variabili interne (`username`, `password`) non vengono distrutte. Esse vengono "mantenute in vita" dalla closure creata dalla funzione `doLogin()`. Per questo motivo, quando si chiama `fred.login(...)`, la funzione `doLogin` può ancora accedere e modificare le variabili `username` e `password` definite nel suo scope genitore.
 
-user1.login("alice", "pass123");
-user2.login("bob", "pass456");
-
-// user1 e user2 sono completamente indipendenti
-console.log(user1 === user2); // false
-```
-
-**Nota** → Si usa `User()` e **NON** `new User()` perché `User` è una semplice funzione che funge da **factory**, non una classe da istanziare. L'uso di `new` in questo contesto sarebbe inappropriato.
-
-**API Pubblica** → L'oggetto `publicAPI` contiene i metodi che si vogliono **rendere pubblici**. In questo caso, ha una sola proprietà, `login`, che è un riferimento alla funzione interna `doLogin()`.
-
-**Il Ruolo della Closure** → Quando la funzione `User()` termina la sua esecuzione, le sue variabili interne (`username`, `password`) **non vengono distrutte**. Esse vengono **"mantenute in vita"** dalla closure creata dalla funzione `doLogin()`. Per questo motivo, quando si chiama `fred.login(...)`, la funzione `doLogin` può ancora accedere e modificare le variabili `username` e `password` definite nel suo scope genitore.
-
-```javascript
-/*
- * La closure mantiene vivo lo stato privato
- */
-
-function createWallet() {
-  let balance = 0; // Privato
-
-  return {
-    deposit: function (amount) {
-      balance += amount;
-      console.log("Deposito:", amount);
-      return balance;
-    },
-    withdraw: function (amount) {
-      if (amount > balance) {
-        console.log("Fondi insufficienti");
-        return balance;
-      }
-      balance -= amount;
-      console.log("Prelievo:", amount);
-      return balance;
-    },
-    getBalance: function () {
-      return balance;
-    },
-  };
-}
-
-let wallet = createWallet();
-wallet.deposit(100); // "Deposito: 100"
-wallet.withdraw(30); // "Prelievo: 30"
-console.log(wallet.getBalance()); // 70
-
-// ❌ Non possiamo manipolare balance direttamente
-console.log(wallet.balance); // undefined
-wallet.balance = 1000000; // Non ha effetto
-console.log(wallet.getBalance()); // 70 (intatto!)
-```
-
-#### Module Pattern con IIFE
-
-Una variante comune usa una **IIFE** per creare un modulo **singleton** (istanza unica).
-
-```javascript
-/*
- * Module Pattern con IIFE (singleton)
- */
-
-let bankAccount = (function () {
-  // Stato privato
-  let balance = 0;
-  let transactions = [];
-
-  // Funzioni private
-  function recordTransaction(type, amount) {
-    transactions.push({
-      type: type,
-      amount: amount,
-      date: new Date(),
-    });
-  }
-
-  // API pubblica
-  return {
-    deposit: function (amount) {
-      balance += amount;
-      recordTransaction("deposit", amount);
-      return balance;
-    },
-    withdraw: function (amount) {
-      if (amount > balance) {
-        console.log("Fondi insufficienti");
-        return balance;
-      }
-      balance -= amount;
-      recordTransaction("withdraw", amount);
-      return balance;
-    },
-    getBalance: function () {
-      return balance;
-    },
-    getTransactions: function () {
-      // Ritorna una copia per evitare modifiche esterne
-      return [...transactions];
-    },
-  };
-})();
-
-// Usiamo il modulo singleton
-bankAccount.deposit(500);
-bankAccount.withdraw(100);
-console.log(bankAccount.getBalance()); // 400
-console.log(bankAccount.getTransactions()); // Array con 2 transazioni
-
-// ❌ Non possiamo accedere ai dati privati
-console.log(bankAccount.balance); // undefined
-console.log(bankAccount.transactions); // undefined
-```
-
-#### Vantaggi del Module Pattern
-
-- **Incapsulamento** → Dati privati veramente privati, implementazione nascosta
-- **Organizzazione** → Codice strutturato e modulare, chiara separazione tra pubblico e privato
-- **Namespace** → Evita inquinamento dello scope globale, riduce conflitti di nomi
-- **Manutenibilità** → Modifiche interne senza impatto sul codice esterno, API stabile e ben definita
-
-#### Riepilogo
-
-In sintesi, il **Module Pattern** sfrutta le closure per creare uno **stato privato** (variabili e funzioni nascoste) e un'**interfaccia pubblica** (API esposta). È un concetto chiave per scrivere codice **robusto** e **manutenibile**.
-
-**Approfondisci**:
-
-- [[01-fondamenti/funzioni/module-pattern]] - Module Pattern
+In sintesi, il Module Pattern sfrutta le closure per creare uno stato privato e un'interfaccia pubblica, un concetto chiave per scrivere codice robusto e manutenibile.
 
 ### 3.11 L'identificatore this
 
-**Tipo**: Concetto Fondamentale
+Un altro concetto spesso frainteso in JavaScript è la parola chiave `this`. Sebbene possa sembrare legata a paradigmi di programmazione orientata agli oggetti, in JavaScript il suo funzionamento è diverso.
 
-La parola chiave `this` punta a un **oggetto**, ma l'**oggetto dipende da come la funzione è chiamata** (call-site).
-
-**Equivoco comune**: `this` **NON** è la funzione stessa.
-
-#### Le Quattro Regole del Binding
-
-1. **Default Binding** → `foo()` → `this` = globale (o `undefined` in strict mode)
-2. **Implicit Binding** → `obj.foo()` → `this` = `obj`  
-   ⚠️ Si perde estraendo il metodo: `let fn = obj.foo; fn();`
-3. **Explicit Binding** → `.call(obj)`, `.apply(obj)`, `.bind(obj)` → `this` = `obj`
-4. **New Binding** → `new foo()` → `this` = nuovo oggetto vuoto creato
-
-**Ordine di precedenza**: new > explicit > implicit > default
+Se una funzione contiene un riferimento a `this`, quel riferimento di solito punta a un oggetto. Tuttavia, l'oggetto a cui punta dipende da come la funzione è stata chiamata (call-site). È fondamentale capire che `this` non si riferisce alla funzione stessa, che è l'equivoco più comune.
 
 ```javascript
 function foo() {
@@ -4365,35 +2629,67 @@ function foo() {
 }
 
 var bar = "global";
-var obj = { bar: "obj1", foo: foo };
 
-foo(); // "global" - default
-obj.foo(); // "obj1" - implicit
-foo.call(obj); // "obj1" - explicit
-new foo(); // undefined - new
+var obj1 = {
+  bar: "obj1",
+  foo: foo,
+};
+
+var obj2 = {
+  bar: "obj2",
+};
+
+// -------------------------
+foo(); // "global"
+obj1.foo(); // "obj1"
+foo.call(obj2); // "obj2"
+new foo(); // undefined
 ```
 
-**Approfondisci**:
+Esistono quattro regole principali che determinano il valore di `this`, illustrate nelle ultime quattro righe dell'esempio:
 
-- [[01-fondamenti/funzioni/this]] - L'identificatore this
+**Chiamata diretta (`foo()`)** → Quando una funzione viene chiamata direttamente, senza un contesto specifico, `this` viene associato all'oggetto globale (in un browser, `window`). Questo è noto come **default binding**. Di conseguenza, `this.bar` si risolve in `window.bar`, che ha il valore `"global"`. (In strict mode, `this` sarebbe `undefined` e l'accesso a `this.bar` genererebbe un errore).
+
+**Chiamata come metodo (`obj1.foo()`)** → Quando una funzione viene chiamata come metodo di un oggetto, `this` punta all'oggetto stesso che contiene il metodo. Questo è l'**implicit binding**. In questo caso, `this` è `obj1`, quindi `this.bar` vale `"obj1"`.
+
+**Chiamata esplicita (`foo.call(obj2)`)** → È possibile impostare esplicitamente il valore di `this` usando i metodi `.call()` o `.apply()`. Questo è l'**explicit binding**. Qui, `this` viene forzato a essere `obj2`, quindi `this.bar` vale `"obj2"`.
+
+**Chiamata con new (`new foo()`)** → Quando una funzione viene usata come costruttore con la parola chiave `new`, `this` viene associato a un nuovo oggetto vuoto creato per l'occasione. Questo è il **new binding**. Poiché questo nuovo oggetto non ha una proprietà `bar`, `this.bar` risulta `undefined`.
+
+In conclusione, per capire a cosa si riferisce `this`, è necessario esaminare il punto esatto in cui la funzione viene chiamata. Il contesto di quella chiamata determinerà il valore di `this` secondo una di queste quattro regole.
 
 ### 3.12 Prototipi (Prototypes)
 
-**Tipo**: Concetto Fondamentale
+Il meccanismo dei prototipi (prototype) in JavaScript è un concetto fondamentale, anche se complesso. Funziona come un sistema di "fallback" per le proprietà degli oggetti.
 
-I **prototipi** sono un sistema di **fallback** per le proprietà degli oggetti. Quando una proprietà non viene trovata su un oggetto, JavaScript cerca nella **catena dei prototipi** (prototype chain) fino a trovarla. Questo è chiamato **delega** (delegation).
+Quando si cerca di accedere a una proprietà su un oggetto e questa non viene trovata, JavaScript utilizza automaticamente un riferimento interno al prototipo di quell'oggetto per cercare la proprietà su un altro oggetto collegato. Questo collegamento tra un oggetto e il suo prototipo viene stabilito al momento della creazione dell'oggetto.
+
+Il modo più semplice per illustrare questo concetto è tramite la funzione `Object.create()`.
 
 ```javascript
-var foo = { a: 42 };
-var bar = Object.create(foo); // bar collegato a foo
+var foo = {
+  a: 42,
+};
 
-console.log(bar.a); // 42 (delegato a foo)
-console.log(bar.hasOwnProperty("a")); // false
+// Crea `bar` e lo collega a `foo`
+var bar = Object.create(foo);
+
+console.log(bar.a); // 42
 ```
 
-#### Classi ES6 e Prototipi
+In questo esempio, la proprietà `"a"` non esiste direttamente sull'oggetto `bar`. Tuttavia, poiché `bar` è collegato tramite prototipo a `foo`, JavaScript "risale" la catena dei prototipi, trova la proprietà `"a"` su `foo` e ne restituisce il valore. Questo processo è noto come **delega** (delegation).
 
-La sintassi `class` di ES6 è **zucchero sintattico** sui prototipi:
+Questo meccanismo viene spesso utilizzato (o, secondo alcuni, "abusato") per emulare il concetto di "classi" e "ereditarietà" tipico di altri linguaggi. Tuttavia, un approccio più naturale e in linea con la natura di JavaScript è il pattern della **Behavior Delegation** (delega del comportamento). Con questo pattern, gli oggetti vengono progettati intenzionalmente per delegare parti del loro comportamento ad altri oggetti a cui sono collegati, creando catene di oggetti che collaborano tra loro.
+
+#### Riflessione sull'Uso dei Prototipi nello Sviluppo Moderno
+
+Nello sviluppo front-end contemporaneo, specialmente utilizzando framework come Angular, React o Vue, è raro che uno sviluppatore si trovi a manipolare direttamente i prototipi degli oggetti. Questo porta a chiedersi quale sia la loro reale utilità pratica.
+
+La risposta è che i prototipi vengono utilizzati costantemente, ma in modo implicito, poiché sono un dettaglio implementativo fondamentale del linguaggio, nascosto da livelli di astrazione più moderni.
+
+#### L'Astrazione delle Classi ES6
+
+Il motivo principale per cui non si interagisce più direttamente con i prototipi è l'introduzione della sintassi `class` in ECMAScript 2015 (ES6). Questa sintassi è in realtà solo **zucchero sintattico** (syntactic sugar) che astrae la manipolazione del prototipo.
 
 ```javascript
 // ES6
@@ -4405,8 +2701,12 @@ class Person {
     console.log("Ciao, sono " + this.name);
   }
 }
+```
 
-// Equivalente pre-ES6
+Sotto il cofano, viene tradotto da JavaScript in un'operazione basata sui prototipi, simile a come si scriveva prima di ES6:
+
+```javascript
+// Pre-ES6
 function Person(name) {
   this.name = name;
 }
@@ -4415,21 +2715,31 @@ Person.prototype.greet = function () {
 };
 ```
 
-#### Uso Implicito
+Ogni volta che si definisce una classe e i suoi metodi, si sta quindi utilizzando il sistema dei prototipi.
 
-- **Array**: `.map()`, `.filter()` sono su `Array.prototype`
-- **Object**: `.toString()`, `.hasOwnProperty()` sono su `Object.prototype`
-- **DOM**: `.addEventListener()` è su `EventTarget.prototype`
+#### Esempi di Uso Implicito dei Prototipi
 
-#### Perché Sono Importanti
+L'interazione con la catena dei prototipi (prototype chain) avviene continuamente:
 
-- **Debugging** → Diagnosticare `TypeError: is not a function`
-- **Performance** → Metodi condivisi tra istanze (risparmio memoria)
-- **Polyfilling** → Estendere prototipi nativi per compatibilità
+- **Metodi degli Array** → Metodi come `.map()`, `.filter()` o `.forEach()` non sono duplicati su ogni singolo array creato. Essi risiedono su `Array.prototype` e ogni istanza di array delega a questo prototipo l'esecuzione di tali metodi.
 
-**Approfondisci**:
+- **Metodi degli Oggetti** → Lo stesso principio si applica a metodi come `.toString()` o `.hasOwnProperty()`, che sono ereditati da `Object.prototype`.
 
-- [[01-fondamenti/oggetti/prototypes]] - Prototipi (Prototypes)
+- **Il DOM** → Ogni elemento del DOM è un oggetto che eredita metodi come `.addEventListener()` o `.querySelector()` da prototipi come `HTMLElement.prototype` e `EventTarget.prototype`.
+
+#### Perché è Ancora Importante Conoscerli?
+
+Comprendere il funzionamento dei prototipi rimane una competenza cruciale per uno sviluppatore JavaScript per diverse ragioni:
+
+- **Debugging** → La conoscenza della catena prototipale aiuta a diagnosticare errori come `TypeError: is not a function`, permettendo di ispezionare quali metodi sono realmente disponibili su un oggetto e sui suoi prototipi.
+
+- **Performance** → Capire che i metodi sul prototipo sono condivisi tra tutte le istanze di un oggetto chiarisce perché questo approccio sia efficiente in termini di memoria.
+
+- **Comprensione di Librerie e Framework** → Molte librerie, specialmente quelle più datate o quelle ottimizzate per le massime prestazioni, possono manipolare i prototipi direttamente. Conoscerne i meccanismi permette di usarle con maggiore consapevolezza.
+
+- **Polyfilling** → Per garantire la compatibilità con browser meno recenti, a volte è necessario implementare manualmente funzionalità moderne mancanti (un polyfill), operazione che spesso richiede di estendere il prototipo di oggetti nativi (es. `Array.prototype`).
+
+In conclusione, sebbene la manipolazione diretta dei prototipi sia diventata rara nella pratica quotidiana, essi costituiscono il motore del sistema a oggetti di JavaScript. La loro comprensione è fondamentale per padroneggiare il linguaggio a un livello più profondo, andando oltre le astrazioni fornite dalla sintassi moderna.
 
 ---
 

@@ -1,13 +1,4 @@
-# Template per Note - Second Brain JS
-
-> **Nome concetto**: [Inserire nome]  
-> **Categoria**: [01-fondamenti / 02-funzioni / etc.]  
-> **Data creazione**: [GG/MM/AAAA]  
-> **Stato**: [ ] Draft / [→] In revisione / [✓] Completo
-
----
-
-## 📝 Descrizione
+# [[../../appunti-completi#sezione-di-riferimento|Nome Concetto]]
 
 [Spiegazione concisa del concetto (2-3 frasi)]
 

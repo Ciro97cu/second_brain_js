@@ -1,6 +1,4 @@
-# Operatori di Assegnamento
-
-**Appunti Completi**: [[../../appunti-completi#5-operatori]]
+# [[../../appunti-completi#5-operatori|Operatori di Assegnamento]]
 
 Gli operatori di assegnamento memorizzano un valore in una variabile. L'operatore base è `=`, ma esistono anche operatori composti che combinano un'operazione con l'assegnamento.
 

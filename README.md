@@ -13,35 +13,19 @@ Questo è un **Second Brain** personale per JavaScript: una collezione organizza
 - Avere un riferimento rapido sempre disponibile
 - Consolidare l'apprendimento attraverso la sintesi
 
-## 📂 Struttura
+## � Inizio Rapido
 
-Il progetto si organizza **dinamicamente** in base agli appunti aggiunti. Le cartelle e le suddivisioni vengono create automaticamente man mano che i concetti vengono documentati, creando una struttura organica che riflette il percorso di apprendimento reale.
+1. Leggi [REGOLE.md](REGOLE.md) per comprendere l'architettura del sistema
+2. Usa [TEMPLATE.md](TEMPLATE.md) per creare nuove note atomiche
+3. Consulta [QUICK-START.md](QUICK-START.md) per una guida passo-passo
 
-## 🔗 Come funziona
+## 📚 Documentazione
 
-1. Passi i tuoi appunti di JavaScript
-2. Vengono create automaticamente le cartelle tematiche appropriate
-3. Le note vengono collegate tra loro per creare una rete di conoscenze
-4. Ogni concetto viene organizzato nella sua posizione logica
+- [REGOLE.md](REGOLE.md) - Regole complete di creazione e manutenzione
+- [TEMPLATE.md](TEMPLATE.md) - Template per note atomiche
+- [QUICK-START.md](QUICK-START.md) - Guida rapida
 
-## 📝 Formato delle note
-
-Ogni nota segue questo schema:
-
-- **Titolo**: Nome del concetto
-- **Descrizione**: Spiegazione concisa
-- **Esempi**: Codice pratico
-- **Collegamenti**: Note correlate
-- **Riferimenti**: Risorse esterne
-
-## 🚀 Come contribuire
-
-1. Aggiungi nuove note nella cartella appropriata
-2. Collega concetti correlati
-3. Mantieni le note atomiche (un concetto = una nota)
-4. Usa esempi pratici
-
-## 📚 Risorse
+## 📖 Risorse Esterne
 
 - [MDN Web Docs](https://developer.mozilla.org/)
 - [JavaScript.info](https://javascript.info/)
@@ -49,5 +33,4 @@ Ogni nota segue questo schema:
 
 ---
 
-3
-**Ultima modifica**: 12 Febbraio 2026
+**Ultima modifica**: 18 Febbraio 2026

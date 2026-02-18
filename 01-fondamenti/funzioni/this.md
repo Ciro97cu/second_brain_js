@@ -1,8 +1,4 @@
-# L'identificatore this
-
-**Tipo**: Concetto Fondamentale
-
-**Appunti Completi**: [[../../appunti-completi#311-lidentificatore-this]]
+# [[../../appunti-completi#311-lidentificatore-this|L'identificatore this]]
 
 La parola chiave `this` in JavaScript è spesso fraintesa. Se una funzione contiene un riferimento a `this`, quel riferimento punta a un **oggetto**, ma l'**oggetto dipende da come la funzione è stata chiamata** (call-site).
 

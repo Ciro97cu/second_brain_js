@@ -1,13 +1,4 @@
-# Nomi delle Variabili e Identificatori
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026
-
-**Appunti Completi**: [[../../appunti-completi#42-nomi-delle-variabili-e-identificatori]]
-
----
-
-## Descrizione
+# [[../../appunti-completi#42-nomi-delle-variabili-e-identificatori|Nomi delle Variabili e Identificatori]]
 
 La scelta di un buon nome per una variabile o una funzione è cruciale per la leggibilità del codice. In JavaScript, questi nomi devono essere identificatori validi (valid identifiers) e seguire regole precise.
 

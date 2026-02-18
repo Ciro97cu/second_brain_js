@@ -1,12 +1,4 @@
-# Dove Inserire il Codice JavaScript in HTML
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026  
-**Appunti Completi**: [[../appunti-completi#13-dove-inserire-il-codice-javascript-in-html]]
-
----
-
-## Descrizione
+# [[../appunti-completi#13-dove-inserire-il-codice-javascript-in-html|Dove Inserire il Codice JavaScript in HTML]]
 
 Per far interagire JavaScript con una pagina web, è necessario includere il codice nel documento HTML. Questo si fa tramite il tag `<script>`, che può essere posizionato in punti diversi del file. La posizione e gli attributi usati (async, defer) hanno un impatto significativo sul caricamento della pagina e sulle performance.
 

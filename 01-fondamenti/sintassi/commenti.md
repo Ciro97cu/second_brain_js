@@ -1,6 +1,4 @@
-# Commenti nel Codice
-
-**Appunti Completi**: [[../../appunti-completi#22-commenti-nel-codice-code-comments]]
+# [[../../appunti-completi#22-commenti-nel-codice-code-comments|Commenti nel Codice]]
 
 Il codice non viene scritto solo per il computer, ma anche e soprattutto per gli **esseri umani** (altri sviluppatori o il "te stesso" del futuro). Per questo, è fondamentale scrivere codice che sia non solo funzionante, ma anche **chiaro e comprensibile**.
 

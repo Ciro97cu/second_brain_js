@@ -1,6 +1,4 @@
-# Operatori Speciali
-
-**Appunti Completi**: [[../../appunti-completi#5-operatori]]
+# [[../../appunti-completi#5-operatori|Operatori Speciali]]
 
 Operatori con comportamenti particolari per casi d'uso specifici.
 

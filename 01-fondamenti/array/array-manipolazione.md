@@ -1,6 +1,4 @@
-# Manipolazione Array
-
-**Appunti Completi**: [[../../appunti-completi#37-array]]
+# [[../../appunti-completi#37-array|Manipolazione Array]]
 
 Metodi per **aggiungere** o **rimuovere** elementi da un array. Tutti questi metodi **modificano l'array originale**.
 

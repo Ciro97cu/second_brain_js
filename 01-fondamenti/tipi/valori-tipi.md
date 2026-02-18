@@ -1,6 +1,4 @@
-# Valori e Tipi (Values & Types)
-
-**Appunti Completi**: [[../../appunti-completi#31-valori-e-tipi-values--types]]
+# [[../../appunti-completi#31-valori-e-tipi-values--types|Valori e Tipi (Values & Types)]]
 
 I dati in JavaScript sono rappresentati attraverso tipi (types). JavaScript fornisce tipi primitivi built-in per gestire diverse categorie di informazioni.
 

@@ -1,6 +1,4 @@
-# Operatori Matematici (Arithmetic)
-
-**Appunti Completi**: [[../../appunti-completi#5-operatori]]
+# [[../../appunti-completi#5-operatori|Operatori Matematici (Arithmetic)]]
 
 Gli operatori matematici eseguono operazioni aritmetiche su valori numerici.
 

@@ -1,6 +1,4 @@
-# Ciclo while
-
-**Appunti Completi**: [[../../appunti-completi#28-cicli-loops]]
+# [[../../appunti-completi#28-cicli-loops|Ciclo while]]
 
 Il ciclo `while` è una delle forme più semplici di ciclo. La sua logica è: **"mentre questa condizione è vera, continua a eseguire il blocco di codice"**.
 

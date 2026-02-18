@@ -1,8 +1,4 @@
-# Strict Mode ("Modalità Stretta")
-
-**Tipo**: Best Practice
-
-**Appunti Completi**: [[../../appunti-completi#29-strict-mode]]
+# [[../../appunti-completi#29-strict-mode|Strict Mode ("Modalità Stretta")]]
 
 Introdotta in **ECMAScript 5 (ES5)**, la **strict mode** attiva regole più restrittive per il codice JavaScript. L'obiettivo è rendere il codice più **sicuro**, **robusto** e meno incline a errori, trasformando "errori silenziosi" in errori espliciti.
 

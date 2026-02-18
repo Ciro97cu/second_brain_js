@@ -1,8 +1,4 @@
-# Closure (Chiusura)
-
-**Tipo**: Concetto Fondamentale
-
-**Appunti Completi**: [[../../appunti-completi#39-closure-chiusura]]
+# [[../../appunti-completi#39-closure-chiusura|Closure (Chiusura)]]
 
 La **Closure** (o chiusura) è uno dei concetti più importanti in JavaScript. È la capacità di una funzione di **"ricordare"** e accedere al proprio scope anche dopo che la funzione esterna ha terminato l'esecuzione.
 

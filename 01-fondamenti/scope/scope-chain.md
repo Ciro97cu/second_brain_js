@@ -1,6 +1,4 @@
-# Scope Chain (Catena degli Scope)
-
-**Appunti Completi**: [[../../appunti-completi#44-scope-ambito]]
+# [[../../appunti-completi#44-scope-ambito|Scope Chain (Catena degli Scope)]]
 
 La **scope chain** è il meccanismo che permette al codice di cercare variabili risalendo attraverso scope annidati.
 

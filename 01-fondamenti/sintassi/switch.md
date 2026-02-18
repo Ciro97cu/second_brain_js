@@ -1,6 +1,4 @@
-# Switch
-
-**Appunti Completi**: [[../../appunti-completi#27-switch]]
+# [[../../appunti-completi#27-switch|Switch]]
 
 Quando si ha la necessità di confrontare una singola variabile o espressione con una serie di valori specifici, una lunga catena di `if...else if` può diventare verbosa.
 

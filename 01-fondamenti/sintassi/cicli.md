@@ -1,6 +1,4 @@
-# Cicli (Loops)
-
-**Appunti Completi**: [[../../appunti-completi#28-cicli-loops]]
+# [[../../appunti-completi#28-cicli-loops|Cicli (Loops)]]
 
 I **cicli** (loops) sono strutture fondamentali in programmazione che permettono di eseguire un blocco di codice ripetutamente, finché una determinata condizione rimane vera.
 

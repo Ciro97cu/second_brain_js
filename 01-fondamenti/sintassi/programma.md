@@ -1,12 +1,4 @@
-# Programma
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026  
-**Appunti Completi**: [[../../appunti-completi#21-programma]]
-
----
-
-## Descrizione
+# [[../../appunti-completi#21-programma|Programma]]
 
 Un programma, o codice, è un insieme di istruzioni che dicono al computer cosa fare.
 

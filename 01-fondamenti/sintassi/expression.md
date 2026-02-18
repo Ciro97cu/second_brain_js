@@ -1,12 +1,4 @@
-# Expression (Espressione)
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026  
-**Appunti Completi**: [[../../appunti-completi#24-expression-espressione]]
-
----
-
-## Descrizione
+# [[../../appunti-completi#24-expression-espressione|Expression (Espressione)]]
 
 Le istruzioni sono composte da una o più espressioni. Un'espressione è un qualsiasi pezzo di codice che produce un valore, come un riferimento a una variabile o una combinazione di valori e operatori.
 

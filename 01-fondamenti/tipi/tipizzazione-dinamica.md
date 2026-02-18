@@ -1,13 +1,4 @@
-# Tipizzazione Dinamica (Dynamic Typing)
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026
-
-**Appunti Completi**: [[../../appunti-completi#32-tipizzazione-dinamica-dynamic-typing]]
-
----
-
-## Descrizione
+# [[../../appunti-completi#32-tipizzazione-dinamica-dynamic-typing|Tipizzazione Dinamica (Dynamic Typing)]]
 
 JavaScript è un linguaggio a tipizzazione dinamica. Questo significa che una variabile non è legata a un tipo di dato specifico. La stessa variabile può contenere un number in un momento, e una string in un momento successivo. Questa flessibilità permette di usare una singola variabile per rappresentare un valore che cambia forma nel corso del programma.
 

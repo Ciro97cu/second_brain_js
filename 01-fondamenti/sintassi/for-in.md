@@ -1,6 +1,4 @@
-# Ciclo for...in
-
-**Appunti Completi**: [[../../appunti-completi#28-cicli-loops]]
+# [[../../appunti-completi#28-cicli-loops|Ciclo for...in]]
 
 Il ciclo `for...in` è specifico per iterare sulle **proprietà enumerabili** di un oggetto.
 

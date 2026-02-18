@@ -1,12 +1,4 @@
-# Che cos'è Javascript
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026  
-**Appunti Completi**: [[../appunti-completi#11-che-cosè-javascript]]
-
----
-
-## Descrizione
+# [[../appunti-completi#11-che-cosè-javascript|Che cos'è Javascript]]
 
 JavaScript (JS) è un linguaggio di programmazione versatile, comunemente usato per creare interattività nelle pagine web. Permette di manipolare dinamicamente i contenuti, animare elementi, gestire eventi (come il click di un pulsante) e comunicare con un server per aggiornare parti della pagina senza doverla ricaricare completamente.
 

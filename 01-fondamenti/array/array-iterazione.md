@@ -1,6 +1,4 @@
-# Iterazione e Trasformazione Array
-
-**Appunti Completi**: [[../../appunti-completi#37-array]]
+# [[../../appunti-completi#37-array|Iterazione e Trasformazione Array]]
 
 Metodi **higher-order functions** che eseguono operazioni su ogni elemento. Molti creano **nuovo array** senza modificare l'originale.
 

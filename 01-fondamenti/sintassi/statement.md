@@ -1,12 +1,4 @@
-# Statement (Istruzione)
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026  
-**Appunti Completi**: [[../../appunti-completi#23-statement-istruzione]]
-
----
-
-## Descrizione
+# [[../../appunti-completi#23-statement-istruzione|Statement (Istruzione)]]
 
 Un'istruzione è un comando che esegue un compito specifico. Un programma è composto da una serie di istruzioni.
 

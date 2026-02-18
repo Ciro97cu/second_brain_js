@@ -1,13 +1,4 @@
-# Variabili (Variables)
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026
-
-**Appunti Completi**: [[../../appunti-completi#41-dichiarazione-variabili-let-const-var]]
-
----
-
-## Descrizione
+# [[../../appunti-completi#41-dichiarazione-variabili-let-const-var|Variabili (Variables)]]
 
 Un programma ha bisogno di "ricordare" dei valori che possono cambiare durante la sua esecuzione. Per fare ciò, si utilizzano le variabili: contenitori simbolici a cui viene assegnato un nome e che possono contenere dati. La funzione primaria delle variabili è gestire lo stato (state) del programma, ovvero tenere traccia dei valori mentre cambiano.
 

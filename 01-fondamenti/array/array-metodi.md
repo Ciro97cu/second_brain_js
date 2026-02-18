@@ -1,6 +1,4 @@
-# Metodi Utility Array
-
-**Appunti Completi**: [[../../appunti-completi#37-array]]
+# [[../../appunti-completi#37-array|Metodi Utility Array]]
 
 Metodi utili per **ricerca**, **verifica** e **copia** di array.
 

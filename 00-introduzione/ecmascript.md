@@ -1,12 +1,4 @@
-# ECMAScript
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026  
-**Appunti Completi**: [[../appunti-completi#12-ecmascript]]
-
----
-
-## Descrizione
+# [[../appunti-completi#12-ecmascript|ECMAScript]]
 
 ECMAScript è una specifica, uno standard tecnico, che definisce le regole, le funzionalità e il comportamento che un linguaggio di scripting deve avere. Non è un linguaggio di programmazione, ma la "ricetta" su cui si basano diversi linguaggi.
 

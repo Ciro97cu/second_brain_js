@@ -1,6 +1,4 @@
-# Blocchi di Codice (Code Blocks)
-
-**Appunti Completi**: [[../../appunti-completi#25-blocchi-di-codice-code-blocks]]
+# [[../../appunti-completi#25-blocchi-di-codice-code-blocks|Blocchi di Codice (Code Blocks)]]
 
 Un **blocco** (block) è un gruppo di una o più istruzioni racchiuse tra parentesi graffe `{ ... }`. Raggruppa istruzioni che appartengono logicamente insieme, creando un'unità di codice trattata come singolo elemento.
 

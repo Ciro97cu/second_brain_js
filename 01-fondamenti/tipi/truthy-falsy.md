@@ -1,6 +1,4 @@
-# Valori Truthy e Falsy
-
-**Appunti Completi**: [[../../appunti-completi#34-valori-truthy-e-falsy]]
+# [[../../appunti-completi#34-valori-truthy-e-falsy|Valori Truthy e Falsy]]
 
 In JavaScript, quando un valore non booleano viene usato in un **contesto che si aspetta un booleano** (come la condizione di un `if` o l'operando di un operatore logico), il linguaggio lo converte implicitamente in `true` o `false`.
 

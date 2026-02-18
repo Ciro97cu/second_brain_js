@@ -1,8 +1,4 @@
-# Module Pattern
-
-**Tipo**: Design Pattern
-
-**Appunti Completi**: [[../../appunti-completi#310-module-pattern]]
+# [[../../appunti-completi#310-module-pattern|Module Pattern]]
 
 L'uso più comune della closure in JavaScript è il **Module Pattern**. Permette di definire dettagli **privati** (variabili e funzioni nascoste) e un'**interfaccia pubblica** (API esposta). È una tecnica fondamentale per l'**incapsulamento** e l'**organizzazione del codice**.
 

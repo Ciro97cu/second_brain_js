@@ -1,13 +1,4 @@
-# Hoisting delle Variabili
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026
-
-**Appunti Completi**: [[../../appunti-completi#43-hoisting-delle-variabili]]
-
----
-
-## Descrizione
+# [[../../appunti-completi#43-hoisting-delle-variabili|Hoisting delle Variabili]]
 
 L'hoisting (letteralmente "sollevamento") è un meccanismo di JavaScript che riguarda il modo in cui le dichiarazioni di variabili vengono processate dal motore del linguaggio. Durante la fase di compilazione, che precede l'esecuzione, è come se le dichiarazioni venissero concettualmente "sollevate" in cima al loro scope di appartenenza.
 

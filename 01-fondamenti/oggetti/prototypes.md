@@ -1,8 +1,4 @@
-# Prototipi (Prototypes)
-
-**Tipo**: Concetto Fondamentale
-
-**Appunti Completi**: [[../../appunti-completi#312-prototipi-prototypes]]
+# [[../../appunti-completi#312-prototipi-prototypes|Prototipi (Prototypes)]]
 
 Il meccanismo dei **prototipi** (prototype) in JavaScript funziona come un sistema di **"fallback"** per le proprietà degli oggetti.
 

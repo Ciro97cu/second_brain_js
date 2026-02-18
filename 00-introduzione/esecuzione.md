@@ -1,12 +1,4 @@
-# Esecuzione
-
-**Tipo**: Nuovo Topic  
-**Data**: 13 Febbraio 2026  
-**Appunti Completi**: [[../appunti-completi#14-esecuzione]]
-
----
-
-## Descrizione
+# [[../appunti-completi#14-esecuzione|Esecuzione]]
 
 Per poter eseguire (to execute o run) le istruzioni, un programma deve essere tradotto in un formato che il computer possa comprendere. Questo compito è svolto da programmi speciali chiamati interpreti (interpreters) o compilatori (compilers).
 

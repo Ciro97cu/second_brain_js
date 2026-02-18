@@ -1,6 +1,4 @@
-# Ciclo do...while
-
-**Appunti Completi**: [[../../appunti-completi#28-cicli-loops]]
+# [[../../appunti-completi#28-cicli-loops|Ciclo do...while]]
 
 Il ciclo `do...while` è molto simile al `while`, ma con una differenza cruciale: la condizione viene controllata **dopo** ogni iterazione.
 

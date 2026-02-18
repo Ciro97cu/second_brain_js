@@ -1,6 +1,4 @@
-# break e continue
-
-**Appunti Completi**: [[../../appunti-completi#28-cicli-loops]]
+# [[../../appunti-completi#28-cicli-loops|break e continue]]
 
 JavaScript offre due parole chiave per controllare il flusso di esecuzione all'interno dei cicli: `break` per interrompere completamente un ciclo e `continue` per saltare l'iterazione corrente.
 

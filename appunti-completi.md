@@ -3036,15 +3036,15 @@ john.login("john", "password123");
 
 Analizziamo il funzionamento:
 
-**Scope Esterno** → La funzione `User()` agisce come uno scope esterno che contiene le variabili `username` e `password`, e la funzione `doLogin()`. Questi elementi sono privati e non possono essere raggiunti direttamente dall'esterno.
+1. **Scope Esterno** → La funzione `User()` agisce come uno scope esterno che contiene le variabili `username` e `password`, e la funzione `doLogin()`. Questi elementi sono privati e non possono essere raggiunti direttamente dall'esterno.
 
-**Creazione dell'Istanza** → Eseguendo `User()`, si crea un'istanza del modulo. Viene generato un nuovo scope e, di conseguenza, una nuova copia di tutte le variabili e funzioni interne. L'oggetto restituito, `publicAPI`, viene assegnato alla variabile `fred`. Se si eseguisse di nuovo `User()`, si otterrebbe una nuova istanza completamente separata da `fred`.
+2. **Creazione dell'Istanza** → Eseguendo `User()`, si crea un'istanza del modulo. Viene generato un nuovo scope e, di conseguenza, una nuova copia di tutte le variabili e funzioni interne. L'oggetto restituito, `publicAPI`, viene assegnato alla variabile `fred`. Se si eseguisse di nuovo `User()`, si otterrebbe una nuova istanza completamente separata da `fred`.
 
-**Nota** → Si usa `User()` e non `new User()` perché `User` è una semplice funzione che funge da factory, non una classe da istanziare. L'uso di `new` in questo contesto sarebbe inappropriato.
+3. **Nota** → Si usa `User()` e non `new User()` perché `User` è una semplice funzione che funge da factory, non una classe da istanziare. L'uso di `new` in questo contesto sarebbe inappropriato.
 
-**API Pubblica** → L'oggetto `publicAPI` contiene i metodi che si vogliono rendere pubblici. In questo caso, ha una sola proprietà, `login`, che è un riferimento alla funzione interna `doLogin()`.
+4. **API Pubblica** → L'oggetto `publicAPI` contiene i metodi che si vogliono rendere pubblici. In questo caso, ha una sola proprietà, `login`, che è un riferimento alla funzione interna `doLogin()`.
 
-**Il Ruolo della Closure** → Quando la funzione `User()` termina la sua esecuzione, le sue variabili interne (`username`, `password`) non vengono distrutte. Esse vengono "mantenute in vita" dalla closure creata dalla funzione `doLogin()`. Per questo motivo, quando si chiama `fred.login(...)`, la funzione `doLogin` può ancora accedere e modificare le variabili `username` e `password` definite nel suo scope genitore.
+5. **Il Ruolo della Closure** → Quando la funzione `User()` termina la sua esecuzione, le sue variabili interne (`username`, `password`) non vengono distrutte. Esse vengono "mantenute in vita" dalla closure creata dalla funzione `doLogin()`. Per questo motivo, quando si chiama `fred.login(...)`, la funzione `doLogin` può ancora accedere e modificare le variabili `username` e `password` definite nel suo scope genitore.
 
 In sintesi, il Module Pattern sfrutta le closure per creare uno stato privato e un'interfaccia pubblica, un concetto chiave per scrivere codice robusto e manutenibile.
 
@@ -3275,13 +3275,13 @@ new foo(); // undefined (new binding)
 
 Esistono quattro regole principali che determinano il valore di `this`, illustrate nelle ultime quattro righe dell'esempio:
 
-**Chiamata diretta (`foo()`)** → Quando una funzione viene chiamata direttamente, senza un contesto specifico, `this` viene associato all'oggetto globale (in un browser, `window`). Questo è noto come **default binding**. Di conseguenza, `this.bar` si risolve in `window.bar`, che ha il valore `"global"`. (In strict mode, `this` sarebbe `undefined` e l'accesso a `this.bar` genererebbe un errore).
+1. **Chiamata diretta (`foo()`)** → Quando una funzione viene chiamata direttamente, senza un contesto specifico, `this` viene associato all'oggetto globale (in un browser, `window`). Questo è noto come **default binding**. Di conseguenza, `this.bar` si risolve in `window.bar`, che ha il valore `"global"`. (In strict mode, `this` sarebbe `undefined` e l'accesso a `this.bar` genererebbe un errore).
 
-**Chiamata come metodo (`obj1.foo()`)** → Quando una funzione viene chiamata come metodo di un oggetto, `this` punta all'oggetto stesso che contiene il metodo. Questo è l'**implicit binding**. In questo caso, `this` è `obj1`, quindi `this.bar` vale `"obj1"`.
+2. **Chiamata come metodo (`obj1.foo()`)** → Quando una funzione viene chiamata come metodo di un oggetto, `this` punta all'oggetto stesso che contiene il metodo. Questo è l'**implicit binding**. In questo caso, `this` è `obj1`, quindi `this.bar` vale `"obj1"`.
 
-**Chiamata esplicita (`foo.call(obj2)`)** → È possibile impostare esplicitamente il valore di `this` usando i metodi `.call()` o `.apply()`. Questo è l'**explicit binding**. Qui, `this` viene forzato a essere `obj2`, quindi `this.bar` vale `"obj2"`.
+3. **Chiamata esplicita (`foo.call(obj2)`)** → È possibile impostare esplicitamente il valore di `this` usando i metodi `.call()` o `.apply()`. Questo è l'**explicit binding**. Qui, `this` viene forzato a essere `obj2`, quindi `this.bar` vale `"obj2"`.
 
-**Chiamata con new (`new foo()`)** → Quando una funzione viene usata come costruttore con la parola chiave `new`, `this` viene associato a un nuovo oggetto vuoto creato per l'occasione. Questo è il **new binding**. Poiché questo nuovo oggetto non ha una proprietà `bar`, `this.bar` risulta `undefined`.
+4. **Chiamata con new (`new foo()`)** → Quando una funzione viene usata come costruttore con la parola chiave `new`, `this` viene associato a un nuovo oggetto vuoto creato per l'occasione. Questo è il **new binding**. Poiché questo nuovo oggetto non ha una proprietà `bar`, `this.bar` risulta `undefined`.
 
 In conclusione, per capire a cosa si riferisce `this`, è necessario esaminare il punto esatto in cui la funzione viene chiamata. Il contesto di quella chiamata determinerà il valore di `this` secondo una di queste quattro regole.
 
@@ -3465,11 +3465,11 @@ test(); // undefined o errore in strict mode
 
 ### 3.12 Prototipi (Prototypes)
 
-Il meccanismo dei prototipi (prototype) in JavaScript è un concetto fondamentale, anche se complesso. Funziona come un sistema di "fallback" per le proprietà degli oggetti.
+Il meccanismo dei prototipi (prototype) in JavaScript funziona come un sistema di "fallback" per le proprietà di un oggetto.
 
-Quando si cerca di accedere a una proprietà su un oggetto e questa non viene trovata, JavaScript utilizza automaticamente un riferimento interno al prototipo di quell'oggetto per cercare la proprietà su un altro oggetto collegato. Questo collegamento tra un oggetto e il suo prototipo viene stabilito al momento della creazione dell'oggetto.
+Quando si cerca di accedere a una proprietà su un oggetto, se la proprietà non viene trovata, JavaScript può utilizzare automaticamente un riferimento interno (il prototipo) dell'oggetto per cercare la proprietà su un altro oggetto. Questo collegamento tra un oggetto e il suo prototipo viene stabilito al momento della creazione dell'oggetto.
 
-Il modo più semplice per illustrare questo concetto è tramite la funzione `Object.create()`.
+Il modo più semplice per illustrare il concetto è mostrato dalla funzione Object.create().
 
 ```javascript
 var foo = {
@@ -3479,25 +3479,34 @@ var foo = {
 // Crea `bar` e lo collega a `foo`
 var bar = Object.create(foo);
 
-console.log(bar.a); // 42
+bar.a; // 42
 ```
 
-In questo esempio, la proprietà `"a"` non esiste direttamente sull'oggetto `bar`. Tuttavia, poiché `bar` è collegato tramite prototipo a `foo`, JavaScript "risale" la catena dei prototipi, trova la proprietà `"a"` su `foo` e ne restituisce il valore. Questo processo è noto come **delega** (delegation).
+La proprietà "a" non esiste sull'oggetto bar, ma poiché bar è collegato tramite prototipo a foo, JavaScript risale automaticamente la catena dei prototipi fino a foo, trova la proprietà "a" e ne restituisce il valore.
 
-Questo meccanismo viene spesso utilizzato (o, secondo alcuni, "abusato") per emulare il concetto di "classi" e "ereditarietà" tipico di altri linguaggi. Tuttavia, un approccio più naturale e in linea con la natura di JavaScript è il pattern della **Behavior Delegation** (delega del comportamento). Con questo pattern, gli oggetti vengono progettati intenzionalmente per delegare parti del loro comportamento ad altri oggetti a cui sono collegati, creando catene di oggetti che collaborano tra loro.
+Questo collegamento avviene principalmente quando si usa Object.create(). Quando si fa riferimento a bar.a, JavaScript controlla prima se bar ha una proprietà chiamata a. Non avendola, utilizza il collegamento prototipale verso foo per controllare lì. In questo caso, bar "delega" a foo la ricerca della proprietà.
 
-#### Riflessione sull'Uso dei Prototipi nello Sviluppo Moderno
+Il meccanismo dei prototipi viene spesso utilizzato (o abusato) per emulare il concetto di "classi" e "ereditarietà" tipico di altri linguaggi. Il punto di vista più naturale e coerente con JavaScript è invece la behavior delegation (delega del comportamento), in cui gli oggetti sono progettati per delegare parti del loro comportamento ad altri oggetti a cui sono collegati.
 
-Nello sviluppo front-end contemporaneo, specialmente utilizzando framework come Angular, React o Vue, è raro che uno sviluppatore si trovi a manipolare direttamente i prototipi degli oggetti. Questo porta a chiedersi quale sia la loro reale utilità pratica.
+**Uso implicito dei prototipi**  
+I prototipi vengono utilizzati continuamente in modo implicito:
 
-La risposta è che i prototipi vengono utilizzati costantemente, ma in modo implicito, poiché sono un dettaglio implementativo fondamentale del linguaggio, nascosto da livelli di astrazione più moderni.
+- Quando si usano metodi come .map(), .filter() o .forEach() su un array, questi non sono duplicati su ogni array creato: risiedono su Array.prototype e l'array delega a questo prototipo l'esecuzione.
+- Lo stesso avviene con metodi come .toString() o .hasOwnProperty(), ereditati da Object.prototype.
+- Anche il DOM funziona tramite prototipi: ogni elemento eredita metodi come .addEventListener() da prototipi come HTMLElement.prototype e EventTarget.prototype.
 
-#### L'Astrazione delle Classi ES6
+**Perché è ancora importante conoscerli?**
 
-Il motivo principale per cui non si interagisce più direttamente con i prototipi è l'introduzione della sintassi `class` in ECMAScript 2015 (ES6). Questa sintassi è in realtà solo **zucchero sintattico** (syntactic sugar) che astrae la manipolazione del prototipo.
+- **Debugging** → Capire la catena prototipale aiuta a diagnosticare errori come TypeError: is not a function e a ispezionare quali metodi sono disponibili su un oggetto.
+- **Performance** → Sapere che i metodi sul prototipo sono condivisi tra tutte le istanze chiarisce perché questo approccio sia efficiente in termini di memoria.
+- **Librerie e framework** → Alcune librerie (specialmente quelle più vecchie o ottimizzate) manipolano direttamente i prototipi.
+- **Polyfilling** → Per supportare funzionalità moderne in browser più vecchi, è spesso necessario modificare i prototipi di oggetti nativi (es. Array.prototype).
+
+**Classi ES6 e prototipi**
+
+La sintassi class introdotta in ES6 è solo zucchero sintattico (syntactic sugar) che astrae la manipolazione del prototipo:
 
 ```javascript
-// ES6
 class Person {
   constructor(name) {
     this.name = name;
@@ -3508,10 +3517,9 @@ class Person {
 }
 ```
 
-Sotto il cofano, viene tradotto da JavaScript in un'operazione basata sui prototipi, simile a come si scriveva prima di ES6:
+Sotto il cofano, viene tradotto in:
 
 ```javascript
-// Pre-ES6
 function Person(name) {
   this.name = name;
 }
@@ -3520,31 +3528,388 @@ Person.prototype.greet = function () {
 };
 ```
 
-Ogni volta che si definisce una classe e i suoi metodi, si sta quindi utilizzando il sistema dei prototipi.
+Ogni volta che si usa una classe, si sta quindi utilizzando i prototipi.
 
-#### Esempi di Uso Implicito dei Prototipi
+#### Esempi di Codice
 
-L'interazione con la catena dei prototipi (prototype chain) avviene continuamente:
+```javascript
+/*
+ * 1. Object.create() - Collegamento Base
+ */
 
-- **Metodi degli Array** → Metodi come `.map()`, `.filter()` o `.forEach()` non sono duplicati su ogni singolo array creato. Essi risiedono su `Array.prototype` e ogni istanza di array delega a questo prototipo l'esecuzione di tali metodi.
+var animale = {
+  tipo: "Animale",
+  respira: function () {
+    console.log(this.tipo + " sta respirando");
+  },
+};
 
-- **Metodi degli Oggetti** → Lo stesso principio si applica a metodi come `.toString()` o `.hasOwnProperty()`, che sono ereditati da `Object.prototype`.
+// Crea un oggetto collegato ad 'animale'
+var cane = Object.create(animale);
+cane.tipo = "Cane";
+cane.abbaia = function () {
+  console.log("Bau bau!");
+};
 
-- **Il DOM** → Ogni elemento del DOM è un oggetto che eredita metodi come `.addEventListener()` o `.querySelector()` da prototipi come `HTMLElement.prototype` e `EventTarget.prototype`.
+cane.respira(); // "Cane sta respirando" - delega a animale
+cane.abbaia(); // "Bau bau!" - metodo proprio
 
-#### Perché è Ancora Importante Conoscerli?
+// Verifica della catena prototipale
+console.log(cane.hasOwnProperty("tipo")); // true - proprietà propria
+console.log(cane.hasOwnProperty("respira")); // false - ereditata dal prototipo
 
-Comprendere il funzionamento dei prototipi rimane una competenza cruciale per uno sviluppatore JavaScript per diverse ragioni:
+/*
+ * 2. Catena dei Prototipi - Lookup Delegation
+ */
 
-- **Debugging** → La conoscenza della catena prototipale aiuta a diagnosticare errori come `TypeError: is not a function`, permettendo di ispezionare quali metodi sono realmente disponibili su un oggetto e sui suoi prototipi.
+var livello1 = {
+  a: 1,
+};
 
-- **Performance** → Capire che i metodi sul prototipo sono condivisi tra tutte le istanze di un oggetto chiarisce perché questo approccio sia efficiente in termini di memoria.
+var livello2 = Object.create(livello1);
+livello2.b = 2;
 
-- **Comprensione di Librerie e Framework** → Molte librerie, specialmente quelle più datate o quelle ottimizzate per le massime prestazioni, possono manipolare i prototipi direttamente. Conoscerne i meccanismi permette di usarle con maggiore consapevolezza.
+var livello3 = Object.create(livello2);
+livello3.c = 3;
 
-- **Polyfilling** → Per garantire la compatibilità con browser meno recenti, a volte è necessario implementare manualmente funzionalità moderne mancanti (un polyfill), operazione che spesso richiede di estendere il prototipo di oggetti nativi (es. `Array.prototype`).
+// JavaScript risale la catena finché non trova la proprietà
+console.log(livello3.c); // 3 - trovata su livello3
+console.log(livello3.b); // 2 - trovata su livello2 (prototipo)
+console.log(livello3.a); // 1 - trovata su livello1 (prototipo del prototipo)
+console.log(livello3.d); // undefined - non trovata in nessun livello
 
-In conclusione, sebbene la manipolazione diretta dei prototipi sia diventata rara nella pratica quotidiana, essi costituiscono il motore del sistema a oggetti di JavaScript. La loro comprensione è fondamentale per padroneggiare il linguaggio a un livello più profondo, andando oltre le astrazioni fornite dalla sintassi moderna.
+// Shadowing - proprietà con stesso nome
+livello3.a = 100; // Non modifica livello1.a, crea nuova proprietà
+console.log(livello3.a); // 100
+console.log(livello1.a); // 1 - rimane invariato
+
+/*
+ * 3. ES6 Class vs Prototype - Confronto
+ */
+
+// Sintassi ES6 Class
+class VeicoloClass {
+  constructor(marca, modello) {
+    this.marca = marca;
+    this.modello = modello;
+  }
+
+  descrizione() {
+    return this.marca + " " + this.modello;
+  }
+
+  avvia() {
+    return "Avvio del veicolo...";
+  }
+}
+
+// Equivalente con Prototype (pre-ES6)
+function VeicoloProto(marca, modello) {
+  this.marca = marca;
+  this.modello = modello;
+}
+
+VeicoloProto.prototype.descrizione = function () {
+  return this.marca + " " + this.modello;
+};
+
+VeicoloProto.prototype.avvia = function () {
+  return "Avvio del veicolo...";
+};
+
+// Utilizzo identico
+var auto1 = new VeicoloClass("Fiat", "500");
+var auto2 = new VeicoloProto("Fiat", "Panda");
+
+console.log(auto1.descrizione()); // "Fiat 500"
+console.log(auto2.descrizione()); // "Fiat Panda"
+
+// Entrambi usano i prototipi sotto
+console.log(auto1.descrizione === auto1.__proto__.descrizione); // true
+console.log(auto2.descrizione === auto2.__proto__.descrizione); // true
+
+/*
+ * 4. Array.prototype - Metodi Condivisi
+ */
+
+var numeri1 = [1, 2, 3];
+var numeri2 = [4, 5, 6];
+
+// I metodi NON sono duplicati - risiedono su Array.prototype
+console.log(numeri1.map === numeri2.map); // true - stesso riferimento
+console.log(numeri1.filter === Array.prototype.filter); // true
+
+// Ogni array delega al prototipo
+console.log(numeri1.hasOwnProperty("map")); // false - non è proprietà propria
+console.log(Array.prototype.hasOwnProperty("map")); // true - sul prototipo
+
+// Questo risparmia memoria: migliaia di array condividono gli stessi metodi
+var arrayGrande = new Array(10000);
+// Non contiene copie di map, filter, reduce, ecc.
+// Tutte le chiamate delegano ad Array.prototype
+
+/*
+ * 5. Object.prototype - Metodi Universali
+ */
+
+var persona = {
+  nome: "Mario",
+  eta: 30,
+};
+
+// toString() è ereditato da Object.prototype
+console.log(persona.toString()); // "[object Object]"
+console.log(persona.hasOwnProperty("toString")); // false
+
+// hasOwnProperty() stesso è su Object.prototype
+console.log(persona.hasOwnProperty("nome")); // true
+console.log(Object.prototype.hasOwnProperty("hasOwnProperty")); // true
+
+// Tutti gli oggetti hanno Object.prototype nella catena
+var array = [];
+var funzione = function () {};
+var data = new Date();
+
+console.log(array.hasOwnProperty); // ereditato da Object.prototype
+console.log(funzione.hasOwnProperty); // ereditato da Object.prototype
+console.log(data.hasOwnProperty); // ereditato da Object.prototype
+
+/*
+ * 6. DOM - Catena Prototipale degli Elementi
+ */
+
+// Esempio concettuale (richiede ambiente browser)
+/*
+var button = document.querySelector('button');
+
+// Catena prototipale del DOM:
+// button (HTMLButtonElement instance)
+//   └─> HTMLButtonElement.prototype
+//       └─> HTMLElement.prototype
+//           └─> Element.prototype
+//               └─> Node.prototype
+//                   └─> EventTarget.prototype
+//                       └─> Object.prototype
+//                           └─> null
+
+// addEventListener() proviene da EventTarget.prototype
+button.addEventListener('click', function() {
+  console.log('Clicked!');
+});
+
+// querySelector() proviene da Element.prototype (con override in Document)
+// innerHTML proviene da Element.prototype
+// appendChild() proviene da Node.prototype
+
+console.log(button.hasOwnProperty('addEventListener')); // false
+console.log(EventTarget.prototype.hasOwnProperty('addEventListener')); // true
+*/
+
+/*
+ * 7. Polyfill - Estendere Prototipi Nativi
+ */
+
+// Polyfill per Array.prototype.includes (per browser vecchi)
+if (!Array.prototype.includes) {
+  Array.prototype.includes = function (searchElement, fromIndex) {
+    // Verifica che this sia un oggetto
+    if (this == null) {
+      throw new TypeError('"this" è null o undefined');
+    }
+
+    var array = Object(this);
+    var length = parseInt(array.length) || 0;
+
+    // Nessun elemento da cercare
+    if (length === 0) {
+      return false;
+    }
+
+    var startIndex = parseInt(fromIndex) || 0;
+    var currentIndex;
+
+    if (startIndex >= 0) {
+      currentIndex = startIndex;
+    } else {
+      // Indice negativo: parte dalla fine
+      currentIndex = length + startIndex;
+      if (currentIndex < 0) {
+        currentIndex = 0;
+      }
+    }
+
+    // Cerca l'elemento
+    while (currentIndex < length) {
+      var currentElement = array[currentIndex];
+
+      // Gestisce NaN (NaN === NaN è false, ma dovrebbe trovarlo)
+      if (
+        searchElement === currentElement ||
+        (searchElement !== searchElement && currentElement !== currentElement)
+      ) {
+        return true;
+      }
+
+      currentIndex++;
+    }
+
+    return false;
+  };
+}
+
+// Ora tutti gli array hanno includes(), anche in browser vecchi
+var frutti = ["mela", "banana", "arancia"];
+console.log(frutti.includes("banana")); // true
+console.log(frutti.includes("uva")); // false
+
+/*
+ * 8. Debugging - Ispezionare la Catena Prototipale
+ */
+
+var obj = {
+  nome: "Test",
+};
+
+// Ottenere il prototipo di un oggetto
+var proto = Object.getPrototypeOf(obj);
+console.log(proto); // Object.prototype
+console.log(proto === Object.prototype); // true
+
+// Verifica se un oggetto è nel prototipo di un altro
+console.log(Object.prototype.isPrototypeOf(obj)); // true
+
+// Creare oggetto senza prototipo (per dizionari puri)
+var dizionarioPuro = Object.create(null);
+console.log(Object.getPrototypeOf(dizionarioPuro)); // null
+// dizionarioPuro.toString(); // ❌ Errore! Non ha metodi ereditati
+
+// Elencare proprietà proprie vs ereditate
+var animale = {
+  respira: true,
+};
+
+var gatto = Object.create(animale);
+gatto.miagola = true;
+
+console.log("--- Proprietà proprie ---");
+for (var prop in gatto) {
+  if (gatto.hasOwnProperty(prop)) {
+    console.log(prop + ": " + gatto[prop]); // "miagola: true"
+  }
+}
+
+console.log("--- Tutte le proprietà (incluse ereditate) ---");
+for (var prop in gatto) {
+  console.log(prop + ": " + gatto[prop]);
+  // "miagola: true"
+  // "respira: true"
+}
+
+// Object.keys() restituisce solo proprietà proprie
+console.log(Object.keys(gatto)); // ["miagola"]
+
+/*
+ * 9. Behavior Delegation Pattern
+ */
+
+// Invece di simulare classi/ereditarietà, delegare comportamento
+
+var Controller = {
+  errors: [],
+  mostraErrori: function () {
+    console.log("Errori: " + this.errors.join(", "));
+  },
+  aggiungiErrore: function (msg) {
+    this.errors.push(msg);
+  },
+};
+
+// LoginController delega a Controller
+var LoginController = Object.create(Controller);
+
+LoginController.errors = [];
+LoginController.login = function (username, password) {
+  if (!username) {
+    this.aggiungiErrore("Username mancante");
+  }
+  if (!password) {
+    this.aggiungiErrore("Password mancante");
+  }
+
+  if (this.errors.length === 0) {
+    console.log("Login riuscito per " + username);
+  } else {
+    this.mostraErrori();
+  }
+};
+
+LoginController.login("", ""); // "Errori: Username mancante, Password mancante"
+
+// RegisterController delega a Controller
+var RegisterController = Object.create(Controller);
+
+RegisterController.errors = [];
+RegisterController.register = function (username, password, email) {
+  if (!email) {
+    this.aggiungiErrore("Email mancante");
+  }
+  if (password.length < 8) {
+    this.aggiungiErrore("Password troppo corta");
+  }
+
+  if (this.errors.length === 0) {
+    console.log("Registrazione riuscita per " + username);
+  } else {
+    this.mostraErrori();
+  }
+};
+
+RegisterController.register("mario", "123", ""); // "Errori: Email mancante, Password troppo corta"
+
+// Ogni controller ha il proprio stato (errors) ma delega metodi comuni (mostraErrori, aggiungiErrore)
+
+/*
+ * 10. Performance - Memoria Condivisa
+ */
+
+// ❌ INEFFICIENTE: metodi duplicati per ogni istanza
+function PersonaInefficient(nome) {
+  this.nome = nome;
+
+  // Ogni istanza ha la sua COPIA della funzione
+  this.saluta = function () {
+    console.log("Ciao, sono " + this.nome);
+  };
+}
+
+var p1 = new PersonaInefficient("Alice");
+var p2 = new PersonaInefficient("Bob");
+
+console.log(p1.saluta === p2.saluta); // false - funzioni diverse!
+// Con 1000 persone, ci sono 1000 copie della funzione saluta
+
+// ✅ EFFICIENTE: metodo sul prototipo, condiviso
+function PersonaEfficiente(nome) {
+  this.nome = nome;
+}
+
+PersonaEfficiente.prototype.saluta = function () {
+  console.log("Ciao, sono " + this.nome);
+};
+
+var p3 = new PersonaEfficiente("Charlie");
+var p4 = new PersonaEfficiente("Diana");
+
+console.log(p3.saluta === p4.saluta); // true - stessa funzione!
+// Con 1000 persone, c'è UNA SOLA copia della funzione saluta su prototype
+
+// Risparmio memoria significativo con molte istanze
+var mille = [];
+for (var i = 0; i < 1000; i++) {
+  mille.push(new PersonaEfficiente("Persona" + i));
+}
+// Tutte le 1000 istanze condividono PersonaEfficiente.prototype.saluta
+```
 
 ---
 

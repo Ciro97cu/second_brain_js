@@ -1406,16 +1406,14 @@ Per questo motivo, **String() è generalmente la scelta più robusta e sicura** 
 
 ### 3.6 Oggetti (Objects)
 
-**Tipo**: Nuovo Topic
-
-Il tipo **object** è uno dei più potenti e versatili in JavaScript. Un oggetto è un valore composto, una sorta di contenitore che raggruppa dati e funzionalità correlate. Questi dati sono organizzati come una collezione di **proprietà** (properties), dove ogni proprietà è una coppia **chiave-valore**. La chiave è un nome (una stringa), e il valore può essere di qualsiasi tipo: un numero, una stringa, un booleano, una funzione o persino un altro oggetto.
+Il tipo object è uno dei più potenti e versatili in JavaScript. Un oggetto è un valore composto, una sorta di contenitore che raggruppa dati e funzionalità correlate. Questi dati sono organizzati come una collezione di proprietà (properties), dove ogni proprietà è una coppia chiave-valore. La chiave è un nome (una stringa), e il valore può essere di qualsiasi tipo: un numero, una stringa, un booleano, un'altra funzione o persino un altro oggetto.
 
 ```javascript
 /*
- * Creazione e uso degli oggetti
+ * Creazione di oggetti
  */
 
-// Definizione di un oggetto
+// Oggetto semplice con proprietà di diversi tipi
 let persona = {
   nome: "Mario",
   cognome: "Rossi",
@@ -1424,9 +1422,10 @@ let persona = {
   isAttivo: true,
 };
 
-console.log(persona); // { nome: 'Mario', cognome: 'Rossi', eta: 30, ... }
+console.log(persona);
+// { nome: 'Mario', cognome: 'Rossi', eta: 30, citta: 'Roma', isAttivo: true }
 
-// Oggetto più complesso
+// Oggetto con proprietà annidate e array
 let prodotto = {
   codice: "ABC123",
   nome: "Laptop",
@@ -1439,14 +1438,21 @@ let prodotto = {
     storage: "512GB SSD",
   },
   tags: ["elettronica", "computer", "ufficio"], // array come proprietà
+  mostraInfo: function () {
+    // funzione come proprietà
+    console.log(`${this.nome} - €${this.prezzo}`);
+  },
 };
+
+console.log(prodotto.specifiche.processore); // "Intel i7"
+prodotto.mostraInfo(); // "Laptop - €899.99"
 ```
 
 #### Accesso alle Proprietà
 
 Esistono due modi per accedere alle proprietà di un oggetto:
 
-- **Dot Notation (Notazione a Punto)** → È la sintassi più comune, breve e leggibile. Si usa il nome dell'oggetto seguito da un punto e dal nome della proprietà.
+**Dot Notation (Notazione a Punto)** → È la sintassi più comune, breve e leggibile. Si usa il nome dell'oggetto seguito da un punto e dal nome della proprietà.
 
 ```javascript
 let persona = {
@@ -1461,10 +1467,10 @@ console.log(persona.cognome); // "Rossi"
 console.log(persona.eta); // 30
 ```
 
-- **Bracket Notation (Notazione a Parentesi Quadre)** → Si usa il nome dell'oggetto seguito da parentesi quadre `[]` che contengono il nome della proprietà come stringa. Questa notazione è indispensabile in due casi:
-  1. Quando il nome della proprietà contiene spazi o caratteri speciali
+**Bracket Notation (Notazione a Parentesi Quadre)** → Si usa il nome dell'oggetto seguito da parentesi quadre [] che contengono il nome della proprietà come stringa. Questa notazione è indispensabile in due casi:
 
-2. Quando il nome della proprietà è memorizzato in una variabile
+- Quando il nome della proprietà contiene spazi o caratteri speciali.
+- Quando il nome della proprietà è memorizzato in una variabile.
 
 ```javascript
 let persona = {
@@ -1485,8 +1491,8 @@ console.log(persona["indirizzo-email"]); // "mario@example.com"
 let proprieta = "nome";
 console.log(persona[proprieta]); // "Mario" (valore della variabile usato come chiave)
 
-let campo = "cognome";
-console.log(persona[campo]); // "Rossi"
+let campo = "eta";
+console.log(persona[campo]); // 30
 
 // Esempio pratico con variabile
 function ottieniValore(obj, chiave) {
@@ -1499,7 +1505,7 @@ console.log(ottieniValore(persona, "eta")); // 30
 
 #### Manipolare le Proprietà
 
-Le proprietà di un oggetto possono essere aggiunte, modificate o eliminate dinamicamente.
+Le proprietà di un oggetto possono essere aggiunte, modificate o eliminate dinamicamente. Per eliminare una proprietà si usa l'operatore delete.
 
 ```javascript
 /*
@@ -1547,11 +1553,11 @@ console.log(utente.password); // undefined
 
 Questa è una distinzione importante che avviene "sotto il cofano" del motore JavaScript (come V8, quello di Chrome e Node.js).
 
-- **Oggetti "Fast" (con Hidden Classes)** → Quando si crea un oggetto con una struttura definita, il motore V8 lo ottimizza. Crea una "classe nascosta" (hidden class), una sorta di schema o blueprint che descrive la forma dell'oggetto (quali chiavi ha e in che ordine). Gli oggetti che condividono la stessa struttura possono usare la stessa hidden class, rendendo l'accesso alle loro proprietà estremamente veloce, quasi come accedere a un campo di una struct in C++.
+**Oggetti "Fast" (con Hidden Classes)** → Quando si crea un oggetto con una struttura definita, il motore V8 lo ottimizza. Crea una "classe nascosta" (hidden class), una sorta di schema o blueprint che descrive la forma dell'oggetto (quali chiavi ha e in che ordine). Gli oggetti che condividono la stessa struttura possono usare la stessa hidden class, rendendo l'accesso alle loro proprietà estremamente veloce, quasi come accedere a un campo di una struct in C++.
 
-- **Oggetti "Dictionary" (o "Slow")** → Quando si altera la forma di un oggetto in modo imprevedibile, ad esempio aggiungendo o eliminando proprietà dinamicamente (specialmente con `delete`), il motore non può più fare affidamento sulla hidden class. L'ottimizzazione salta e l'oggetto viene declassato a una struttura più lenta, simile a un dizionario o una hash map. L'accesso alle proprietà diventa più lento perché il motore deve cercare la chiave in un dizionario invece di accedere a una posizione di memoria fissa.
+**Oggetti "Dictionary" (o "Slow")** → Quando si altera la forma di un oggetto in modo imprevedibile, ad esempio aggiungendo o eliminando proprietà dinamicamente (specialmente con delete), il motore non può più fare affidamento sulla hidden class. L'ottimizzazione salta e l'oggetto viene declassato a una struttura più lenta, simile a un dizionario o una hash map. L'accesso alle proprietà diventa più lento perché il motore deve cercare la chiave in un dizionario invece di accedere a una posizione di memoria fissa.
 
-In sintesi, usare `delete` è funzionale, ma può avere un costo in termini di performance perché trasforma un oggetto da "fast" a "slow".
+In sintesi, usare delete è funzionale, ma può avere un costo in termini di performance perché trasforma un oggetto da "fast" a "slow".
 
 ```javascript
 /*
@@ -1563,11 +1569,22 @@ let persona1 = { nome: "Mario", eta: 30 };
 let persona2 = { nome: "Luigi", eta: 25 };
 let persona3 = { nome: "Anna", eta: 28 };
 // Tutti e tre condividono la stessa hidden class (nome, eta)
+// Accesso alle proprietà estremamente veloce
 
 // ❌ SLOW - Struttura mutata con delete
 let utente = { id: 1, nome: "Mario", email: "mario@example.com" };
 delete utente.email; // L'oggetto diventa "dictionary mode"
 // Adesso l'accesso a utente.nome è più lento
+
+// ❌ SLOW - Aggiunta di proprietà in ordine diverso
+let obj1 = {};
+obj1.a = 1;
+obj1.b = 2;
+
+let obj2 = {};
+obj2.b = 2; // ordine diverso
+obj2.a = 1;
+// obj1 e obj2 non possono condividere la stessa hidden class
 ```
 
 #### Alternative Moderne e Immutabili a delete
@@ -1576,7 +1593,7 @@ Per evitare le penalità di performance e seguire un approccio più moderno e "i
 
 **Destrutturazione con Rest Syntax (...)**
 
-Questo è il metodo più comune e leggibile. Si "estrae" la proprietà che si vuole rimuovere e si raccolgono tutte le altre in un nuovo oggetto usando l'operatore rest (`...`).
+Questo è il metodo più comune e leggibile. Si "estrae" la proprietà che si vuole rimuovere e si raccolgono tutte le altre in un nuovo oggetto usando l'operatore rest (...).
 
 ```javascript
 /*
@@ -1597,7 +1614,7 @@ console.log(personaSenzaEmail);
 
 console.log(persona);
 // { nome: 'Mario', cognome: 'Rossi', eta: 30, email: 'mario@example.com' }
-// L'originale rimane intatto!
+// L'originale rimane intatto! ✅
 
 // Rimuovere più proprietà
 let { email: _, eta: __, ...personaMinima } = persona;
@@ -1609,9 +1626,9 @@ console.log(personaMinima);
 
 Questo approccio è più verboso ma molto potente, specialmente se la logica di filtraggio è complessa.
 
-- `Object.entries(persona)` → Converte l'oggetto in un array di coppie `[chiave, valore]`
-- `.filter()` → Filtra questo array, tenendo solo le coppie che non corrispondono alla chiave da rimuovere
-- `Object.fromEntries()` → Riconverte l'array filtrato in un nuovo oggetto
+- Object.entries(persona) → Converte l'oggetto in un array di coppie [chiave, valore]. [['nome', 'Mario'], ['cognome', 'Rossi'], ...] → questa è una matrice.
+- .filter() → Filtra questo array, tenendo solo le coppie che non corrispondono alla chiave da rimuovere.
+- Object.fromEntries() → Riconverte l'array filtrato in un nuovo oggetto.
 
 ```javascript
 /*
@@ -1667,7 +1684,7 @@ Questo metodo crea un nuovo oggetto ottimizzato ("fast") fin dall'inizio, senza 
 
 #### Oggetti come Riferimenti
 
-Un concetto fondamentale è che le variabili non contengono direttamente l'oggetto, ma un **riferimento** (reference) alla sua posizione in memoria. Questo significa che due variabili diverse possono puntare allo stesso oggetto.
+Un concetto fondamentale è che le variabili non contengono direttamente l'oggetto, ma un riferimento (reference) alla sua posizione in memoria. Questo significa che due variabili diverse possono puntare allo stesso oggetto.
 
 ```javascript
 /*
@@ -1688,7 +1705,11 @@ console.log(persona1.eta); // 31 (anche persona1 vede il cambiamento!)
 console.log(persona2.eta); // 31
 
 console.log(persona1 === persona2); // true (stesso riferimento)
+```
 
+Di conseguenza, due oggetti creati separatamente, anche se con le stesse identiche proprietà, non saranno mai uguali (===), perché sono due entità distinte in memoria.
+
+```javascript
 /*
  * Oggetti con le stesse proprietà NON sono uguali
  */
@@ -1696,6 +1717,7 @@ let auto1 = { marca: "Fiat", modello: "500" };
 let auto2 = { marca: "Fiat", modello: "500" };
 
 console.log(auto1 === auto2); // false (due oggetti diversi in memoria)
+console.log(auto1 == auto2); // false (stesso comportamento)
 
 // Anche se hanno le stesse proprietà con gli stessi valori,
 // sono due entità distinte
@@ -1740,244 +1762,495 @@ let copiaProfonda = JSON.parse(JSON.stringify(utente));
 // Oppure librerie come lodash (_.cloneDeep)
 ```
 
-### 3.7 Array
+#### Sottotipi di Oggetto: Array e Funzioni
 
-**Tipo**: Nuovo Topic
-
-In JavaScript, anche gli **array** e le **funzioni** sono, a un livello più profondo, dei tipi speciali di oggetti. Hanno funzionalità aggiuntive (come l'accesso agli elementi tramite indice per gli array o la possibilità di essere invocate per le funzioni), ma ereditano le caratteristiche di base degli oggetti.
-
-#### Cos'è un Array
-
-Un **array** è una struttura dati, un **tipo speciale di oggetto**, progettato per contenere una **collezione ordinata di elementi**. A differenza degli oggetti generici, dove i valori sono associati a chiavi testuali (nomi di proprietà), in un array i valori sono posizionati in base a un **indice numerico**.
+In JavaScript, anche gli array e le funzioni sono, a un livello più profondo, dei tipi speciali di oggetti. Hanno funzionalità aggiuntive (come l'accesso agli elementi tramite indice per gli array o la possibilità di essere invocate per le funzioni), ma ereditano le caratteristiche di base degli oggetti.
 
 ```javascript
+/*
+ * Array e funzioni come oggetti
+ */
+
+// Array è un sottotipo di oggetto
+let numeri = [10, 20, 30];
+
+console.log(typeof numeri); // "object"
+console.log(Array.isArray(numeri)); // true (verifica specifica per array)
+
+// Gli array hanno proprietà come gli oggetti
+numeri.descrizione = "Lista di numeri";
+console.log(numeri.descrizione); // "Lista di numeri"
+
+// Funzione è anche un sottotipo di oggetto
+function saluta(nome) {
+  return `Ciao ${nome}`;
+}
+
+console.log(typeof saluta); // "function" (tipo speciale)
+console.log(saluta instanceof Object); // true (è un oggetto)
+
+// Le funzioni possono avere proprietà
+saluta.versione = "1.0";
+saluta.autore = "Mario";
+console.log(saluta.versione); // "1.0"
+console.log(saluta.autore); // "Mario"
+
+// Differenza: le funzioni sono "callable" (invocabili)
+console.log(saluta("Anna")); // "Ciao Anna"
+
+// Gli oggetti regolari non sono invocabili
+let obj = { nome: "Test" };
+// obj(); // ❌ TypeError: obj is not a function
+```
+
+### 3.7 Array
+
+Un array in JavaScript è una struttura dati, un tipo speciale di oggetto, progettato per contenere una collezione ordinata di elementi. A differenza degli oggetti generici, dove i valori sono associati a chiavi testuali (nomi di proprietà), in un array i valori sono posizionati in base a un indice numerico.
+
+L'indicizzazione parte da 0 per il primo elemento. Questo significa che per accedere agli elementi si usano le parentesi quadre [] con il numero della posizione desiderata.
+
+```javascript
+/*
+ * Creazione e accesso agli array
+ */
+
+// Creazione di un array
 let frutti = ["mela", "banana", "arancia"];
 //           [  0  ,    1    ,     2     ]  ← indici
 
-console.log(frutti[0]); // "mela"
-console.log(frutti[1]); // "banana"
-console.log(frutti.length); // 3
+// Accesso agli elementi tramite indice
+console.log(frutti[0]); // "mela" (primo elemento)
+console.log(frutti[1]); // "banana" (secondo elemento)
+console.log(frutti[2]); // "arancia" (terzo elemento)
+
+// Proprietà length
+console.log(frutti.length); // 3 (numero di elementi)
+
+// Array con diversi tipi di dati
+let misto = [42, "testo", true, null, { nome: "Mario" }, [1, 2, 3]];
+console.log(misto[0]); // 42
+console.log(misto[1]); // "testo"
+console.log(misto[4]); // { nome: "Mario" }
+console.log(misto[5][1]); // 2 (accesso a elemento di array annidato)
+
+// Modificare elementi
+frutti[1] = "pera";
+console.log(frutti); // ["mela", "pera", "arancia"]
+
+// Aggiungere elementi tramite indice
+frutti[3] = "kiwi";
+console.log(frutti); // ["mela", "pera", "arancia", "kiwi"]
 ```
 
-**Caratteristiche chiave**:
+#### Array come Oggetti Speciali
 
-- **Indicizzazione da 0**: il primo elemento ha indice `[0]`, il secondo `[1]`, ecc.
-- **Accesso tramite `[]`**: si usano le parentesi quadre con il numero della posizione
-- **Proprietà `length`**: indica il numero di elementi, aggiornata automaticamente
-
-#### Array vs Oggetti
-
-Sebbene `typeof` restituisca `"object"` per un array, è importante usare ciascuno per il suo scopo specifico:
+Sebbene typeof restituisca "object" per un array, è importante usarlo per il suo scopo specifico: gestire liste di dati ordinate numericamente. Ogni array ha una proprietà length che viene aggiornata automaticamente e indica il numero di elementi contenuti.
 
 ```javascript
-let numeri = [10, 20, 30]; // ✅ Array per liste ordinate
-let persona = { nome: "Mario", eta: 30 }; // ✅ Oggetto per proprietà nominate
+/*
+ * Array come oggetti speciali
+ */
 
+let numeri = [10, 20, 30];
+
+// typeof restituisce "object"
 console.log(typeof numeri); // "object"
+
+// Verifica specifica per array
 console.log(Array.isArray(numeri)); // true
+console.log(Array.isArray({ a: 1 })); // false
+
+// Proprietà length aggiornata automaticamente
+console.log(numeri.length); // 3
+numeri.push(40);
+console.log(numeri.length); // 4
+
+// Gli array sono oggetti, quindi possono avere proprietà
+numeri.descrizione = "Lista di numeri";
+console.log(numeri.descrizione); // "Lista di numeri"
+// Ma questo è sconsigliato! Usa array per dati indicizzati
+
+// Confronto array vs oggetto
+let arrayDati = ["Mario", 30, "Roma"]; // ✅ Lista ordinata
+let oggettoDati = { nome: "Mario", eta: 30, citta: "Roma" }; // ✅ Proprietà nominate
+
+console.log(arrayDati[0]); // "Mario" (accesso per indice)
+console.log(oggettoDati.nome); // "Mario" (accesso per nome)
 ```
 
-- **Array**: collezioni ordinate accessibili tramite indice numerico (liste, serie di dati)
-- **Oggetti**: strutture di dati con proprietà nominate significative (entità, configurazioni)
+La regola generale è: usare gli array per collezioni di dati a cui si accede tramite un indice numerico e gli oggetti per strutture di dati a cui si accede tramite nomi di proprietà significativi.
 
-La regola generale è: usare gli **array** per collezioni di dati a cui si accede tramite un indice numerico e gli **oggetti** per strutture di dati a cui si accede tramite nomi di proprietà significativi.
+#### Metodi Comuni degli Array
 
-#### Metodi per Aggiungere/Rimuovere Elementi
+Gli array dispongono di numerosi metodi integrati (built-in methods) che semplificano la manipolazione dei dati.
 
-Esistono metodi specifici per aggiungere o rimuovere elementi all'inizio o alla fine di un array. Questi metodi **modificano l'array originale**.
+**Aggiungere e Rimuovere Elementi**
 
-- **`push()`** → Aggiunge uno o più elementi alla fine dell'array
+Esistono metodi specifici per aggiungere o rimuovere elementi all'inizio o alla fine di un array.
+
+**push()** → Aggiunge uno o più elementi alla fine dell'array.
 
 ```javascript
 let numeri = [1, 2, 3];
-numeri.push(4); // [1, 2, 3, 4]
-numeri.push(5, 6); // [1, 2, 3, 4, 5, 6]
+numeri.push(4);
+console.log(numeri); // [1, 2, 3, 4]
+
+numeri.push(5, 6);
+console.log(numeri); // [1, 2, 3, 4, 5, 6]
+
+// push() restituisce la nuova lunghezza
+let lunghezza = numeri.push(7);
+console.log(lunghezza); // 7
 ```
 
-- **`pop()`** → Rimuove l'ultimo elemento dall'array e lo restituisce
+**pop()** → Rimuove l'ultimo elemento dall'array e lo restituisce.
 
 ```javascript
 let numeri = [1, 2, 3];
-let ultimo = numeri.pop(); // ultimo = 3, numeri = [1, 2]
+let ultimo = numeri.pop();
+console.log(ultimo); // 3
+console.log(numeri); // [1, 2]
+
+// Rimuovere più elementi
+numeri.pop();
+console.log(numeri); // [1]
 ```
 
-- **`unshift()`** → Aggiunge uno o più elementi all'inizio dell'array
+**unshift()** → Aggiunge uno o più elementi all'inizio dell'array.
 
 ```javascript
 let numeri = [2, 3];
-numeri.unshift(1); // [1, 2, 3]
-numeri.unshift(-1, 0); // [-1, 0, 1, 2, 3]
+numeri.unshift(1);
+console.log(numeri); // [1, 2, 3]
+
+numeri.unshift(-1, 0);
+console.log(numeri); // [-1, 0, 1, 2, 3]
+
+// unshift() restituisce la nuova lunghezza
+let lunghezza = numeri.unshift(-2);
+console.log(lunghezza); // 6
 ```
 
-- **`shift()`** → Rimuove il primo elemento dall'array e lo restituisce
+**shift()** → Rimuove il primo elemento dall'array e lo restituisce.
 
 ```javascript
 let numeri = [1, 2, 3];
-let primo = numeri.shift(); // primo = 1, numeri = [2, 3]
+let primo = numeri.shift();
+console.log(primo); // 1
+console.log(numeri); // [2, 3]
+
+// Rimuovere più elementi
+numeri.shift();
+console.log(numeri); // [3]
 ```
 
-- **`splice()`** → Modifica il contenuto di un array rimuovendo, sostituendo o aggiungendo elementi direttamente nell'array originale
+**Iterare e Trasformare**
+
+Questi metodi, spesso chiamati "higher-order functions", permettono di eseguire operazioni su ogni elemento dell'array, spesso creando un nuovo array come risultato.
+
+**forEach()** → Esegue una funzione per ogni elemento dell'array. Non restituisce un nuovo array.
+
+```javascript
+let numeri = [1, 2, 3, 4, 5];
+
+// Stampare ogni elemento
+numeri.forEach(function (numero) {
+  console.log(numero);
+});
+// Output: 1, 2, 3, 4, 5
+
+// Con indice e array completo
+numeri.forEach(function (numero, indice, array) {
+  console.log(`Indice ${indice}: ${numero}`);
+});
+
+// Modificare elementi (l'array originale viene modificato)
+let valori = [1, 2, 3];
+valori.forEach(function (numero, indice, arr) {
+  arr[indice] = numero * 2;
+});
+console.log(valori); // [2, 4, 6]
+```
+
+**map()** → Crea un nuovo array contenente i risultati di una funzione applicata a ogni elemento dell'array originale.
+
+```javascript
+let numeri = [1, 2, 3, 4, 5];
+
+// Raddoppiare ogni numero
+let doppi = numeri.map(function (n) {
+  return n * 2;
+});
+console.log(doppi); // [2, 4, 6, 8, 10]
+console.log(numeri); // [1, 2, 3, 4, 5] (originale intatto)
+
+// Trasformare oggetti
+let persone = [
+  { nome: "Mario", eta: 30 },
+  { nome: "Luigi", eta: 25 },
+];
+
+let nomi = persone.map(function (persona) {
+  return persona.nome;
+});
+console.log(nomi); // ["Mario", "Luigi"]
+```
+
+**filter()** → Crea un nuovo array contenente solo gli elementi che superano un test (una funzione che restituisce true).
+
+```javascript
+let numeri = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Filtrare numeri pari
+let pari = numeri.filter(function (n) {
+  return n % 2 === 0;
+});
+console.log(pari); // [2, 4, 6, 8, 10]
+
+// Filtrare numeri maggiori di 5
+let maggiori = numeri.filter(function (n) {
+  return n > 5;
+});
+console.log(maggiori); // [6, 7, 8, 9, 10]
+
+// Filtrare oggetti
+let persone = [
+  { nome: "Mario", eta: 30 },
+  { nome: "Luigi", eta: 17 },
+  { nome: "Anna", eta: 25 },
+];
+
+let adulti = persone.filter(function (persona) {
+  return persona.eta >= 18;
+});
+console.log(adulti); // [{ nome: "Mario", eta: 30 }, { nome: "Anna", eta: 25 }]
+```
+
+**reduce()** → Applica una funzione a ogni elemento per "ridurre" l'array a un singolo valore (es. una somma, un oggetto).
+
+```javascript
+let numeri = [1, 2, 3, 4, 5];
+
+// Somma di tutti gli elementi
+let somma = numeri.reduce(function (accumulatore, valore) {
+  return accumulatore + valore;
+}, 0); // 0 è il valore iniziale
+console.log(somma); // 15
+
+// Prodotto di tutti gli elementi
+let prodotto = numeri.reduce(function (acc, val) {
+  return acc * val;
+}, 1);
+console.log(prodotto); // 120
+
+// Trovare il valore massimo
+let max = numeri.reduce(function (acc, val) {
+  return val > acc ? val : acc;
+});
+console.log(max); // 5
+
+// Contare occorrenze
+let frutti = ["mela", "banana", "mela", "arancia", "banana", "mela"];
+let conteggio = frutti.reduce(function (acc, frutto) {
+  acc[frutto] = (acc[frutto] || 0) + 1;
+  return acc;
+}, {});
+console.log(conteggio); // { mela: 3, banana: 2, arancia: 1 }
+```
+
+**Altri Metodi Utili**
+
+**slice()** → Restituisce una copia superficiale (shallow copy) di una porzione dell'array in un nuovo array, senza modificare l'originale.
+
+```javascript
+let numeri = [1, 2, 3, 4, 5];
+
+// Estrarre una porzione (da indice start a end, escluso)
+let porzione = numeri.slice(1, 4);
+console.log(porzione); // [2, 3, 4] (indici 1, 2, 3)
+console.log(numeri); // [1, 2, 3, 4, 5] (originale intatto)
+
+// slice() senza parametri copia tutto l'array
+let copia = numeri.slice();
+console.log(copia); // [1, 2, 3, 4, 5]
+
+// Indici negativi (contano dalla fine)
+let ultimi = numeri.slice(-2);
+console.log(ultimi); // [4, 5]
+```
+
+**splice()** → Modifica il contenuto di un array rimuovendo, sostituendo o aggiungendo elementi direttamente nell'array originale.
 
 ```javascript
 let numeri = [1, 2, 3, 4, 5];
 
 // Rimuovere 2 elementi a partire dall'indice 1
-numeri.splice(1, 2); // [1, 4, 5] (rimuove 2 e 3)
+let rimossi = numeri.splice(1, 2);
+console.log(rimossi); // [2, 3] (elementi rimossi)
+console.log(numeri); // [1, 4, 5] (array modificato)
 
-// Aggiungere elementi senza rimuovere
-numeri.splice(1, 0, 2, 3); // [1, 2, 3, 4, 5]
+// Aggiungere elementi senza rimuovere (count = 0)
+numeri = [1, 2, 3, 4, 5];
+numeri.splice(2, 0, 10, 20);
+console.log(numeri); // [1, 2, 10, 20, 3, 4, 5]
 
 // Sostituire elementi
-numeri.splice(2, 1, 99); // [1, 2, 99, 4, 5] (sostituisce 3 con 99)
+numeri = [1, 2, 3, 4, 5];
+numeri.splice(2, 1, 99);
+console.log(numeri); // [1, 2, 99, 4, 5] (sostituisce 3 con 99)
 ```
 
-#### Metodi di Iterazione e Trasformazione
-
-Questi metodi, spesso chiamati **"higher-order functions"**, permettono di eseguire operazioni su ogni elemento dell'array. Molti di questi metodi **creano un nuovo array** senza modificare l'originale.
-
-- **`forEach()`** → Esegue una funzione per ogni elemento dell'array. **Non restituisce** un nuovo array
-
-```javascript
-let numeri = [1, 2, 3];
-numeri.forEach(function (numero) {
-  console.log(numero * 2); // 2, 4, 6
-});
-// numeri rimane [1, 2, 3]
-```
-
-- **`map()`** → Crea un **nuovo array** contenente i risultati di una funzione applicata a ogni elemento dell'array originale
-
-```javascript
-let numeri = [1, 2, 3];
-let doppi = numeri.map(function (n) {
-  return n * 2;
-});
-console.log(doppi); // [2, 4, 6]
-console.log(numeri); // [1, 2, 3] (originale intatto)
-```
-
-- **`filter()`** → Crea un **nuovo array** contenente solo gli elementi che superano un test (una funzione che restituisce `true`)
-
-```javascript
-let numeri = [1, 2, 3, 4, 5];
-let pari = numeri.filter(function (n) {
-  return n % 2 === 0;
-});
-console.log(pari); // [2, 4]
-```
-
-- **`reduce()`** → Applica una funzione a ogni elemento per **"ridurre"** l'array a un singolo valore (es. una somma, un oggetto)
-
-```javascript
-let numeri = [1, 2, 3, 4];
-let somma = numeri.reduce(function (accumulatore, valore) {
-  return accumulatore + valore;
-}, 0); // 0 è il valore iniziale
-console.log(somma); // 10
-```
-
-#### Altri Metodi Utili
-
-- **`slice()`** → Restituisce una **copia superficiale** (shallow copy) di una porzione dell'array in un nuovo array, **senza modificare** l'originale
-
-```javascript
-let numeri = [1, 2, 3, 4, 5];
-let porzione = numeri.slice(1, 3); // [2, 3] (da indice 1 a 3, escluso)
-console.log(numeri); // [1, 2, 3, 4, 5] (originale intatto)
-```
-
-- **`includes()`** → Controlla se un array include un certo elemento, restituendo `true` o `false`
+**includes()** → Controlla se un array include un certo elemento, restituendo true o false.
 
 ```javascript
 let frutti = ["mela", "banana", "arancia"];
+
 console.log(frutti.includes("banana")); // true
 console.log(frutti.includes("pera")); // false
+
+// Con numeri
+let numeri = [1, 2, 3, 4, 5];
+console.log(numeri.includes(3)); // true
+console.log(numeri.includes(10)); // false
+
+// Specificare l'indice di partenza
+console.log(numeri.includes(3, 3)); // false (cerca da indice 3 in poi)
 ```
 
-- **`find()`** → Restituisce il **primo elemento** dell'array che soddisfa una condizione
+**find()** → Restituisce il primo elemento dell'array che soddisfa una condizione.
 
 ```javascript
 let numeri = [5, 12, 8, 130, 44];
+
+// Trovare il primo numero maggiore di 10
 let trovato = numeri.find(function (n) {
   return n > 10;
 });
 console.log(trovato); // 12
+
+// Se nessun elemento soddisfa la condizione, restituisce undefined
+let nonTrovato = numeri.find(function (n) {
+  return n > 200;
+});
+console.log(nonTrovato); // undefined
+
+// Con oggetti
+let persone = [
+  { nome: "Mario", eta: 30 },
+  { nome: "Luigi", eta: 25 },
+  { nome: "Anna", eta: 28 },
+];
+
+let persona = persone.find(function (p) {
+  return p.nome === "Luigi";
+});
+console.log(persona); // { nome: "Luigi", eta: 25 }
 ```
 
 ### 3.8 Funzioni (Functions)
 
-**Tipo**: Nuovo Topic
+In JavaScript, una funzione è un blocco di codice riutilizzabile, progettato per eseguire un compito specifico. Permette di organizzare il codice in pezzi logici, evitando di ripetere le stesse istruzioni più volte.
 
-#### Le Funzioni
+```javascript
+/*
+ * Funzioni base
+ */
 
-Una funzione è un **blocco di codice riutilizzabile**, progettato per eseguire un compito specifico. Permette di organizzare il codice in pezzi logici, evitando di ripetere le stesse istruzioni più volte.
+// Dichiarazione di funzione
+function saluta() {
+  console.log("Ciao!");
+}
 
-#### Le Funzioni
+// Chiamata della funzione
+saluta(); // "Ciao!"
 
-Una funzione è un **blocco di codice riutilizzabile**, progettato per eseguire un compito specifico. Permette di organizzare il codice in pezzi logici, evitando di ripetere le stesse istruzioni più volte.
+// Funzione con parametri
+function somma(a, b) {
+  return a + b;
+}
 
-**Anatomia di una Funzione**
+let risultato = somma(5, 3);
+console.log(risultato); // 8
 
-Una funzione è composta da alcuni elementi chiave:
+// Funzione che stampa vs funzione che restituisce
+function stampa(messaggio) {
+  console.log(messaggio); // side effect
+  // non ha return, quindi restituisce undefined
+}
 
-- **Dichiarazione (declaration)** → Avviene tipicamente usando la parola chiave `function`
-- **Nome** → Identifica la funzione
-- **Parametri (parameters)** → Variabili tra parentesi `()` che ricevono i valori
-- **Corpo (body)** → Codice racchiuso tra parentesi graffe `{}`
-- **Return** → Restituisce un valore e termina l'esecuzione
+function restituisci(valore) {
+  return valore * 2; // restituisce un valore
+}
+
+let x = stampa("Test"); // stampa "Test"
+console.log(x); // undefined
+
+let y = restituisci(10);
+console.log(y); // 20
+```
+
+#### Anatomia di una Funzione
+
+Una funzione è composta da alcuni elementi chiave. La sua dichiarazione (declaration) avviene tipicamente usando la parola chiave function, seguita da un nome, una lista di parametri (parameters) tra parentesi (), e un corpo (body) racchiuso tra parentesi graffe {}.
 
 ```javascript
 /*
  * Anatomia di una funzione
  */
 
-// Dichiarazione di funzione
-function saluta(nome) {
-  // 'nome' è un parametro
-  console.log("Ciao, " + nome + "!");
+// function keyword → nome → parametri → corpo
+function calcolaAreaRettangolo(larghezza, altezza) {
+  let area = larghezza * altezza;
+  return area;
 }
 
-// Funzione con return
-function somma(a, b) {
-  // 'a' e 'b' sono parametri
-  return a + b; // return restituisce il risultato
-}
+// Chiamata: nome → argomenti
+let areaStanza = calcolaAreaRettangolo(5, 3);
+console.log(areaStanza); // 15
 
-let risultato = somma(5, 3); // 5 e 3 sono argomenti
-console.log(risultato); // 8
+/*
+ * Elementi chiave
+ */
 
-// Funzione senza return (restituisce undefined)
-function log(messaggio) {
-  console.log(messaggio);
-  // nessun return esplicito
-}
+function esempio(parametro1, parametro2) {
+  // ↑ Parametri: variabili che ricevono i valori
+  // Corpo della funzione
+  let risultato = parametro1 + parametro2;
+  return risultato; // Return: valore restituito
+} // ← fine del corpo
 
-let valore = log("Test"); // esegue la funzione
-console.log(valore); // undefined
+let valore = esempio(10, 20); // 10 e 20 sono argomenti
+console.log(valore); // 30
+```
 
+I parametri sono come delle variabili locali che ricevono i valori (chiamati argomenti, arguments) passati alla funzione quando viene eseguita.
+
+```javascript
 /*
  * Parametri vs Argomenti
  */
+
 function moltiplica(x, y) {
   // x e y sono PARAMETRI (nella definizione)
   return x * y;
 }
 
-moltiplica(4, 7); // 4 e 7 sono ARGOMENTI (nella chiamata)
+let prodotto = moltiplica(4, 7); // 4 e 7 sono ARGOMENTI (nella chiamata)
+console.log(prodotto); // 28
 
 // Più argomenti del previsto: gli extra vengono ignorati
-function dueSomma(a, b) {
+function somma(a, b) {
   return a + b;
 }
-console.log(dueSomma(1, 2, 3, 4)); // 3 (solo 1 e 2 vengono usati)
+console.log(somma(1, 2, 3, 4)); // 3 (solo 1 e 2 vengono usati)
 
 // Meno argomenti del previsto: i parametri mancanti sono undefined
-function treeSomma(a, b, c) {
+function somma3(a, b, c) {
   return a + b + c;
 }
-console.log(treeSomma(1, 2)); // NaN (1 + 2 + undefined = NaN)
+console.log(somma3(1, 2)); // NaN (1 + 2 + undefined)
 
-// Parametri con valori di default (ES6)
+// Parametri con valori di default (ES6+)
 function salutaConDefault(nome = "Ospite") {
   return "Ciao, " + nome + "!";
 }
@@ -1985,28 +2258,26 @@ console.log(salutaConDefault()); // "Ciao, Ospite!"
 console.log(salutaConDefault("Mario")); // "Ciao, Mario!"
 ```
 
-I **parametri** sono come delle variabili locali che ricevono i valori (chiamati **argomenti**, arguments) passati alla funzione quando viene eseguita.
-
-L'istruzione `return` permette a una funzione di restituire un valore al codice che l'ha chiamata, terminando la sua esecuzione. Se `return` non è presente, la funzione restituisce implicitamente `undefined`.
+L'istruzione return permette a una funzione di restituire un valore al codice che l'ha chiamata, terminando la sua esecuzione. Se return non è presente, la funzione restituisce implicitamente undefined.
 
 ```javascript
 /*
  * Return in azione
  */
 
-function calcolaArea(larghezza, altezza) {
-  let area = larghezza * altezza;
-  return area; // restituisce il valore di area
-  console.log("Questo non verrà mai eseguito"); // codice dopo return è irraggiungibile
+function calcolaSconto(prezzo, percentuale) {
+  let sconto = (prezzo * percentuale) / 100;
+  return sconto; // restituisce il valore
+  console.log("Questa riga non viene mai eseguita"); // irraggiungibile
 }
 
-let areaRettangolo = calcolaArea(10, 5);
-console.log(areaRettangolo); // 50
+let scontoApplicato = calcolaSconto(100, 20);
+console.log(scontoApplicato); // 20
 
 // Return anticipato per uscire dalla funzione
-function verificaEta(eta) {
+function categoriaEta(eta) {
   if (eta < 18) {
-    return "Minorenne"; // esce subito dalla funzione
+    return "Minorenne"; // esce subito
   }
   if (eta < 65) {
     return "Adulto";
@@ -2014,36 +2285,29 @@ function verificaEta(eta) {
   return "Senior";
 }
 
-console.log(verificaEta(15)); // "Minorenne"
-console.log(verificaEta(30)); // "Adulto"
-console.log(verificaEta(70)); // "Senior"
+console.log(categoriaEta(15)); // "Minorenne"
+console.log(categoriaEta(30)); // "Adulto"
+console.log(categoriaEta(70)); // "Senior"
 
-// Return senza valore
-function logIfPositive(num) {
-  if (num <= 0) {
-    return; // esce senza restituire nulla (undefined)
-  }
-  console.log("Numero positivo:", num);
+// Funzione senza return
+function stampaMessaggio(msg) {
+  console.log(msg);
+  // nessun return esplicito
 }
 
-logIfPositive(-5); // non stampa nulla
-logIfPositive(10); // "Numero positivo: 10"
+let risultato = stampaMessaggio("Ciao"); // stampa "Ciao"
+console.log(risultato); // undefined (return implicito)
 ```
 
 #### Funzioni come Oggetti (First-Class Citizens)
 
-Un concetto fondamentale in JavaScript è che le **funzioni sono un tipo speciale di oggetto**. Questo significa che, come qualsiasi altro oggetto, possono essere:
+Un concetto fondamentale in JavaScript è che le funzioni sono un tipo speciale di oggetto. Questo significa che, come qualsiasi altro oggetto, possono essere assegnate a variabili, passate come argomenti ad altre funzioni e, soprattutto, possono avere delle proprietà.
 
-- Assegnate a variabili
-- Passate come argomenti ad altre funzioni
-- Restituite da altre funzioni
-- Dotate di proprietà
-
-L'operatore `typeof` riconosce questa natura speciale restituendo la stringa `"function"`.
+L'operatore typeof riconosce questa natura speciale restituendo la stringa "function".
 
 ```javascript
 /*
- * Funzioni come oggetti (first-class citizens)
+ * Funzioni come oggetti
  */
 
 // Assegnare una funzione a una variabile
@@ -2056,14 +2320,14 @@ console.log(typeof miaSomma); // "function"
 
 // Le funzioni possono avere proprietà!
 function contatore() {
-  contatore.chiamate = (contatore.chiamate || 0) + 1;
-  return contatore.chiamate;
+  contatore.volte = (contatore.volte || 0) + 1;
+  console.log("Chiamata #" + contatore.volte);
 }
 
-console.log(contatore()); // 1
-console.log(contatore()); // 2
-console.log(contatore()); // 3
-console.log(contatore.chiamate); // 3 (proprietà della funzione)
+contatore(); // "Chiamata #1"
+contatore(); // "Chiamata #2"
+contatore(); // "Chiamata #3"
+console.log(contatore.volte); // 3 (proprietà della funzione)
 
 // Passare una funzione come argomento
 function esegui(operazione, a, b) {
@@ -2091,12 +2355,10 @@ function creaMultiplicatore(fattore) {
 let doppio = creaMultiplicatore(2);
 let triplo = creaMultiplicatore(3);
 
-console.log(doppio(5)); // 10
-console.log(triplo(5)); // 15
+console.log(doppio(5)); // 10 (5 * 2)
+console.log(triplo(5)); // 15 (5 * 3)
 
-/*
- * Array di funzioni
- */
+// Array di funzioni
 let operazioni = [
   function (x) {
     return x + 10;
@@ -2117,11 +2379,11 @@ for (let op of operazioni) {
 // Output: 20, 40, 35
 ```
 
-Questa caratteristica rende le funzioni **"cittadini di prima classe"** (first-class citizens) nel linguaggio, conferendo loro un'enorme flessibilità.
+Questa caratteristica rende le funzioni "cittadini di prima classe" (first-class citizens) nel linguaggio, conferendo loro un'enorme flessibilità.
 
 #### Chiamare una Funzione
 
-Per eseguire il codice all'interno di una funzione, bisogna **chiamarla** (call o invoke) usando il suo nome seguito dalle parentesi `()`. Se la funzione accetta parametri, gli argomenti vengono passati all'interno delle parentesi.
+Per eseguire il codice all'interno di una funzione, bisogna chiamarla (call o invoke) usando il suo nome seguito dalle parentesi (). Se la funzione accetta parametri, gli argomenti vengono passati all'interno delle parentesi.
 
 ```javascript
 /*
@@ -2132,19 +2394,20 @@ function saluta() {
   console.log("Ciao!");
 }
 
-saluta(); // Chiamata della funzione
-saluta(); // Può essere chiamata più volte
+// Chiamata senza argomenti
+saluta(); // "Ciao!"
+saluta(); // può essere chiamata più volte
 
 // Con argomenti
-function benvenuto(nome, ora) {
-  console.log("Buon" + ora + ", " + nome + "!");
+function benvenuto(nome, momento) {
+  console.log("Buon" + momento + ", " + nome + "!");
 }
 
 benvenuto("Mario", "giorno"); // "Buongiorno, Mario!"
 benvenuto("Anna", "asera"); // "Buonasera, Anna!"
 
 // Funzioni annidate (chiamate dentro altre funzioni)
-function calcola() {
+function calcolaComplesso() {
   function somma(a, b) {
     return a + b;
   }
@@ -2153,16 +2416,23 @@ function calcola() {
     return a * b;
   }
 
-  let risultato = moltiplica(somma(2, 3), 4);
+  let risultato = moltiplica(somma(2, 3), 4); // (2+3) * 4
   return risultato;
 }
 
-console.log(calcola()); // 20 ((2+3) * 4)
+console.log(calcolaComplesso()); // 20
+
+// Chiamate multiple in cascata
+function raddoppia(n) {
+  return n * 2;
+}
+
+console.log(raddoppia(raddoppia(raddoppia(5)))); // 40 (5 → 10 → 20 → 40)
 ```
 
 #### Hoisting: Dichiarazione vs. Esecuzione
 
-Il motore JavaScript elabora il codice in due fasi. Durante la prima fase, di **analisi** (parsing), "solleva" (un processo chiamato **hoisting**) le dichiarazioni di funzione in cima al loro contesto. Questo significa che è possibile chiamare una funzione dichiarata con `function` prima che appaia nel codice, senza generare errori.
+Il motore JavaScript elabora il codice in due fasi. Durante la prima fase, di analisi (parsing), "solleva" (un processo chiamato hoisting) le dichiarazioni di funzione in cima al loro contesto. Questo significa che è possibile chiamare una funzione dichiarata con function prima che appaia nel codice, senza generare errori.
 
 ```javascript
 /*
@@ -2178,7 +2448,7 @@ function quadrato(n) {
 
 // Questo è possibile perché il motore "vede" il codice così:
 // function quadrato(n) { return n * n; }  ← sollevata in cima
-// console.log(quadrato(5));
+// console.log(quadrato(5));               ← eseguita dopo
 
 /*
  * Function expression NON vengono sollevate
@@ -2194,109 +2464,131 @@ const cubo = function (n) {
 console.log(cubo(3)); // ✅ 27 (solo dopo la dichiarazione)
 
 /*
- * Confronto: function declaration vs function expression
+ * Confronto pratico
  */
 
 // FUNCTION DECLARATION (viene sollevata)
-saluta1(); // ✅ "Ciao da function declaration"
+saluta1(); // ✅ "Ciao da declaration"
 
 function saluta1() {
-  console.log("Ciao da function declaration");
+  console.log("Ciao da declaration");
 }
 
 // FUNCTION EXPRESSION (NON viene sollevata)
-// saluta2(); // ❌ Errore!
+// saluta2(); // ❌ ReferenceError!
 
 const saluta2 = function () {
-  console.log("Ciao da function expression");
+  console.log("Ciao da expression");
 };
 
-saluta2(); // ✅ "Ciao da function expression"
+saluta2(); // ✅ "Ciao da expression"
+
+/*
+ * Arrow function (ES6) - NON sollevate
+ */
+
+// saluta3(); // ❌ Errore!
+
+const saluta3 = () => {
+  console.log("Ciao da arrow");
+};
+
+saluta3(); // ✅ "Ciao da arrow"
 ```
 
-Questo comportamento non si applica alle variabili dichiarate con `let` o `const`, che non possono essere usate prima della loro dichiarazione (Temporal Dead Zone - TDZ).
+Questo comportamento non si applica alle variabili dichiarate con let o const, che non possono essere usate prima della loro dichiarazione. (Temporal Dead Zone - TDZ)
 
 #### Esecuzione Diretta vs. Indiretta
 
 Esiste una differenza fondamentale tra eseguire una funzione immediatamente e passare un riferimento ad essa per un'esecuzione futura.
 
-- **Esecuzione Diretta** → Usare le parentesi `()` dopo il nome della funzione ne provoca l'esecuzione immediata
-- **Esecuzione Indiretta (Passare un Riferimento)** → Fornire solo il nome della funzione, senza parentesi, significa passare un riferimento ad essa
+**Esecuzione Diretta** → Usare le parentesi () dopo il nome della funzione ne provoca l'esecuzione immediata.
+
+**Esecuzione Indiretta (Passare un Riferimento)** → Fornire solo il nome della funzione, senza parentesi, significa passare un riferimento ad essa. Questo è comune nella gestione degli eventi, dove si dice al browser di eseguire una certa funzione solo quando si verifica un evento (es. un click).
 
 ```javascript
 /*
  * Esecuzione diretta vs indiretta
  */
 
-function saluta() {
+function mostraMessaggio() {
   console.log("Ciao!");
 }
 
-// Esecuzione diretta
-saluta(); // Esegue immediatamente, stampa "Ciao!"
+// Esecuzione diretta (con parentesi)
+mostraMessaggio(); // esegue subito, stampa "Ciao!"
 
-// Passare un riferimento
-let riferimento = saluta; // NON esegue, solo assegna il riferimento
-riferimento(); // Ora esegue, stampa "Ciao!"
+// Passare un riferimento (senza parentesi)
+let riferimento = mostraMessaggio; // NON esegue, assegna il riferimento
+console.log(typeof riferimento); // "function"
+riferimento(); // ora esegue, stampa "Ciao!"
 
 /*
  * Uso comune: event listeners
  */
 
 // ❌ SBAGLIATO - esegue immediatamente
-// button.addEventListener("click", saluta());
-// La funzione viene eseguita subito e il risultato (undefined)
-// viene passato a addEventListener
+// button.addEventListener('click', mostraMessaggio());
+// La funzione si esegue subito, undefined viene passato al listener
 
 // ✅ CORRETTO - passa il riferimento
-// button.addEventListener("click", saluta);
+// button.addEventListener('click', mostraMessaggio);
 // La funzione verrà eseguita quando si verifica il click
 
 /*
- * Esempio pratico con timeout
+ * Esempio con setTimeout
  */
 
-function mostraMessaggio() {
-  console.log("5 secondi sono passati!");
+function avviso() {
+  console.log("Tempo scaduto!");
 }
 
-// ✅ Passa il riferimento (esegue dopo 5 secondi)
-setTimeout(mostraMessaggio, 5000);
+// ✅ Passa il riferimento (esegue dopo 3 secondi)
+setTimeout(avviso, 3000);
 
 // ❌ Esecuzione immediata (sbagliato)
-// setTimeout(mostraMessaggio(), 5000);
-// La funzione si esegue subito, undefined viene passato a setTimeout
+// setTimeout(avviso(), 3000);
+// avviso() si esegue subito, undefined viene passato a setTimeout
 
 /*
- * Quando serve eseguire con argomenti
+ * Quando serve passare argomenti
  */
 
 function salutaPersona(nome) {
   console.log("Ciao, " + nome + "!");
 }
 
-// Soluzione 1: usare una arrow function
+// Soluzione: wrappare in una funzione arrow
 setTimeout(() => salutaPersona("Mario"), 2000);
 
-// Soluzione 2: usare una function expression
+// Oppure usare una function expression
 setTimeout(function () {
   salutaPersona("Luigi");
 }, 2000);
 
-// Soluzione 3: usare bind (avanzato)
-setTimeout(salutaPersona.bind(null, "Anna"), 2000);
-```
+/*
+ * Esempio pratico con array methods
+ */
 
-Questo è comune nella gestione degli eventi, dove si dice al browser di eseguire una certa funzione solo quando si verifica un evento (es. un click).
+let numeri = [1, 2, 3, 4, 5];
+
+function raddoppia(n) {
+  return n * 2;
+}
+
+// Passa il riferimento a map
+let doppi = numeri.map(raddoppia); // NON raddoppia()!
+console.log(doppi); // [2, 4, 6, 8, 10]
+```
 
 #### IIFE (Immediately Invoked Function Expressions)
 
-Una **IIFE** (pronunciata "iffy") è una **Espressione di Funzione Invocata Immediatamente**. È un pattern di design in cui una funzione viene dichiarata e poi eseguita subito dopo la sua creazione.
+Una IIFE (pronunciata "iffy") è una Espressione di Funzione Invocata Immediatamente. È un pattern di design in cui una funzione viene dichiarata e poi eseguita subito dopo la sua creazione.
 
 La sintassi di una IIFE può sembrare insolita a prima vista, ma è molto logica. Si compone di due parti principali:
 
-1. Un'espressione di funzione, tipicamente anonima, avvolta tra parentesi `()`. Le parentesi servono a indicare al motore JavaScript che si tratta di un'espressione e non di una dichiarazione di funzione standard
-2. Un secondo paio di parentesi `()` alla fine, che è l'operatore di chiamata che esegue la funzione immediatamente
+1. Un'espressione di funzione, tipicamente anonima, avvolta tra parentesi (). Le parentesi servono a indicare al motore JavaScript che si tratta di un'espressione e non di una dichiarazione di funzione standard.
+2. Un secondo paio di parentesi () alla fine, che è l'operatore di chiamata che esegue la funzione immediatamente.
 
 ```javascript
 /*
@@ -2308,8 +2600,8 @@ La sintassi di una IIFE può sembrare insolita a prima vista, ma è molto logica
   console.log("Questa funzione si esegue immediatamente!");
 })();
 
-// Il concetto è: (espressione di funzione)(chiamata immediata)
-//                 ^^^^^^^^^^^^^^^^^^^^^^^^  ^^
+// Struttura:  (espressione di funzione)(chiamata)
+//              ^^^^^^^^^^^^^^^^^^^^^^^^  ^^
 
 // IIFE con nome (opzionale, utile per debug)
 (function iife() {
@@ -2321,33 +2613,42 @@ La sintassi di una IIFE può sembrare insolita a prima vista, ma è molto logica
   console.log("Sintassi alternativa");
 })();
 
+// Con arrow function (ES6+)
+(() => {
+  console.log("IIFE con arrow function");
+})();
+```
+
+Il concetto è simile a chiamare una normale funzione nominata: in entrambi i casi, si ha un riferimento a una funzione seguito dalle parentesi di esecuzione ().
+
+```javascript
 /*
  * Confronto con funzione normale
  */
 
-// Funzione normale nominata
+// Funzione normale
 function saluta() {
   console.log("Ciao");
 }
-saluta(); // chiamata esplicita
+saluta(); // dichiarazione separata dalla chiamata
 
-// È simile a questo concetto
-let saluta2 = function () {
-  console.log("Ciao");
-};
-saluta2(); // chiamata esplicita
-
-// IIFE: dichiarazione + chiamata in un'unica espressione
+// IIFE: tutto in un'espressione
 (function () {
   console.log("Ciao");
-})(); // ← immediatamente invocata
+})(); // dichiarazione E chiamata insieme
+
+// È come fare:
+let temp = function () {
+  console.log("Ciao");
+};
+temp(); // ma senza lasciare 'temp' nello scope
 ```
 
 **Lo Scopo Principale → Creare uno Scope Privato**
 
-Il vantaggio più grande di una IIFE è la sua capacità di creare uno **scope privato**. Poiché ogni funzione in JavaScript crea il proprio scope, tutte le variabili dichiarate all'interno di una IIFE sono confinate al suo interno e non "inquinano" lo scope circostante (globale o di un'altra funzione).
+Il vantaggio più grande di una IIFE è la sua capacità di creare uno scope privato. Poiché ogni funzione in JavaScript crea il proprio scope, tutte le variabili dichiarate all'interno di una IIFE sono confinate al suo interno e non "inquinano" lo scope circostante (globale o di un'altra funzione).
 
-Questo era un pattern fondamentale prima dell'introduzione di `let` e `const` (che hanno lo scope di blocco), quando si usava `var` (che ha lo scope di funzione) e si voleva evitare di creare variabili globali accidentalmente.
+Questo era un pattern fondamentale prima dell'introduzione di let e const (che hanno lo scope di blocco), quando si usava var (che ha lo scope di funzione) e si voleva evitare di creare variabili globali accidentalmente.
 
 ```javascript
 /*
@@ -2359,51 +2660,57 @@ var contatore = 0;
 var incrementa = function () {
   contatore++;
 };
-console.log(contatore); // 0 (accessibile globalmente)
+console.log(contatore); // 0 (accessibile globalmente - inquinamento)
 
 // ✅ Con IIFE - scope privato
 (function () {
-  var contatore = 0; // privato, esiste solo dentro la IIFE
+  var contatore = 0; // privato! Esiste solo dentro la IIFE
 
   function incrementa() {
     contatore++;
-    console.log(contatore);
+    console.log("Contatore:", contatore);
   }
 
-  incrementa(); // 1
-  incrementa(); // 2
+  incrementa(); // "Contatore: 1"
+  incrementa(); // "Contatore: 2"
 })();
 
-// console.log(contatore); // ❌ ReferenceError - non accessibile fuori
+// console.log(contatore); // ❌ ReferenceError - non accessibile
 
 /*
- * Evitare conflitti di nomi
+ * Evitare conflitti di nomi tra file
  */
 
 // File1.js
 (function () {
   var nome = "Mario";
-  console.log("File 1:", nome);
+  var id = 123;
+  console.log("File 1:", nome, id);
 })();
 
 // File2.js
 (function () {
   var nome = "Luigi"; // Nessun conflitto!
-  console.log("File 2:", nome);
+  var id = 456;
+  console.log("File 2:", nome, id);
 })();
 
 /*
- * Pattern Module con IIFE
+ * Pattern Module con IIFE (encapsulation)
  */
+
 let modulo = (function () {
-  // Variabili private
+  // Variabili private (non accessibili dall'esterno)
   let contatore = 0;
   let segreto = "password123";
 
-  // API pubblica (ritornata)
+  // API pubblica (ritornata ed esposta)
   return {
     incrementa: function () {
       contatore++;
+    },
+    decrementa: function () {
+      contatore--;
     },
     getValue: function () {
       return contatore;
@@ -2414,8 +2721,10 @@ let modulo = (function () {
 
 modulo.incrementa();
 modulo.incrementa();
-console.log(modulo.getValue()); // 2
-console.log(modulo.segreto); // undefined (privato)
+modulo.incrementa();
+console.log(modulo.getValue()); // 3
+console.log(modulo.segreto); // undefined (privato, non accessibile)
+console.log(modulo.contatore); // undefined (privato, non accessibile)
 ```
 
 **IIFE con Parametri e Valori di Ritorno**
@@ -2430,13 +2739,19 @@ Come ogni altra funzione, una IIFE può accettare parametri e restituire un valo
 // Passare valori alla IIFE
 (function (nome, eta) {
   console.log("Nome:", nome, "Età:", eta);
-})("Mario", 30);
+})("Mario", 30); // argomenti passati subito
 
-// Passare oggetti globali come window, document (pattern comune in jQuery)
+// Pattern comune: passare oggetti globali (window, document)
 (function (global, doc) {
-  console.log("Titolo:", doc.title);
-  global.miVariabileGlobale = "Valore";
+  console.log("Titolo pagina:", doc.title);
+  global.miVariabile = "Valore globale";
 })(window, document);
+
+// Con jQuery era comune
+(function ($) {
+  // $ è jQuery, passato come parametro
+  $(".elemento").hide();
+})(jQuery);
 
 /*
  * IIFE con return
@@ -2446,81 +2761,66 @@ Come ogni altra funzione, una IIFE può accettare parametri e restituire un valo
 const risultato = (function () {
   let moltiplicatore = 5;
   let valoreBase = 10;
-  return moltiplicatore * valoreBase;
+  let calcolo = moltiplicatore * valoreBase;
+  return calcolo;
 })();
 
 console.log(risultato); // 50
 // moltiplicatore e valoreBase non esistono più
 
-// Esempio più complesso: configurazione
+// Esempio più elaborato: configurazione
 const config = (function () {
-  let ambiente = "produzione";
+  let ambiente = "produzione"; // variabile temporanea
   let apiUrl;
 
   if (ambiente === "sviluppo") {
     apiUrl = "http://localhost:3000/api";
+  } else if (ambiente === "staging") {
+    apiUrl = "https://staging-api.example.com";
   } else {
-    apiUrl = "https://api.production.com";
+    apiUrl = "https://api.example.com";
   }
 
+  // Restituisce solo ciò che serve
   return {
     ambiente: ambiente,
     apiUrl: apiUrl,
     version: "1.0.0",
+    debug: ambiente === "sviluppo",
   };
 })();
 
-console.log(config.apiUrl); // "https://api.production.com"
-// ambiente (variabile temporanea) non è più accessibile
+console.log(config.apiUrl); // "https://api.example.com"
+console.log(config.debug); // false
 
 /*
  * IIFE per inizializzazione complessa
  */
 
 const utente = (function () {
-  let nome = "Mario Rossi";
-  let parti = nome.split(" ");
+  let nomeCompleto = "Mario Rossi";
+  let parti = nomeCompleto.split(" ");
+  let iniziali = parti[0][0] + parti[1][0];
+  let username = (parti[0] + parti[1]).toLowerCase();
 
   return {
-    nome: nome,
-    iniziali: parti[0][0] + parti[1][0],
-    username: (parti[0] + parti[1]).toLowerCase(),
+    nome: nomeCompleto,
+    iniziali: iniziali,
+    username: username,
+    email: username + "@example.com",
   };
 })();
 
 console.log(utente);
-// { nome: 'Mario Rossi', iniziali: 'MR', username: 'mariorossi' }
-
-/*
- * Pattern: Default parameters con IIFE
- */
-
-function creaWidget(opzioni) {
-  opzioni = (function (opts) {
-    // Valori di default
-    let defaults = {
-      colore: "blu",
-      dimensione: "media",
-      visibile: true,
-    };
-
-    // Merge con opzioni fornite
-    return { ...defaults, ...opts };
-  })(opzioni || {});
-
-  console.log("Widget creato con:", opzioni);
-}
-
-creaWidget(); // usa i default
-creaWidget({ colore: "rosso" }); // override solo colore
+// {
+//   nome: 'Mario Rossi',
+//   iniziali: 'MR',
+//   username: 'mariorossi',
+//   email: 'mariorossi@example.com'
+// }
 ```
 
-In questo esempio, la IIFE viene eseguita immediatamente, calcola il risultato e lo restituisce. Il valore restituito (50) viene quindi assegnato alla costante `risultato`. Le variabili `moltiplicatore` e `valoreBase` esistono solo durante l'esecuzione della IIFE e poi scompaiono.
-
-**Approfondisci**:
-
-- [[01-fondamenti/funzioni/funzioni]] - Funzioni in JavaScript
-- [[01-fondamenti/funzioni/iife]] - IIFE (Immediately Invoked Function Expressions)
+In questo esempio, la IIFE viene eseguita immediatamente, calcola il risultato e lo restituisce. Il valore restituito (50) viene quindi assegnato alla costante risultato. Le variabili moltiplicatore e valoreBase esistono solo durante l'esecuzione della IIFE e poi scompaiono.
 
 ### 3.9 Closure (Chiusura)
 
@@ -2528,9 +2828,13 @@ La Closure (o chiusura) è uno dei concetti più importanti e spesso meno compre
 
 Questo meccanismo permette a una funzione interna di mantenere un riferimento vivo alle variabili della funzione esterna che la contiene.
 
-#### Consideriamo questo esempio:
+Consideriamo questo esempio:
 
 ```javascript
+/*
+ * Esempio base di closure
+ */
+
 function makeAdder(x) {
   // x è una variabile nello scope di makeAdder
 
@@ -2565,6 +2869,123 @@ Analizzando il codice:
 
 In sostanza, ogni volta che `makeAdder` viene eseguita, viene creato un nuovo scope e la funzione `add` interna mantiene un collegamento a quello specifico scope. La closure è una delle tecniche più potenti e versatili della programmazione, e padroneggiarla è fondamentale per uno sviluppatore JavaScript.
 
+```javascript
+/*
+ * Altri esempi di closure
+ */
+
+// Contatore privato con closure
+function creaContatore() {
+  let contatore = 0; // variabile privata
+
+  return function () {
+    contatore++;
+    return contatore;
+  };
+}
+
+let conta = creaContatore();
+console.log(conta()); // 1
+console.log(conta()); // 2
+console.log(conta()); // 3
+
+// Ogni istanza ha il suo contatore
+let conta2 = creaContatore();
+console.log(conta2()); // 1 (nuovo contatore)
+console.log(conta()); // 4 (contatore precedente continua)
+
+// Closure con più variabili
+function creaSaluto(saluto) {
+  return function (nome) {
+    return saluto + ", " + nome + "!";
+  };
+}
+
+let salutaItaliano = creaSaluto("Ciao");
+let salutaInglese = creaSaluto("Hello");
+let salutaSpagnolo = creaSaluto("Hola");
+
+console.log(salutaItaliano("Mario")); // "Ciao, Mario!"
+console.log(salutaInglese("John")); // "Hello, John!"
+console.log(salutaSpagnolo("Carlos")); // "Hola, Carlos!"
+
+// Closure in loop (problema classico con var)
+for (var i = 1; i <= 3; i++) {
+  setTimeout(function () {
+    console.log(i); // stampa 4, 4, 4 (problema!)
+  }, i * 1000);
+}
+
+// Soluzione con closure (IIFE)
+for (var i = 1; i <= 3; i++) {
+  (function (j) {
+    setTimeout(function () {
+      console.log(j); // stampa 1, 2, 3 (corretto!)
+    }, j * 1000);
+  })(i);
+}
+
+// Soluzione moderna con let (ha block scope)
+for (let i = 1; i <= 3; i++) {
+  setTimeout(function () {
+    console.log(i); // stampa 1, 2, 3 (corretto!)
+  }, i * 1000);
+}
+
+// Closure per memorizzare stato complesso
+function creaCalcolatrice() {
+  let memoria = 0;
+  let storia = [];
+
+  return {
+    add: function (num) {
+      memoria += num;
+      storia.push(`+${num} = ${memoria}`);
+      return memoria;
+    },
+    subtract: function (num) {
+      memoria -= num;
+      storia.push(`-${num} = ${memoria}`);
+      return memoria;
+    },
+    reset: function () {
+      memoria = 0;
+      storia.push("reset");
+      return memoria;
+    },
+    getStoria: function () {
+      return storia.slice(); // copia dell'array
+    },
+  };
+}
+
+let calc = creaCalcolatrice();
+calc.add(10); // 10
+calc.add(5); // 15
+calc.subtract(3); // 12
+calc.reset(); // 0
+console.log(calc.getStoria());
+// ["+10 = 10", "+5 = 15", "-3 = 12", "reset"]
+
+// Closure per configurazione
+function creaLogger(prefisso) {
+  let contatore = 0;
+
+  return function (messaggio) {
+    contatore++;
+    console.log(`[${prefisso}] #${contatore}: ${messaggio}`);
+  };
+}
+
+let loggerApp = creaLogger("APP");
+let loggerDB = creaLogger("DB");
+
+loggerApp("Applicazione avviata"); // [APP] #1: Applicazione avviata
+loggerDB("Connessione al database"); // [DB] #1: Connessione al database
+loggerApp("Utente loggato"); // [APP] #2: Utente loggato
+loggerDB("Query eseguita"); // [DB] #2: Query eseguita
+```
+
 ### 3.10 Module Pattern
 
 L'uso più comune della closure in JavaScript è il Module Pattern. Questo pattern permette di definire dettagli implementativi privati (variabili e funzioni) che sono nascosti al mondo esterno, e allo stesso tempo di esporre un'interfaccia pubblica (public API) che può essere utilizzata per interagire con essi.
@@ -2574,19 +2995,23 @@ L'uso più comune della closure in JavaScript è il Module Pattern. Questo patte
 Consideriamo il seguente esempio:
 
 ```javascript
+/*
+ * Module Pattern base
+ */
+
 function User() {
-  // Variabili private
+  // Variabili private (non accessibili dall'esterno)
   let username;
   let password;
 
-  // Funzione privata
+  // Funzione privata (non accessibile dall'esterno)
   function doLogin(user, pw) {
     username = user;
     password = pw;
     console.log("Login effettuato per:", username);
   }
 
-  // API pubblica
+  // API pubblica (ciò che viene esposto)
   let publicAPI = {
     login: doLogin,
   };
@@ -2599,8 +3024,14 @@ let fred = User();
 fred.login("fred", "12Battery34!"); // Login effettuato per: fred
 
 // Non possiamo accedere alle variabili private
-console.log(fred.username); // undefined
-console.log(fred.password); // undefined
+console.log(fred.username); // undefined (privato!)
+console.log(fred.password); // undefined (privato!)
+// console.log(fred.doLogin); // undefined (privato!)
+
+// Ogni istanza è indipendente
+let john = User();
+john.login("john", "password123");
+// fred e john hanno stati privati separati
 ```
 
 Analizziamo il funzionamento:
@@ -2617,6 +3048,198 @@ Analizziamo il funzionamento:
 
 In sintesi, il Module Pattern sfrutta le closure per creare uno stato privato e un'interfaccia pubblica, un concetto chiave per scrivere codice robusto e manutenibile.
 
+```javascript
+/*
+ * Module Pattern più completo
+ */
+
+function BankAccount(initialBalance) {
+  // Variabili private
+  let balance = initialBalance || 0;
+  let transactionHistory = [];
+  let accountNumber = Math.floor(Math.random() * 1000000);
+
+  // Funzioni private (helper)
+  function recordTransaction(type, amount) {
+    transactionHistory.push({
+      type: type,
+      amount: amount,
+      date: new Date(),
+      balance: balance,
+    });
+  }
+
+  function isValidAmount(amount) {
+    return typeof amount === "number" && amount > 0;
+  }
+
+  // API pubblica
+  return {
+    deposit: function (amount) {
+      if (!isValidAmount(amount)) {
+        console.log("Importo non valido");
+        return false;
+      }
+      balance += amount;
+      recordTransaction("deposit", amount);
+      console.log(`Depositati €${amount}. Saldo: €${balance}`);
+      return true;
+    },
+
+    withdraw: function (amount) {
+      if (!isValidAmount(amount)) {
+        console.log("Importo non valido");
+        return false;
+      }
+      if (amount > balance) {
+        console.log("Fondi insufficienti");
+        return false;
+      }
+      balance -= amount;
+      recordTransaction("withdraw", amount);
+      console.log(`Prelevati €${amount}. Saldo: €${balance}`);
+      return true;
+    },
+
+    getBalance: function () {
+      return balance;
+    },
+
+    getAccountNumber: function () {
+      return accountNumber;
+    },
+
+    getHistory: function () {
+      // Restituisce una copia per evitare modifiche esterne
+      return transactionHistory.slice();
+    },
+  };
+}
+
+// Uso del modulo
+let myAccount = BankAccount(1000);
+console.log("Numero conto:", myAccount.getAccountNumber());
+
+myAccount.deposit(500); // Depositati €500. Saldo: €1500
+myAccount.withdraw(200); // Prelevati €200. Saldo: €1300
+myAccount.withdraw(2000); // Fondi insufficienti
+
+console.log("Saldo attuale:", myAccount.getBalance()); // 1300
+
+// Variabili private non accessibili
+console.log(myAccount.balance); // undefined
+console.log(myAccount.accountNumber); // undefined
+console.log(myAccount.recordTransaction); // undefined
+
+/*
+ * Module Pattern con IIFE (Singleton)
+ */
+
+let AppConfig = (function () {
+  // Stato privato
+  let apiKey = "abc123xyz";
+  let environment = "production";
+  let debugMode = false;
+
+  // Funzioni private
+  function log(message) {
+    if (debugMode) {
+      console.log(`[CONFIG] ${message}`);
+    }
+  }
+
+  // API pubblica
+  return {
+    getApiUrl: function () {
+      if (environment === "development") {
+        return "http://localhost:3000/api";
+      }
+      return "https://api.production.com";
+    },
+
+    setEnvironment: function (env) {
+      if (env === "development" || env === "production") {
+        environment = env;
+        log(`Ambiente cambiato in: ${env}`);
+      }
+    },
+
+    enableDebug: function () {
+      debugMode = true;
+      log("Debug mode attivato");
+    },
+
+    disableDebug: function () {
+      debugMode = false;
+    },
+
+    // apiKey rimane privato, non esposto
+  };
+})();
+
+// Uso del singleton
+console.log(AppConfig.getApiUrl()); // https://api.production.com
+AppConfig.enableDebug();
+AppConfig.setEnvironment("development"); // [CONFIG] Ambiente cambiato in: development
+console.log(AppConfig.getApiUrl()); // http://localhost:3000/api
+
+// Stato privato non accessibile
+console.log(AppConfig.apiKey); // undefined
+console.log(AppConfig.environment); // undefined
+
+/*
+ * Module Pattern con namespace
+ */
+
+let MyApp = MyApp || {};
+
+MyApp.Utils = (function () {
+  // Metodi privati
+  function privateHelper() {
+    return "Helper privato";
+  }
+
+  // API pubblica
+  return {
+    formatDate: function (date) {
+      return date.toLocaleDateString("it-IT");
+    },
+
+    generateId: function () {
+      return "id_" + Math.random().toString(36).substr(2, 9);
+    },
+
+    capitalize: function (str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+  };
+})();
+
+MyApp.Database = (function () {
+  let data = {}; // storage privato
+
+  return {
+    save: function (key, value) {
+      data[key] = value;
+    },
+
+    get: function (key) {
+      return data[key];
+    },
+
+    remove: function (key) {
+      delete data[key];
+    },
+  };
+})();
+
+// Uso dei moduli organizzati
+console.log(MyApp.Utils.formatDate(new Date()));
+let id = MyApp.Utils.generateId();
+MyApp.Database.save(id, { nome: "Mario" });
+console.log(MyApp.Database.get(id)); // { nome: "Mario" }
+```
+
 ### 3.11 L'identificatore this
 
 Un altro concetto spesso frainteso in JavaScript è la parola chiave `this`. Sebbene possa sembrare legata a paradigmi di programmazione orientata agli oggetti, in JavaScript il suo funzionamento è diverso.
@@ -2624,6 +3247,10 @@ Un altro concetto spesso frainteso in JavaScript è la parola chiave `this`. Seb
 Se una funzione contiene un riferimento a `this`, quel riferimento di solito punta a un oggetto. Tuttavia, l'oggetto a cui punta dipende da come la funzione è stata chiamata (call-site). È fondamentale capire che `this` non si riferisce alla funzione stessa, che è l'equivoco più comune.
 
 ```javascript
+/*
+ * Le quattro regole di this
+ */
+
 function foo() {
   console.log(this.bar);
 }
@@ -2640,10 +3267,10 @@ var obj2 = {
 };
 
 // -------------------------
-foo(); // "global"
-obj1.foo(); // "obj1"
-foo.call(obj2); // "obj2"
-new foo(); // undefined
+foo(); // "global" (default binding)
+obj1.foo(); // "obj1" (implicit binding)
+foo.call(obj2); // "obj2" (explicit binding)
+new foo(); // undefined (new binding)
 ```
 
 Esistono quattro regole principali che determinano il valore di `this`, illustrate nelle ultime quattro righe dell'esempio:
@@ -2657,6 +3284,184 @@ Esistono quattro regole principali che determinano il valore di `this`, illustra
 **Chiamata con new (`new foo()`)** → Quando una funzione viene usata come costruttore con la parola chiave `new`, `this` viene associato a un nuovo oggetto vuoto creato per l'occasione. Questo è il **new binding**. Poiché questo nuovo oggetto non ha una proprietà `bar`, `this.bar` risulta `undefined`.
 
 In conclusione, per capire a cosa si riferisce `this`, è necessario esaminare il punto esatto in cui la funzione viene chiamata. Il contesto di quella chiamata determinerà il valore di `this` secondo una di queste quattro regole.
+
+```javascript
+/*
+ * Esempi dettagliati delle quattro regole
+ */
+
+// 1. DEFAULT BINDING
+function mostraNome() {
+  console.log(this.nome);
+}
+
+var nome = "Globale";
+mostraNome(); // "Globale" (this = window/global)
+
+// In strict mode:
+("use strict");
+function mostraNomeStrict() {
+  console.log(this); // undefined
+  // console.log(this.nome); // ❌ TypeError
+}
+// mostraNomeStrict();
+
+// 2. IMPLICIT BINDING
+let persona = {
+  nome: "Mario",
+  saluta: function () {
+    console.log("Ciao, sono " + this.nome);
+  },
+};
+
+persona.saluta(); // "Ciao, sono Mario" (this = persona)
+
+// Attenzione: perdita del binding
+let saluto = persona.saluta;
+saluto(); // "Ciao, sono Globale" (this = window, default binding!)
+
+// Esempio con oggetti annidati
+let obj = {
+  livello: "obj",
+  inner: {
+    livello: "inner",
+    mostra: function () {
+      console.log(this.livello);
+    },
+  },
+};
+
+obj.inner.mostra(); // "inner" (this = obj.inner, non obj!)
+
+// 3. EXPLICIT BINDING
+function descrivi() {
+  console.log(this.tipo + ": " + this.nome);
+}
+
+let animale1 = { tipo: "Cane", nome: "Fido" };
+let animale2 = { tipo: "Gatto", nome: "Micio" };
+
+descrivi.call(animale1); // "Cane: Fido"
+descrivi.call(animale2); // "Gatto: Micio"
+
+// call vs apply
+function somma(a, b) {
+  console.log(this.nome + " calcola: " + (a + b));
+}
+
+let utente = { nome: "Mario" };
+
+somma.call(utente, 5, 3); // "Mario calcola: 8" (argomenti separati)
+somma.apply(utente, [5, 3]); // "Mario calcola: 8" (argomenti in array)
+
+// bind - crea una nuova funzione con this fisso
+let salutaMario = persona.saluta.bind(persona);
+salutaMario(); // "Ciao, sono Mario" (this è sempre persona)
+
+setTimeout(persona.saluta, 1000); // "Ciao, sono Globale" (perde this)
+setTimeout(persona.saluta.bind(persona), 1000); // "Ciao, sono Mario" (this fissato)
+
+// 4. NEW BINDING
+function Persona(nome, eta) {
+  this.nome = nome;
+  this.eta = eta;
+  this.descrivi = function () {
+    console.log(this.nome + " ha " + this.eta + " anni");
+  };
+}
+
+let p1 = new Persona("Mario", 30);
+let p2 = new Persona("Luigi", 25);
+
+p1.descrivi(); // "Mario ha 30 anni"
+p2.descrivi(); // "Luigi ha 25 anni"
+
+console.log(p1.nome); // "Mario" (this era il nuovo oggetto)
+
+/*
+ * Problemi comuni e soluzioni
+ */
+
+// Problema: callback perde this
+let contatore = {
+  count: 0,
+  incrementa: function () {
+    this.count++;
+    console.log(this.count);
+  },
+};
+
+contatore.incrementa(); // 1 (funziona)
+// setTimeout(contatore.incrementa, 1000); // NaN (perde this)
+
+// Soluzione 1: arrow function
+setTimeout(() => contatore.incrementa(), 1000); // 2 (funziona)
+
+// Soluzione 2: bind
+setTimeout(contatore.incrementa.bind(contatore), 1000); // 3 (funziona)
+
+// Soluzione 3: variabile self/that
+let obj2 = {
+  count: 0,
+  incrementa: function () {
+    let self = this; // salva riferimento
+    setTimeout(function () {
+      self.count++;
+      console.log(self.count);
+    }, 1000);
+  },
+};
+
+// Arrow function NON ha proprio this (usa this del contesto)
+let oggetto = {
+  nome: "Test",
+  metodoNormale: function () {
+    console.log(this.nome); // "Test"
+  },
+  metodoArrow: () => {
+    console.log(this.nome); // undefined (this è del contesto esterno)
+  },
+};
+
+oggetto.metodoNormale(); // "Test"
+oggetto.metodoArrow(); // undefined
+
+// Arrow function utile in callback
+let timer = {
+  secondi: 0,
+  avvia: function () {
+    setInterval(() => {
+      this.secondi++; // this è timer (arrow function)
+      console.log(this.secondi);
+    }, 1000);
+  },
+};
+
+// timer.avvia(); // 1, 2, 3, ... (funziona!)
+
+/*
+ * Precedenza delle regole (dalla più alta alla più bassa)
+ */
+
+function test() {
+  console.log(this.valore);
+}
+
+let objA = { valore: "A", test: test };
+let objB = { valore: "B" };
+
+// 1. new ha la precedenza più alta
+let istanza = new test(); // undefined (nuovo oggetto vuoto)
+
+// 2. explicit binding ha precedenza su implicit
+objA.test.call(objB); // "B" (call vince su oggetto)
+
+// 3. implicit binding ha precedenza su default
+objA.test(); // "A" (oggetto vince su globale)
+
+// 4. default binding (più bassa)
+test(); // undefined o errore in strict mode
+```
 
 ### 3.12 Prototipi (Prototypes)
 

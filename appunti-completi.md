@@ -269,7 +269,9 @@ const bottone = document.getElementById("mioBottone");
 bottone.addEventListener("click", function () {
   alert("Bottone cliccato!");
 });
+```
 
+```javascript
 /*
  * Confronto visivo del caricamento
  */
@@ -1452,7 +1454,7 @@ prodotto.mostraInfo(); // "Laptop - €899.99"
 
 Esistono due modi per accedere alle proprietà di un oggetto:
 
-**Dot Notation (Notazione a Punto)** → È la sintassi più comune, breve e leggibile. Si usa il nome dell'oggetto seguito da un punto e dal nome della proprietà.
+- **Dot Notation (Notazione a Punto)** → È la sintassi più comune, breve e leggibile. Si usa il nome dell'oggetto seguito da un punto e dal nome della proprietà.
 
 ```javascript
 let persona = {
@@ -1467,10 +1469,9 @@ console.log(persona.cognome); // "Rossi"
 console.log(persona.eta); // 30
 ```
 
-**Bracket Notation (Notazione a Parentesi Quadre)** → Si usa il nome dell'oggetto seguito da parentesi quadre [] che contengono il nome della proprietà come stringa. Questa notazione è indispensabile in due casi:
-
-- Quando il nome della proprietà contiene spazi o caratteri speciali.
-- Quando il nome della proprietà è memorizzato in una variabile.
+- **Bracket Notation (Notazione a Parentesi Quadre)** → Si usa il nome dell'oggetto seguito da parentesi quadre [] che contengono il nome della proprietà come stringa. Questa notazione è indispensabile in due casi:
+  - Quando il nome della proprietà contiene spazi o caratteri speciali.
+  - Quando il nome della proprietà è memorizzato in una variabile.
 
 ```javascript
 let persona = {
@@ -1553,9 +1554,9 @@ console.log(utente.password); // undefined
 
 Questa è una distinzione importante che avviene "sotto il cofano" del motore JavaScript (come V8, quello di Chrome e Node.js).
 
-**Oggetti "Fast" (con Hidden Classes)** → Quando si crea un oggetto con una struttura definita, il motore V8 lo ottimizza. Crea una "classe nascosta" (hidden class), una sorta di schema o blueprint che descrive la forma dell'oggetto (quali chiavi ha e in che ordine). Gli oggetti che condividono la stessa struttura possono usare la stessa hidden class, rendendo l'accesso alle loro proprietà estremamente veloce, quasi come accedere a un campo di una struct in C++.
+- **Oggetti "Fast" (con Hidden Classes)** → Quando si crea un oggetto con una struttura definita, il motore V8 lo ottimizza. Crea una "classe nascosta" (hidden class), una sorta di schema o blueprint che descrive la forma dell'oggetto (quali chiavi ha e in che ordine). Gli oggetti che condividono la stessa struttura possono usare la stessa hidden class, rendendo l'accesso alle loro proprietà estremamente veloce, quasi come accedere a un campo di una struct in C++.
 
-**Oggetti "Dictionary" (o "Slow")** → Quando si altera la forma di un oggetto in modo imprevedibile, ad esempio aggiungendo o eliminando proprietà dinamicamente (specialmente con delete), il motore non può più fare affidamento sulla hidden class. L'ottimizzazione salta e l'oggetto viene declassato a una struttura più lenta, simile a un dizionario o una hash map. L'accesso alle proprietà diventa più lento perché il motore deve cercare la chiave in un dizionario invece di accedere a una posizione di memoria fissa.
+- **Oggetti "Dictionary" (o "Slow")** → Quando si altera la forma di un oggetto in modo imprevedibile, ad esempio aggiungendo o eliminando proprietà dinamicamente (specialmente con delete), il motore non può più fare affidamento sulla hidden class. L'ottimizzazione salta e l'oggetto viene declassato a una struttura più lenta, simile a un dizionario o una hash map. L'accesso alle proprietà diventa più lento perché il motore deve cercare la chiave in un dizionario invece di accedere a una posizione di memoria fissa.
 
 In sintesi, usare delete è funzionale, ma può avere un costo in termini di performance perché trasforma un oggetto da "fast" a "slow".
 
@@ -1888,7 +1889,7 @@ Gli array dispongono di numerosi metodi integrati (built-in methods) che semplif
 
 Esistono metodi specifici per aggiungere o rimuovere elementi all'inizio o alla fine di un array.
 
-**push()** → Aggiunge uno o più elementi alla fine dell'array.
+- **push()** → Aggiunge uno o più elementi alla fine dell'array.
 
 ```javascript
 let numeri = [1, 2, 3];
@@ -1903,7 +1904,7 @@ let lunghezza = numeri.push(7);
 console.log(lunghezza); // 7
 ```
 
-**pop()** → Rimuove l'ultimo elemento dall'array e lo restituisce.
+- **pop()** → Rimuove l'ultimo elemento dall'array e lo restituisce.
 
 ```javascript
 let numeri = [1, 2, 3];
@@ -1916,7 +1917,7 @@ numeri.pop();
 console.log(numeri); // [1]
 ```
 
-**unshift()** → Aggiunge uno o più elementi all'inizio dell'array.
+- **unshift()** → Aggiunge uno o più elementi all'inizio dell'array.
 
 ```javascript
 let numeri = [2, 3];
@@ -1931,7 +1932,7 @@ let lunghezza = numeri.unshift(-2);
 console.log(lunghezza); // 6
 ```
 
-**shift()** → Rimuove il primo elemento dall'array e lo restituisce.
+- **shift()** → Rimuove il primo elemento dall'array e lo restituisce.
 
 ```javascript
 let numeri = [1, 2, 3];
@@ -1948,7 +1949,7 @@ console.log(numeri); // [3]
 
 Questi metodi, spesso chiamati "higher-order functions", permettono di eseguire operazioni su ogni elemento dell'array, spesso creando un nuovo array come risultato.
 
-**forEach()** → Esegue una funzione per ogni elemento dell'array. Non restituisce un nuovo array.
+- **forEach()** → Esegue una funzione per ogni elemento dell'array. Non restituisce un nuovo array.
 
 ```javascript
 let numeri = [1, 2, 3, 4, 5];
@@ -1972,7 +1973,7 @@ valori.forEach(function (numero, indice, arr) {
 console.log(valori); // [2, 4, 6]
 ```
 
-**map()** → Crea un nuovo array contenente i risultati di una funzione applicata a ogni elemento dell'array originale.
+- **map()** → Crea un nuovo array contenente i risultati di una funzione applicata a ogni elemento dell'array originale.
 
 ```javascript
 let numeri = [1, 2, 3, 4, 5];
@@ -1996,7 +1997,7 @@ let nomi = persone.map(function (persona) {
 console.log(nomi); // ["Mario", "Luigi"]
 ```
 
-**filter()** → Crea un nuovo array contenente solo gli elementi che superano un test (una funzione che restituisce true).
+- **filter()** → Crea un nuovo array contenente solo gli elementi che superano un test (una funzione che restituisce true).
 
 ```javascript
 let numeri = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -2026,7 +2027,7 @@ let adulti = persone.filter(function (persona) {
 console.log(adulti); // [{ nome: "Mario", eta: 30 }, { nome: "Anna", eta: 25 }]
 ```
 
-**reduce()** → Applica una funzione a ogni elemento per "ridurre" l'array a un singolo valore (es. una somma, un oggetto).
+- **reduce()** → Applica una funzione a ogni elemento per "ridurre" l'array a un singolo valore (es. una somma, un oggetto).
 
 ```javascript
 let numeri = [1, 2, 3, 4, 5];
@@ -2060,7 +2061,7 @@ console.log(conteggio); // { mela: 3, banana: 2, arancia: 1 }
 
 **Altri Metodi Utili**
 
-**slice()** → Restituisce una copia superficiale (shallow copy) di una porzione dell'array in un nuovo array, senza modificare l'originale.
+- **slice()** → Restituisce una copia superficiale (shallow copy) di una porzione dell'array in un nuovo array, senza modificare l'originale.
 
 ```javascript
 let numeri = [1, 2, 3, 4, 5];
@@ -2079,7 +2080,7 @@ let ultimi = numeri.slice(-2);
 console.log(ultimi); // [4, 5]
 ```
 
-**splice()** → Modifica il contenuto di un array rimuovendo, sostituendo o aggiungendo elementi direttamente nell'array originale.
+- **splice()** → Modifica il contenuto di un array rimuovendo, sostituendo o aggiungendo elementi direttamente nell'array originale.
 
 ```javascript
 let numeri = [1, 2, 3, 4, 5];
@@ -2100,7 +2101,7 @@ numeri.splice(2, 1, 99);
 console.log(numeri); // [1, 2, 99, 4, 5] (sostituisce 3 con 99)
 ```
 
-**includes()** → Controlla se un array include un certo elemento, restituendo true o false.
+- **includes()** → Controlla se un array include un certo elemento, restituendo true o false.
 
 ```javascript
 let frutti = ["mela", "banana", "arancia"];
@@ -2117,7 +2118,7 @@ console.log(numeri.includes(10)); // false
 console.log(numeri.includes(3, 3)); // false (cerca da indice 3 in poi)
 ```
 
-**find()** → Restituisce il primo elemento dell'array che soddisfa una condizione.
+- **find()** → Restituisce il primo elemento dell'array che soddisfa una condizione.
 
 ```javascript
 let numeri = [5, 12, 8, 130, 44];
@@ -2502,9 +2503,9 @@ Questo comportamento non si applica alle variabili dichiarate con let o const, c
 
 Esiste una differenza fondamentale tra eseguire una funzione immediatamente e passare un riferimento ad essa per un'esecuzione futura.
 
-**Esecuzione Diretta** → Usare le parentesi () dopo il nome della funzione ne provoca l'esecuzione immediata.
+- **Esecuzione Diretta** → Usare le parentesi () dopo il nome della funzione ne provoca l'esecuzione immediata.
 
-**Esecuzione Indiretta (Passare un Riferimento)** → Fornire solo il nome della funzione, senza parentesi, significa passare un riferimento ad essa. Questo è comune nella gestione degli eventi, dove si dice al browser di eseguire una certa funzione solo quando si verifica un evento (es. un click).
+- **Esecuzione Indiretta (Passare un Riferimento)** → Fornire solo il nome della funzione, senza parentesi, significa passare un riferimento ad essa. Questo è comune nella gestione degli eventi, dove si dice al browser di eseguire una certa funzione solo quando si verifica un evento (es. un click).
 
 ```javascript
 /*
@@ -3130,7 +3131,9 @@ console.log("Saldo attuale:", myAccount.getBalance()); // 1300
 console.log(myAccount.balance); // undefined
 console.log(myAccount.accountNumber); // undefined
 console.log(myAccount.recordTransaction); // undefined
+```
 
+```javascript
 /*
  * Module Pattern con IIFE (Singleton)
  */
@@ -3186,7 +3189,9 @@ console.log(AppConfig.getApiUrl()); // http://localhost:3000/api
 // Stato privato non accessibile
 console.log(AppConfig.apiKey); // undefined
 console.log(AppConfig.environment); // undefined
+```
 
+```javascript
 /*
  * Module Pattern con namespace
  */
@@ -3377,7 +3382,9 @@ p1.descrivi(); // "Mario ha 30 anni"
 p2.descrivi(); // "Luigi ha 25 anni"
 
 console.log(p1.nome); // "Mario" (this era il nuovo oggetto)
+```
 
+```javascript
 /*
  * Problemi comuni e soluzioni
  */
@@ -3438,7 +3445,9 @@ let timer = {
 };
 
 // timer.avvia(); // 1, 2, 3, ... (funziona!)
+```
 
+```javascript
 /*
  * Precedenza delle regole (dalla più alta alla più bassa)
  */
@@ -3465,11 +3474,11 @@ test(); // undefined o errore in strict mode
 
 ### 3.12 Prototipi (Prototypes)
 
-Il meccanismo dei prototipi (prototype) in JavaScript funziona come un sistema di "fallback" per le proprietà di un oggetto.
+Il meccanismo dei prototipi (prototype) in JavaScript è un concetto fondamentale, anche se complesso. Funziona come un sistema di "fallback" per le proprietà degli oggetti.
 
-Quando si cerca di accedere a una proprietà su un oggetto, se la proprietà non viene trovata, JavaScript può utilizzare automaticamente un riferimento interno (il prototipo) dell'oggetto per cercare la proprietà su un altro oggetto. Questo collegamento tra un oggetto e il suo prototipo viene stabilito al momento della creazione dell'oggetto.
+Quando si cerca di accedere a una proprietà su un oggetto e questa non viene trovata, JavaScript utilizza automaticamente un riferimento interno al prototipo di quell'oggetto per cercare la proprietà su un altro oggetto collegato. Questo collegamento tra un oggetto e il suo prototipo viene stabilito al momento della creazione dell'oggetto.
 
-Il modo più semplice per illustrare il concetto è mostrato dalla funzione Object.create().
+Il modo più semplice per illustrare questo concetto è tramite la funzione Object.create().
 
 ```javascript
 var foo = {
@@ -3479,34 +3488,25 @@ var foo = {
 // Crea `bar` e lo collega a `foo`
 var bar = Object.create(foo);
 
-bar.a; // 42
+console.log(bar.a); // 42
 ```
 
-La proprietà "a" non esiste sull'oggetto bar, ma poiché bar è collegato tramite prototipo a foo, JavaScript risale automaticamente la catena dei prototipi fino a foo, trova la proprietà "a" e ne restituisce il valore.
+In questo esempio, la proprietà "a" non esiste direttamente sull'oggetto bar. Tuttavia, poiché "bar" è collegato tramite prototipo a "foo", JavaScript "risale" la catena dei prototipi, trova la proprietà "a" su "foo" e ne restituisce il valore. Questo processo è noto come delega (delegation).
 
-Questo collegamento avviene principalmente quando si usa Object.create(). Quando si fa riferimento a bar.a, JavaScript controlla prima se bar ha una proprietà chiamata a. Non avendola, utilizza il collegamento prototipale verso foo per controllare lì. In questo caso, bar "delega" a foo la ricerca della proprietà.
+Questo meccanismo viene spesso utilizzato (o, secondo alcuni, "abusato") per emulare il concetto di "classi" e "ereditarietà" tipico di altri linguaggi. Tuttavia, un approccio più naturale e in linea con la natura di JavaScript è il pattern della Behavior Delegation (delega del comportamento). Con questo pattern, gli oggetti vengono progettati intenzionalmente per delegare parti del loro comportamento ad altri oggetti a cui sono collegati, creando catene di oggetti che collaborano tra loro.
 
-Il meccanismo dei prototipi viene spesso utilizzato (o abusato) per emulare il concetto di "classi" e "ereditarietà" tipico di altri linguaggi. Il punto di vista più naturale e coerente con JavaScript è invece la behavior delegation (delega del comportamento), in cui gli oggetti sono progettati per delegare parti del loro comportamento ad altri oggetti a cui sono collegati.
+#### Riflessione sull'Uso dei Prototipi nello Sviluppo Moderno
 
-**Uso implicito dei prototipi**  
-I prototipi vengono utilizzati continuamente in modo implicito:
+Nello sviluppo front-end contemporaneo, specialmente utilizzando framework come Angular, React o Vue, è raro che uno sviluppatore si trovi a manipolare direttamente i prototipi degli oggetti. Questo porta a chiedersi quale sia la loro reale utilità pratica.
 
-- Quando si usano metodi come .map(), .filter() o .forEach() su un array, questi non sono duplicati su ogni array creato: risiedono su Array.prototype e l'array delega a questo prototipo l'esecuzione.
-- Lo stesso avviene con metodi come .toString() o .hasOwnProperty(), ereditati da Object.prototype.
-- Anche il DOM funziona tramite prototipi: ogni elemento eredita metodi come .addEventListener() da prototipi come HTMLElement.prototype e EventTarget.prototype.
+La risposta è che i prototipi vengono utilizzati costantemente, ma in modo implicito, poiché sono un dettaglio implementativo fondamentale del linguaggio, nascosto da livelli di astrazione più moderni.
 
-**Perché è ancora importante conoscerli?**
+#### L'Astrazione delle Classi ES6
 
-- **Debugging** → Capire la catena prototipale aiuta a diagnosticare errori come TypeError: is not a function e a ispezionare quali metodi sono disponibili su un oggetto.
-- **Performance** → Sapere che i metodi sul prototipo sono condivisi tra tutte le istanze chiarisce perché questo approccio sia efficiente in termini di memoria.
-- **Librerie e framework** → Alcune librerie (specialmente quelle più vecchie o ottimizzate) manipolano direttamente i prototipi.
-- **Polyfilling** → Per supportare funzionalità moderne in browser più vecchi, è spesso necessario modificare i prototipi di oggetti nativi (es. Array.prototype).
-
-**Classi ES6 e prototipi**
-
-La sintassi class introdotta in ES6 è solo zucchero sintattico (syntactic sugar) che astrae la manipolazione del prototipo:
+Il motivo principale per cui non si interagisce più direttamente con i prototipi è l'introduzione della sintassi class in ECMAScript 2015 (ES6). Questa sintassi è in realtà solo zucchero sintattico (syntactic sugar) che astrae la manipolazione del prototipo.
 
 ```javascript
+// ES6
 class Person {
   constructor(name) {
     this.name = name;
@@ -3517,9 +3517,10 @@ class Person {
 }
 ```
 
-Sotto il cofano, viene tradotto in:
+Sotto il cofano, viene tradotto da JavaScript in un'operazione basata sui prototipi, simile a come si scriveva prima di ES6:
 
 ```javascript
+// Pre-ES6
 function Person(name) {
   this.name = name;
 }
@@ -3528,7 +3529,31 @@ Person.prototype.greet = function () {
 };
 ```
 
-Ogni volta che si usa una classe, si sta quindi utilizzando i prototipi.
+Ogni volta che si definisce una classe e i suoi metodi, si sta quindi utilizzando il sistema dei prototipi.
+
+#### Esempi di Uso Implicito dei Prototipi
+
+L'interazione con la catena dei prototipi (prototype chain) avviene continuamente:
+
+- **Metodi degli Array** → Metodi come .map(), .filter() o .forEach() non sono duplicati su ogni singolo array creato. Essi risiedono su Array.prototype e ogni istanza di array delega a questo prototipo l'esecuzione di tali metodi.
+
+- **Metodi degli Oggetti** → Lo stesso principio si applica a metodi come .toString() o .hasOwnProperty(), che sono ereditati da Object.prototype.
+
+- **Il DOM** → Ogni elemento del DOM è un oggetto che eredita metodi come .addEventListener() o .querySelector() da prototipi come HTMLElement.prototype e EventTarget.prototype.
+
+#### Perché è Ancora Importante Conoscerli?
+
+Comprendere il funzionamento dei prototipi rimane una competenza cruciale per uno sviluppatore JavaScript per diverse ragioni:
+
+- **Debugging** → La conoscenza della catena prototipale aiuta a diagnosticare errori come TypeError: is not a function, permettendo di ispezionare quali metodi sono realmente disponibili su un oggetto e sui suoi prototipi.
+
+- **Performance** → Capire che i metodi sul prototipo sono condivisi tra tutte le istanze di un oggetto chiarisce perché questo approccio sia efficiente in termini di memoria.
+
+- **Comprensione di Librerie e Framework** → Molte librerie, specialmente quelle più datate o quelle ottimizzate per le massime prestazioni, possono manipolare i prototipi direttamente. Conoscerne i meccanismi permette di usarle con maggiore consapevolezza.
+
+- **Polyfilling** → Per garantire la compatibilità con browser meno recenti, a volte è necessario implementare manualmente funzionalità moderne mancanti (un polyfill), operazione che spesso richiede di estendere il prototipo di oggetti nativi (es. Array.prototype).
+
+In conclusione, sebbene la manipolazione diretta dei prototipi sia diventata rara nella pratica quotidiana, essi costituiscono il motore del sistema a oggetti di JavaScript. La loro comprensione è fondamentale per padroneggiare il linguaggio a un livello più profondo, andando oltre le astrazioni fornite dalla sintassi moderna.
 
 #### Esempi di Codice
 
@@ -3557,7 +3582,9 @@ cane.abbaia(); // "Bau bau!" - metodo proprio
 // Verifica della catena prototipale
 console.log(cane.hasOwnProperty("tipo")); // true - proprietà propria
 console.log(cane.hasOwnProperty("respira")); // false - ereditata dal prototipo
+```
 
+```javascript
 /*
  * 2. Catena dei Prototipi - Lookup Delegation
  */
@@ -3582,7 +3609,9 @@ console.log(livello3.d); // undefined - non trovata in nessun livello
 livello3.a = 100; // Non modifica livello1.a, crea nuova proprietà
 console.log(livello3.a); // 100
 console.log(livello1.a); // 1 - rimane invariato
+```
 
+```javascript
 /*
  * 3. ES6 Class vs Prototype - Confronto
  */
@@ -3627,7 +3656,9 @@ console.log(auto2.descrizione()); // "Fiat Panda"
 // Entrambi usano i prototipi sotto
 console.log(auto1.descrizione === auto1.__proto__.descrizione); // true
 console.log(auto2.descrizione === auto2.__proto__.descrizione); // true
+```
 
+```javascript
 /*
  * 4. Array.prototype - Metodi Condivisi
  */
@@ -3647,7 +3678,9 @@ console.log(Array.prototype.hasOwnProperty("map")); // true - sul prototipo
 var arrayGrande = new Array(10000);
 // Non contiene copie di map, filter, reduce, ecc.
 // Tutte le chiamate delegano ad Array.prototype
+```
 
+```javascript
 /*
  * 5. Object.prototype - Metodi Universali
  */
@@ -3673,7 +3706,9 @@ var data = new Date();
 console.log(array.hasOwnProperty); // ereditato da Object.prototype
 console.log(funzione.hasOwnProperty); // ereditato da Object.prototype
 console.log(data.hasOwnProperty); // ereditato da Object.prototype
+```
 
+```javascript
 /*
  * 6. DOM - Catena Prototipale degli Elementi
  */
@@ -3704,7 +3739,9 @@ button.addEventListener('click', function() {
 console.log(button.hasOwnProperty('addEventListener')); // false
 console.log(EventTarget.prototype.hasOwnProperty('addEventListener')); // true
 */
+```
 
+```javascript
 /*
  * 7. Polyfill - Estendere Prototipi Nativi
  */
@@ -3761,7 +3798,9 @@ if (!Array.prototype.includes) {
 var frutti = ["mela", "banana", "arancia"];
 console.log(frutti.includes("banana")); // true
 console.log(frutti.includes("uva")); // false
+```
 
+```javascript
 /*
  * 8. Debugging - Ispezionare la Catena Prototipale
  */
@@ -3807,7 +3846,9 @@ for (var prop in gatto) {
 
 // Object.keys() restituisce solo proprietà proprie
 console.log(Object.keys(gatto)); // ["miagola"]
+```
 
+```javascript
 /*
  * 9. Behavior Delegation Pattern
  */
@@ -3867,7 +3908,9 @@ RegisterController.register = function (username, password, email) {
 RegisterController.register("mario", "123", ""); // "Errori: Email mancante, Password troppo corta"
 
 // Ogni controller ha il proprio stato (errors) ma delega metodi comuni (mostraErrori, aggiungiErrore)
+```
 
+```javascript
 /*
  * 10. Performance - Memoria Condivisa
  */
@@ -3915,13 +3958,9 @@ for (var i = 0; i < 1000; i++) {
 
 ## 4. Variabili
 
-### 4.1 Dichiarazione Variabili (let, const, var)
-
-**Tipo**: Nuovo Topic
-
 Un programma ha bisogno di "ricordare" dei valori che possono cambiare durante la sua esecuzione. Per fare ciò, si utilizzano le variabili: contenitori simbolici a cui viene assegnato un nome e che possono contenere dati. La funzione primaria delle variabili è gestire lo stato (state) del programma, ovvero tenere traccia dei valori mentre cambiano.
 
-#### Dichiarazione → let, const e var
+### Dichiarazione → let, const e var
 
 In JavaScript, le variabili vengono "create" tramite una dichiarazione. Le parole chiave moderne per farlo sono let e const.
 
@@ -3943,9 +3982,11 @@ Per convenzione, i nomi delle costanti sono spesso scritti in maiuscolo (UPPER_C
 
 - **var** → Era il modo originale per dichiarare variabili prima dell'introduzione di let e const (in ES6). Oggi il suo uso è sconsigliato a favore di let e const, che offrono un controllo migliore sulla portata (scope) delle variabili e prevengono errori comuni.
 
+#### Esempi di Codice
+
 ```javascript
 /*
- * Esempi di dichiarazione e uso delle variabili
+ * 1. Dichiarazione e uso base delle variabili
  */
 
 // Dichiarazione con let (valore modificabile)
@@ -3978,7 +4019,7 @@ console.log(valore); // undefined
 // const MANCANTE; // ❌ Errore! Missing initializer in const declaration
 
 /*
- * Esempi di gestione dello stato del programma
+ * 2. Gestione dello stato del programma
  */
 
 // Contatore che traccia il numero di click
@@ -4006,7 +4047,7 @@ CONFIG.debug = false; // ✅ OK - modifica una proprietà
 // CONFIG = {}; // ❌ Errore! Assignment to constant variable
 
 /*
- * Differenza tra var, let e const (scope)
+ * 3. Differenza tra var, let e const (scope)
  */
 
 // var ha function scope
@@ -4032,9 +4073,145 @@ const LIMITE_MODERNO = 100;
 
 ---
 
-### 4.2 Nomi delle Variabili e Identificatori
+### Tipizzazione Dinamica (Dynamic Typing)
 
-**Tipo**: Nuovo Topic
+JavaScript è un linguaggio a tipizzazione dinamica. Questo significa che una variabile non è legata a un tipo di dato specifico. La stessa variabile può contenere un number in un momento, e una string in un momento successivo. Questa flessibilità permette di usare una singola variabile per rappresentare un valore che cambia forma nel corso del programma.
+
+#### Esempi di Codice
+
+```javascript
+/*
+ * 1. Tipizzazione dinamica - Cambio di tipo
+ */
+
+let valore = 42; // Number
+console.log(typeof valore); // "number"
+
+valore = "Ciao"; // String
+console.log(typeof valore); // "string"
+
+valore = true; // Boolean
+console.log(typeof valore); // "boolean"
+
+valore = { nome: "Mario" }; // Object
+console.log(typeof valore); // "object"
+
+valore = [1, 2, 3]; // Array (tipo object)
+console.log(typeof valore); // "object"
+
+valore = function () {
+  return 42;
+}; // Function
+console.log(typeof valore); // "function"
+```
+
+```javascript
+/*
+ * 2. Esempio pratico - Variabile che cambia tipo durante l'esecuzione
+ */
+
+function elaboraDato(input) {
+  let risultato;
+
+  if (typeof input === "number") {
+    risultato = input * 2; // risultato è un number
+    console.log("Doppio:", risultato);
+  } else if (typeof input === "string") {
+    risultato = input.toUpperCase(); // risultato è una string
+    console.log("Maiuscolo:", risultato);
+  } else if (typeof input === "boolean") {
+    risultato = input ? "Vero" : "Falso"; // risultato è una string
+    console.log("Testo:", risultato);
+  } else {
+    risultato = null; // risultato è null
+    console.log("Tipo non supportato");
+  }
+
+  return risultato;
+}
+
+elaboraDato(10); // "Doppio: 20"
+elaboraDato("hello"); // "Maiuscolo: HELLO"
+elaboraDato(true); // "Testo: Vero"
+```
+
+```javascript
+/*
+ * 3. Conversioni implicite (coercion)
+ */
+
+// JavaScript converte automaticamente i tipi quando necessario
+let numero = 5;
+let testo = "10";
+
+// Concatenazione: numero viene convertito in stringa
+console.log(numero + testo); // "510"
+
+// Sottrazione: testo viene convertito in numero
+console.log(testo - numero); // 5
+
+// Confronto  con conversione
+console.log("5" == 5); // true - uguaglianza con conversione
+console.log("5" === 5); // false - uguaglianza stretta (tipo diverso)
+```
+
+```javascript
+/*
+ * 4. Array che contiene tipi misti
+ */
+
+let collezione = [42, "testo", true, { nome: "Mario" }, [1, 2, 3], null];
+
+for (let item of collezione) {
+  console.log(item, "->", typeof item);
+}
+// 42 -> number
+// testo -> string
+// true -> boolean
+// { nome: 'Mario' } -> object
+// [1, 2, 3] -> object
+// null -> object (peculiarità di JavaScript)
+```
+
+```javascript
+/*
+ * 5. Vantaggi e svantaggi della tipizzazione dinamica
+ */
+
+// ✅ Vantaggio: Flessibilità
+function stampa(valore) {
+  console.log(valore); // Accetta qualsiasi tipo
+}
+
+stampa(42);
+stampa("Hello");
+stampa([1, 2, 3]);
+
+// ⚠️ Svantaggio: Errori a runtime
+function somma(a, b) {
+  return a + b;
+}
+
+console.log(somma(5, 10)); // 15 - OK
+console.log(somma("5", 10)); // "510" - concatenazione invece di somma!
+console.log(somma(5, null)); // 5 - null diventa 0
+console.log(somma(5, undefined)); // NaN - undefined non è convertibile
+
+// ✅ Soluzione: Validazione esplicita
+function sommaValidata(a, b) {
+  if (typeof a !== "number" || typeof b !== "number") {
+    throw new Error("Entrambi i parametri devono essere numeri");
+  }
+  return a + b;
+}
+
+console.log(sommaValidata(5, 10)); // 15
+// console.log(sommaValidata("5", 10)); // Errore!
+```
+
+---
+
+### Nomi delle Variabili e Identificatori
 
 La scelta di un buon nome per una variabile o una funzione è cruciale per la leggibilità del codice. In JavaScript, questi nomi devono essere identificatori validi (valid identifiers) e seguire regole precise.
 
@@ -4090,12 +4267,6 @@ let oggetto = {
 
 console.log(oggetto.if); // "condizione"
 console.log(oggetto["for"]); // "ciclo"
-
-// Parole riservate comuni da evitare come nomi di variabili:
-// break, case, catch, class, const, continue, debugger, default,
-// delete, do, else, export, extends, finally, for, function,
-// if, import, in, instanceof, let, new, return, super, switch,
-// this, throw, try, typeof, var, void, while, with, yield
 ```
 
 #### Convenzioni e Buone Pratiche
@@ -4108,9 +4279,11 @@ Oltre alle regole sintattiche, la comunità JavaScript segue delle convenzioni p
 
 - **Plurali per le Collezioni** → Usare un nome plurale per gli array o altre collezioni di dati, per indicare che contengono più elementi (es. utenti, prodotti).
 
+#### Esempi di Codice
+
 ```javascript
 /*
- * Esempi di convenzioni e buone pratiche
+ * 1. Nomi descrittivi vs abbreviazioni
  */
 
 // ❌ Nomi poco descrittivi
@@ -4122,6 +4295,12 @@ let t = p * q;
 let prezzoUnitario = 10;
 let quantita = 5;
 let totale = prezzoUnitario * quantita;
+```
+
+```javascript
+/*
+ * 2. Convenzioni di naming
+ */
 
 // ✅ camelCase per variabili e funzioni
 let nomeUtente = "Mario";
@@ -4175,10 +4354,13 @@ let _variabilePrivata = "Non dovrebbe essere usata direttamente";
 let _calcoloInterno = function () {
   return 42;
 };
+```
 
+```javascript
 /*
- * Esempio completo con buone pratiche
+ * 3. Esempio completo con buone pratiche
  */
+
 class GestoreCarrello {
   constructor() {
     this._articoli = []; // array privato
@@ -4209,20 +4391,111 @@ class GestoreCarrello {
 
     return totaleComplessivo;
   }
+
+  svuotaCarrello() {
+    this._articoli = [];
+  }
+
+  getNumeroArticoli() {
+    return this._articoli.length;
+  }
 }
 
+// Utilizzo
 const carrelloAcquisti = new GestoreCarrello();
 carrelloAcquisti.aggiungiArticolo("Laptop", 999, 1);
 carrelloAcquisti.aggiungiArticolo("Mouse", 29, 2);
 
+console.log("Articoli:", carrelloAcquisti.getNumeroArticoli()); // 2
 console.log("Totale:", carrelloAcquisti.calcolaTotaleCarrello()); // 1057
+```
+
+```javascript
+/*
+ * 4. Esempi di identificatori validi e creativi
+ */
+
+// Simboli speciali permessi
+let $ = "jQuery style";
+let _ = "Lodash style";
+let $element = "riferimento elemento";
+let _internal = "private by convention";
+
+// Numeri dopo il primo carattere
+let variabile1 = "prima";
+let variabile2 = "seconda";
+let temp123 = "temporanea";
+
+// Unicode characters (non comuni ma validi)
+let città = "Roma";
+let età = 25;
+let 名前 = "nome in giapponese"; // valido ma sconsigliato
+```
+
+```javascript
+/*
+ * 5. Parole riservate - Lista completa di esempi
+ */
+
+// Elenco delle principali parole riservate da evitare:
+const ESEMPI_PAROLE_RISERVATE = [
+  // Keywords
+  "break",
+  "case",
+  "catch",
+  "class",
+  "const",
+  "continue",
+  "debugger",
+  "default",
+  "delete",
+  "do",
+  "else",
+  "export",
+  "extends",
+  "finally",
+  "for",
+  "function",
+  "if",
+  "import",
+  "in",
+  "instanceof",
+  "let",
+  "new",
+  "return",
+  "super",
+  "switch",
+  "this",
+  "throw",
+  "try",
+  "typeof",
+  "var",
+  "void",
+  "while",
+  "with",
+  "yield",
+
+  // Literals
+  "null",
+  "true",
+  "false",
+];
+
+// Ma possono essere usate come proprietà
+let syntax = {
+  if: "conditional",
+  for: "loop",
+  class: "definition",
+  return: "value",
+};
+
+console.log(syntax.if); // "conditional"
+console.log(syntax["for"]); // "loop"
 ```
 
 ---
 
-### 4.3 Hoisting delle Variabili
-
-**Tipo**: Nuovo Topic
+### Hoisting delle Variabili
 
 L'hoisting (letteralmente "sollevamento") è un meccanismo di JavaScript che riguarda il modo in cui le dichiarazioni di variabili vengono processate dal motore del linguaggio. Durante la fase di compilazione, che precede l'esecuzione, è come se le dichiarazioni venissero concettualmente "sollevate" in cima al loro scope di appartenenza.
 
@@ -4275,12 +4548,13 @@ console.log(PI); // 3.14159
 
 In sintesi, la TDZ impedisce di usare una variabile prima che sia stata dichiarata, eliminando la fonte di errori tipica dell'hoisting di var e promuovendo un codice più pulito e robusto.
 
+#### Esempi di Codice
+
 ```javascript
 /*
- * Esempi completi di hoisting con var, let e const
+ * 1. VAR HOISTING - Dichiarazione sollevata, valore undefined
  */
 
-// ===== VAR HOISTING =====
 function esempioVar() {
   console.log("Inizio funzione");
   console.log(messaggio); // undefined - NON un errore!
@@ -4290,7 +4564,9 @@ function esempioVar() {
   console.log(messaggio); // "Ciao da var"
 }
 
-// Il codice sopra viene interpretato così:
+esempioVar();
+
+// Il codice sopra viene interpretato così dal motore:
 function esempioVarInterpretato() {
   var messaggio; // dichiarazione sollevata in cima
 
@@ -4301,14 +4577,19 @@ function esempioVarInterpretato() {
 
   console.log(messaggio); // "Ciao da var"
 }
+```
 
-// ===== LET/CONST E TEMPORAL DEAD ZONE =====
+```javascript
+/*
+ * 2. LET/CONST E TEMPORAL DEAD ZONE (TDZ)
+ */
+
 function esempioLet() {
   console.log("Inizio funzione");
 
   // ⚠️ TDZ inizia qui - 'nome' esiste ma non è accessibile
 
-  // console.log(nome); // ❌ ReferenceError!
+  // console.log(nome); // ❌ ReferenceError: Cannot access 'nome' before initialization
 
   let nome = "Mario"; // TDZ finisce qui
 
@@ -4318,7 +4599,7 @@ function esempioLet() {
 function esempioConst() {
   // ⚠️ TDZ per LIMITE
 
-  // console.log(LIMITE); // ❌ ReferenceError!
+  // console.log(LIMITE); // ❌ ReferenceError: Cannot access 'LIMITE' before initialization
 
   const LIMITE = 100; // TDZ finisce qui
 
@@ -4326,10 +4607,13 @@ function esempioConst() {
 
   // LIMITE = 200; // ❌ TypeError: Assignment to constant variable
 }
+```
 
+```javascript
 /*
- * Hoisting in blocchi di codice
+ * 3. Hoisting in blocchi di codice
  */
+
 function confrontoScope() {
   // VAR - function scope
   if (true) {
@@ -4337,69 +4621,180 @@ function confrontoScope() {
   }
   console.log(x); // ✅ 10 - var è accessibile fuori dal blocco
 
-  // LET - block scope
+  // LET - block scope + TDZ
   if (true) {
     let y = 20;
   }
   // console.log(y); // ❌ ReferenceError - let ha block scope
 }
+```
 
+```javascript
 /*
- * Esempio pratico: loop con var vs let
+ * 4. Esempio pratico: loop con var vs let
  */
 
 // Problema comune con var
+console.log("=== Loop con VAR ===");
 for (var i = 0; i < 3; i++) {
   setTimeout(function () {
-    console.log("var i:", i); // Stampa 3, 3, 3
+    console.log("var i:", i); // Stampa 3, 3, 3 (problema!)
   }, 100);
 }
 // i è ancora accessibile qui!
-console.log("Dopo loop var:", i); // 3
+console.log("Dopo loop var, i =", i); // 3
 
 // Soluzione con let
+console.log("=== Loop con LET ===");
 for (let j = 0; j < 3; j++) {
   setTimeout(function () {
     console.log("let j:", j); // Stampa 0, 1, 2 (corretto!)
   }, 100);
 }
 // console.log(j); // ❌ ReferenceError - j non è definito fuori dal loop
+```
 
+```javascript
 /*
- * Hoisting di funzioni vs variabili
+ * 5. Hoisting di funzioni vs variabili
  */
 
-// Le funzioni vengono completamente "sollevate"
-saluta(); // ✅ "Ciao!" - funziona!
+// Le FUNCTION DECLARATIONS vengono completamente "sollevate"
+saluta(); // ✅ "Ciao!" - funziona anche prima della dichiarazione!
 
 function saluta() {
   console.log("Ciao!");
 }
 
-// Le function expression seguono le regole delle variabili
+// Le FUNCTION EXPRESSIONS seguono le regole delle variabili
+
+// Con var: dichiarazione sollevata, valore undefined
 // salutaConVar(); // ❌ TypeError: salutaConVar is not a function
 var salutaConVar = function () {
   console.log("Ciao da var");
 };
+salutaConVar(); // ✅ Ora funziona
 
-// salutaConLet(); // ❌ ReferenceError: Cannot access before initialization
+// Con let/const: TDZ
+// salutaConLet(); // ❌ ReferenceError: Cannot access 'salutaConLet' before initialization
 let salutaConLet = function () {
   console.log("Ciao da let");
 };
+salutaConLet(); // ✅ Ora funziona
+```
 
+```javascript
 /*
- * Best practice: dichiarare sempre all'inizio dello scope
+ * 6. TDZ con parametri di default
  */
+
+// ❌ TDZ anche con parametri
+function parametriConTDZ(a = b, b = 2) {
+  // b è nella TDZ quando viene valutato 'a'
+  return a + b;
+}
+
+// parametriConTDZ(); // ❌ ReferenceError: Cannot access 'b' before initialization
+
+// ✅ Ordine corretto
+function parametriCorretti(b = 2, a = b) {
+  // b è già dichiarato quando viene valutato 'a'
+  return a + b;
+}
+
+console.log(parametriCorretti()); // 4
+```
+
+```javascript
+/*
+ * 7. Multiple var declarations - Altra stranezza
+ */
+
+var nome = "Mario";
+var nome = "Luigi"; // ✅ Nessun errore con var!
+console.log(nome); // "Luigi"
+
+let cognome = "Rossi";
+// let cognome = "Bianchi"; // ❌ SyntaxError: Identifier 'cognome' has already been declared
+```
+
+```javascript
+/*
+ * 8. Best practice: dichiarare sempre all'inizio dello scope
+ */
+
 function buonaPratica() {
-  // Dichiarare tutte le variabili all'inizio
+  // ✅ Dichiarare tutte le variabili all'inizio dello scope
   let nome = "Mario";
   let eta = 30;
   const SCONTO = 0.1;
+  let prezzoFinale;
 
   // Poi usarle
-  console.log(nome, eta, SCONTO);
+  console.log(`${nome} ha ${eta} anni`);
+
+  prezzoFinale = 100 - 100 * SCONTO;
+  console.log("Prezzo finale:", prezzoFinale);
 }
 ```
+
+```javascript
+/*
+ * 9. TDZ in azione - Visualizzazione
+ */
+
+function visualizzaTDZ() {
+  // inizio TDZ per 'valore'
+  console.log("Prima della dichiarazione");
+
+  {
+    // inizio TDZ per 'blocco'
+
+    // console.log(blocco); // ❌ ReferenceError
+
+    let blocco = "dentro"; // fine TDZ per 'blocco'
+    console.log(blocco); // ✅ "dentro"
+  }
+
+  let valore = 42; // fine TDZ per 'valore'
+  console.log(valore); // ✅ 42
+}
+
+visualizzaTDZ();
+```
+
+```javascript
+/*
+ * 10. Confronto riepilogativo
+ */
+
+console.log("=== CONFRONTO VAR vs LET/CONST ===");
+
+// VAR
+console.log(varTest); // undefined (hoisted)
+var varTest = "var value";
+
+// LET
+// console.log(letTest); // ❌ ReferenceError (TDZ)
+let letTest = "let value";
+
+// CONST
+// console.log(constTest); // ❌ ReferenceError (TDZ)
+const constTest = "const value";
+
+// Block scope
+{
+  var varBlock = "var in block";
+  let letBlock = "let in block";
+  const constBlock = "const in block";
+}
+
+console.log(varBlock); // ✅ "var in block" (function scoped)
+// console.log(letBlock); // ❌ ReferenceError (block scoped)
+// console.log(constBlock); // ❌ ReferenceError (block scoped)
+```
+
+---
 
 ### 4.4 Scope (Ambito)
 

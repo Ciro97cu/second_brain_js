@@ -5033,6 +5033,8 @@ console.log(a); // ✅ "livello globale"
 
 Per visualizzare meglio il processo di risoluzione dello scope annidato, possiamo usare la metafora di un edificio a più piani.
 
+![Scope](assets/scope.png)
+
 Immaginiamo che questo edificio rappresenti l'insieme delle regole dello scope del nostro programma:
 
 - Il **primo piano** (il piano terra) rappresenta lo scope corrente in cui ci troviamo in un dato momento dell'esecuzione.

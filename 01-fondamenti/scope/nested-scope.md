@@ -1,10 +1,10 @@
-# [[../../appunti-completi#scope-annidato-nested-scope|Scope Annidato (Nested Scope)]]
+# [[../../appunti-completi#scope-annidato-nested-scope|Scope Annidato e Scope Chain]]
 
 Gli scope annidati creano una **catena di ricerca** (scope chain) dove l'Engine risale livello per livello finché trova la variabile o raggiunge lo scope globale.
 
 ## 🎯 Concetto Chiave
 
-Lo scope non è mai isolato: funzioni e blocchi creano scope **annidati** l'uno dentro l'altro. La ricerca delle variabili segue una direzione precisa: **dal locale verso il globale**.
+Lo scope non è mai isolato: funzioni e blocchi creano scope **annidati** l'uno dentro l'altro. La **scope chain** è il meccanismo che permette al codice di cercare variabili risalendo attraverso scope annidati. La ricerca delle variabili segue una direzione precisa: **dal locale verso il globale**.
 
 ### Il Processo di Ricerca
 
@@ -48,7 +48,7 @@ function saluta() {
     // Engine cerca 'messaggio':
     // 1. Scope di completaSaluto → ❌ Non trovato
     // 2. Scope di saluta → ✅ Trovato!
-    
+
     // Engine cerca 'nome':
     // 1. Scope di completaSaluto → ❌
     // 2. Scope di saluta → ❌
@@ -77,7 +77,7 @@ L'Engine prende l'**ascensore** e sale piano per piano cercando la variabile.
 // EDIFICIO CON 4 PIANI
 let piano4 = "Attico - Globale"; // Piano 4 (Top)
 
-function entraNelPalazzo() { 
+function entraNelPalazzo() {
   let piano3 = "Terzo piano"; // Piano 3
 
   function scendiAlSecondo() {
@@ -168,20 +168,174 @@ function trasformaDati(dati, config) {
 }
 ```
 
+## 🎭 Shadowing (Variabili Ombra)
+
+Lo **shadowing** si verifica quando una variabile dichiarata in uno **scope locale** ha lo stesso nome di una variabile in uno **scope più esterno**. In questo caso, la variabile locale **"nasconde"** o **"mette in ombra"** (shadows) quella esterna.
+
+### Shadowing Base
+
+```javascript
+let x = 10; // Scope globale
+
+function esempio() {
+  let x = 20; // Scope locale, "shadows" la x globale
+  console.log(x); // 20 (usa la x locale)
+}
+
+esempio();
+console.log(x); // 10 (usa la x globale, non modificata)
+```
+
+### Shadowing Annidato Multi-Livello
+
+```javascript
+let nome = "Globale";
+
+function esterna() {
+  let nome = "Esterna"; // Shadows globale
+  console.log(nome); // "Esterna"
+
+  function interna() {
+    let nome = "Interna"; // Shadows esterna (e globale)
+    console.log(nome); // "Interna"
+  }
+
+  interna();
+  console.log(nome); // "Esterna" (non modificata)
+}
+
+esterna();
+console.log(nome); // "Globale" (non modificata)
+```
+
+### Shadowing con Blocchi
+
+Anche i blocchi `{}` con `let`/`const` creano shadowing:
+
+```javascript
+let x = 100;
+
+if (true) {
+  let x = 200; // Shadows x esterna
+  console.log(x); // 200
+}
+
+console.log(x); // 100
+
+for (let x = 0; x < 3; x++) {
+  console.log(x); // 0, 1, 2 (shadows x esterna)
+}
+
+console.log(x); // 100 (non modificata)
+```
+
+**Nota Importante**: Non puoi ri-dichiarare la stessa variabile con `let`/`const` nello stesso scope, ma puoi farlo in scope diversi (shadowing).
+
+```javascript
+let y = 10;
+// let y = 20;  // ❌ SyntaxError: già dichiarata
+
+{
+  let y = 20; // ✅ OK, diverso scope (shadowing)
+  console.log(y); // 20
+}
+
+console.log(y); // 10
+```
+
+## ⚡ ReferenceError nella Scope Chain
+
+**ReferenceError** si verifica quando si tenta di accedere a una variabile non disponibile nello scope corrente né in alcuno scope esterno:
+
+```javascript
+function test() {
+  // console.log(inesistente);  // ❌ ReferenceError: inesistente is not defined
+}
+
+if (true) {
+  let x = 10;
+}
+// console.log(x);  // ❌ ReferenceError: x is not defined (fuori block scope)
+```
+
+## ⚠️ Pericolo: Variabili Globali Accidentali
+
+Un comportamento **pericoloso** di JavaScript (in modalità non-stretta) si verifica quando si assegna un valore a una variabile **non dichiarata** con `var`, `let` o `const`.
+
+```javascript
+function esempio() {
+  x = 10; // ❌ Nessuna dichiarazione (var/let/const)
+  // JavaScript risale la scope chain fino in cima
+  // Non trova 'x' dichiarata da nessuna parte
+  // Crea AUTOMATICAMENTE 'x' nello scope globale
+}
+
+esempio();
+console.log(x); // 10 (variabile globale accidentale!)
+console.log(window.x); // 10 (nel browser)
+```
+
+### Perché è Pericoloso
+
+Questa è una **pessima pratica** perché:
+
+1. **Inquinamento scope globale**: Variabili globali involontarie
+2. **Bug difficili da tracciare**: Parti diverse del codice modificano la stessa variabile
+3. **Conflitti di nomi**: Sovrascrittura accidentale di variabili esistenti
+
+```javascript
+let x = 100; // Variabile globale intenzionale
+
+function funzioneA() {
+  x = 200; // ✅ OK, modifica x globale (intenzionale, già dichiarata)
+}
+
+function funzioneB() {
+  y = 50; // ❌ Crea y globale (accidentale!)
+}
+
+funzioneA();
+console.log(x); // 200
+
+funzioneB();
+console.log(y); // 50 (variabile globale accidentale)
+```
+
+### Soluzione: Strict Mode
+
+**Regola fondamentale**: Dichiara **sempre** formalmente le variabili con `let`, `const` o `var`.
+
+Lo **strict mode** (`"use strict"`) previene questo problema trasformando assegnamenti non dichiarati in **errori**:
+
+```javascript
+"use strict";
+
+function test() {
+  x = 10; // ❌ ReferenceError: x is not defined
+  // Strict mode impedisce la creazione automatica
+}
+
+// ✅ Soluzione corretta
+function testCorretto() {
+  let x = 10; // Dichiarazione esplicita
+  console.log(x);
+}
+```
+
 ## 🔗 Collegamenti
 
-- [[scope-chain]] - Meccanismo tecnico della scope chain
 - [[scope]] - Concetti base dello scope
-- [[../variabili/hoisting]] - Hoisting e scope
-- [[../funzioni/closures]] - Closures sfruttano la scope chain
+- [[lexical-scope-base|Scope Lessicale]] - Scope determinato author-time
+- [[scope-lookup|Scope Lookup]] - Dettagli sul processo di ricerca
+- [[scope-bubbles|Bolle di Scope]] - Visualizzazione scope annidati
+- [[scope-errors|Errori di Scope]] - ReferenceError e TypeError
+- [[../../appunti-completi#scope-annidato-nested-scope|Scope Annidato Completo]]
 
-## 📚 Risorse Esterne
+## 📚 Risorse
 
-- [MDN: Closures](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures) - Scope chain nelle closures
-- [YDKJS: Scope & Closures](https://github.com/getify/You-Dont-Know-JS/blob/2nd-ed/scope-closures/README.md) - Approfondimento su scope
+- MDN: Closures - Scope chain nelle closures
+- "You Don't Know JS" - Scope & Closures
 
-## 📌 Note Aggiuntive
+## 📌 Tag
 
-- La scope chain è **determinata lessicalmente** (dove il codice è scritto), non dinamicamente (dove viene eseguito)
-- Ogni funzione "ricorda" il suo scope esterno anche quando viene eseguita altrove (**closure**)
-- Gli scope annidati sono la base per pattern avanzati come **module pattern** e **IIFE**
+#javascript #scope #scope-chain #nested-scope #shadowing #global-leak #reference-error #strict-mode

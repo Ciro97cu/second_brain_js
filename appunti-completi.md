@@ -6437,6 +6437,1233 @@ console.log(CalcolatriceAvanzata.somma(1.23456, 2.34567)); // 3.5802
 // console.log(arrotonda(3.14159));  // ReferenceError
 ```
 
+##### Gestione dei Moduli (Module Management)
+
+Un'altra opzione per la prevenzione delle collisioni, più moderna, è l'approccio basato sui **moduli**, che si avvale di vari **gestori di dipendenze** (dependency managers).
+
+Utilizzando questi strumenti, nessuna libreria aggiunge identificatori allo scope globale. Al contrario, ogni libreria richiede che i suoi identificatori vengano **esplicitamente importati** all'interno di un altro scope specifico, attraverso i meccanismi forniti dal gestore di dipendenze.
+
+È importante osservare che questi strumenti non possiedono funzionalità "magiche" che violano le regole dello scope lessicale. Essi, semplicemente, utilizzano le regole dello scope per garantire che nessun identificatore venga iniettato in uno scope condiviso. Invece, tutti gli identificatori vengono mantenuti in **scope privati** e non soggetti a collisioni, prevenendo così qualsiasi conflitto accidentale.
+
+```javascript
+// ❌ VECCHIO APPROCCIO: Namespace globale
+// libreria.js
+var MiaLibreria = {
+  funzione1: function () {
+    /* ... */
+  },
+  funzione2: function () {
+    /* ... */
+  },
+};
+
+// app.js
+MiaLibreria.funzione1(); // Dipende dalla variabile globale
+```
+
+```javascript
+// ✅ APPROCCIO MODERNO: CommonJS (Node.js)
+// libreria.js
+function funzione1() {
+  /* ... */
+}
+
+function funzione2() {
+  /* ... */
+}
+
+// ESPORTA solo ciò che serve
+module.exports = {
+  funzione1: funzione1,
+  funzione2: funzione2,
+};
+
+// app.js
+// IMPORTA esplicitamente in uno scope locale
+const libreria = require("./libreria");
+
+libreria.funzione1(); // Nessuna variabile globale!
+libreria.funzione2();
+```
+
+```javascript
+// ✅ APPROCCIO MODERNO: ES6 Modules
+// libreria.js
+export function funzione1() {
+  /* ... */
+}
+
+export function funzione2() {
+  /* ... */
+}
+
+// O export di default
+export default {
+  funzione1,
+  funzione2,
+};
+
+// app.js
+// Import esplicito
+import { funzione1, funzione2 } from "./libreria.js";
+
+funzione1(); // Scope locale, zero pollution globale
+funzione2();
+
+// O import di default
+import libreria from "./libreria.js";
+libreria.funzione1();
+```
+
+```javascript
+// Esempio completo: Sistema di moduli con scope privati
+// === math-utils.js (Modulo) ===
+// Tutto qui è PRIVATO per default
+const PI = 3.14159;
+let cache = {}; // Stato interno privato
+
+// Helper privato (NON esportato)
+function arrotonda(num, decimali) {
+  return Math.round(num * Math.pow(10, decimali)) / Math.pow(10, decimali);
+}
+
+// Funzioni pubbliche (ESPORTATE)
+export function calcolaAreaCerchio(raggio) {
+  const key = `cerchio_${raggio}`;
+
+  if (cache[key]) {
+    console.log("Usando cache");
+    return cache[key];
+  }
+
+  const area = arrotonda(PI * raggio * raggio, 2);
+  cache[key] = area;
+  return area;
+}
+
+export function calcolaCirconferenza(raggio) {
+  return arrotonda(2 * PI * raggio, 2);
+}
+
+// === app.js (Utilizzo) ===
+// Import esplicito in scope locale
+import { calcolaAreaCerchio, calcolaCirconferenza } from "./math-utils.js";
+
+console.log(calcolaAreaCerchio(5)); // 78.54
+console.log(calcolaCirconferenza(5)); // 31.42
+
+// Dettagli privati NON accessibili:
+// console.log(PI);  // ReferenceError
+// console.log(cache);  // ReferenceError
+// arrotonda(3.14, 2);  // ReferenceError
+```
+
+```javascript
+// Confronto: Namespace vs Moduli
+// === NAMESPACE (vecchio approccio) ===
+var AppUtilities = {
+  // TUTTO è esposto nello scope globale
+  _privateHelper: function () {
+    /* ... */
+  }, // Convenzione "_" = privato
+  publicMethod: function () {
+    this._privateHelper(); // Ma è ancora accessibile!
+  },
+};
+
+// Chiunque PUÒ accedere a _privateHelper (nessuna vera privacy)
+AppUtilities._privateHelper(); // ⚠️ Funziona (anche se non dovrebbe)
+
+// === MODULI (approccio moderno) ===
+// utilities.js
+function privateHelper() {
+  // Veramente PRIVATO (non esportato)
+}
+
+export function publicMethod() {
+  privateHelper(); // ✅ OK internamente
+}
+
+// app.js
+import { publicMethod } from "./utilities.js";
+publicMethod(); // ✅ OK
+// privateHelper(); // ❌ ReferenceError (vero incapsulamento!)
+```
+
+```javascript
+// Pattern moderno: Multi-export con alias
+// === calculators.js ===
+export function add(a, b) {
+  return a + b;
+}
+
+export function multiply(a, b) {
+  return a * b;
+}
+
+export const VERSION = "1.0.0";
+
+// === app.js - Varie modalità di import ===
+// 1. Import selettivo
+import { add, multiply } from "./calculators.js";
+console.log(add(2, 3)); // 5
+
+// 2. Import con alias (prevenzione collisioni!)
+import { add as somma, multiply as moltiplica } from "./calculators.js";
+console.log(somma(2, 3)); // 5
+
+// 3. Import namespace (simile al vecchio pattern, ma scope locale)
+import * as calc from "./calculators.js";
+console.log(calc.add(2, 3)); // 5
+console.log(calc.VERSION); // '1.0.0'
+```
+
+```javascript
+// Dependency Managers in azione
+// === Con npm/yarn (package.json) ===
+// {
+//   "dependencies": {
+//     "lodash": "^4.17.21",
+//     "axios": "^1.0.0"
+//   }
+// }
+
+// === app.js ===
+// Import esplicito di librerie esterne
+import _ from "lodash";
+import axios from "axios";
+
+// Nessuna variabile globale! Tutto in scope locale
+const numeri = [1, 2, 3, 4];
+const raddoppiati = _.map(numeri, (n) => n * 2);
+console.log(raddoppiati); // [2, 4, 6, 8]
+
+axios
+  .get("https://api.example.com/data")
+  .then((response) => console.log(response.data));
+
+// Librerie diverse possono avere funzioni con STESSO NOME senza conflitti
+// perché sono in scope separati
+```
+
+```javascript
+// Esempio reale: Struttura applicazione con moduli
+// === config.js (Configurazione) ===
+const apiKey = "secret_key_12345"; // PRIVATO
+const baseUrl = "https://api.example.com";
+
+export function getApiUrl(endpoint) {
+  return `${baseUrl}/${endpoint}?key=${apiKey}`;
+}
+
+export const timeout = 5000;
+
+// === api-client.js (Client API) ===
+import { getApiUrl, timeout } from "./config.js";
+
+async function fetchData(endpoint) {
+  const url = getApiUrl(endpoint);
+  const response = await fetch(url, { timeout });
+  return response.json();
+}
+
+export { fetchData };
+
+// === user-service.js (Servizio Utente) ===
+import { fetchData } from "./api-client.js";
+
+export async function getUser(userId) {
+  return fetchData(`users/${userId}`);
+}
+
+export async function updateUser(userId, data) {
+  // Implementazione...
+}
+
+// === app.js (Applicazione principale) ===
+import { getUser, updateUser } from "./user-service.js";
+
+async function main() {
+  const user = await getUser(123);
+  console.log(user);
+
+  // 'apiKey' NON è accessibile (vera privacy!)
+  // 'fetchData' usato solo internamente
+}
+
+main();
+```
+
+```javascript
+// Vantaggi dei moduli rispetto ai namespace globali
+// 1. VERA PRIVACY (non solo convenzioni come "_nomePrivato")
+// 2. ZERO POLLUTION dello scope globale
+// 3. DIPENDENZE ESPLICITE (import chiaro di ciò che serve)
+// 4. PREVENZIONE COLLISIONI automatica
+// 5. TREE SHAKING (bundler possono rimuovere codice non usato)
+// 6. CODE SPLITTING (caricamento lazy di moduli)
+
+// Esempio Tree Shaking:
+// === utils.js ===
+export function usata() {
+  return "Questa funzione è usata";
+}
+
+export function nonUsata() {
+  return "Questa NON è usata";
+}
+
+// === app.js ===
+import { usata } from "./utils.js";
+console.log(usata());
+
+// Bundler moderni (Webpack, Vite, etc.) RIMUOVONO 'nonUsata'
+// dal bundle finale → File più piccoli!
+```
+
+Il sistema dei moduli rappresenta l'evoluzione naturale del pattern namespace. Invece di affidarsi a convenzioni e disciplina degli sviluppatori per mantenere la privacy, i moduli utilizzano le stesse regole dello **scope lessicale** per garantire un vero incapsulamento. Questo non solo previene le collisioni, ma migliora anche la manutenibilità, la testabilità e le performance delle applicazioni moderne.
+
+#### Funzioni come Scope
+
+Si è visto che è possibile prendere una qualsiasi porzione di codice e avvolgerla in una funzione per "nascondere" le sue variabili e funzioni, creando uno scope privato.
+
+```javascript
+// Esempio base: avvolgere codice in una funzione
+var a = 2;
+
+function foo() {
+  // Tutto il codice qui è "nascosto"
+  var a = 3;
+  console.log(a); // 3
+}
+
+foo();
+console.log(a); // 2 - la 'a' interna è nascosta
+```
+
+Sebbene questa tecnica funzioni, introduce **due piccoli problemi**:
+
+1. Si deve **dichiarare una funzione con un nome** (`foo`), che "inquina" lo scope che la contiene (in questo caso, lo scope globale).
+2. Si deve **chiamare esplicitamente** la funzione per nome (`foo()`) per far sì che il codice al suo interno venga eseguito.
+
+Sarebbe ideale se la funzione non avesse bisogno di un nome (o almeno non di un nome che inquini lo scope esterno) e se potesse eseguirsi automaticamente. Fortunatamente, JavaScript offre una soluzione a entrambi i problemi attraverso le **espressioni di funzione** (function expressions).
+
+```javascript
+// ❌ PROBLEMA: Dichiarazione di funzione (inquina lo scope)
+var a = 2;
+
+function foo() {
+  // 'foo' è registrato nello scope globale
+  var a = 3;
+  console.log(a); // 3
+}
+
+foo(); // Chiamata esplicita necessaria
+console.log(a); // 2
+
+// Il nome 'foo' è accessibile globalmente
+console.log(typeof foo); // "function" ← inquinamento!
+```
+
+```javascript
+// ✅ SOLUZIONE: Espressione di funzione (NON inquina lo scope)
+var a = 2;
+
+(function foo() {
+  // 'foo' NON è registrato nello scope esterno
+  var a = 3;
+  console.log(a); // 3
+})(); // Esecuzione immediata
+
+console.log(a); // 2
+
+// Il nome 'foo' NON è accessibile all'esterno
+// console.log(typeof foo);  // ❌ ReferenceError: foo is not defined
+```
+
+Cosa accade in questo secondo esempio:
+
+##### Funzione Dichiarazione vs. Funzione Espressione
+
+La differenza chiave è la **posizione della parola `function`**:
+
+- **Dichiarazione di Funzione**: Se `function` è la **prima parola** in un'istruzione, si tratta di una **dichiarazione di funzione**.
+- **Espressione di Funzione**: In qualsiasi altro caso (come quando è avvolta tra parentesi), viene trattata come un'**espressione di funzione**.
+
+```javascript
+// DICHIARAZIONE (function è la prima parola)
+function foo() {
+  // 'foo' viene registrato nello scope esterno
+  console.log("Sono una dichiarazione");
+}
+
+// ESPRESSIONE (function NON è la prima parola)
+var bar = function foo() {
+  // 'foo' NON viene registrato nello scope esterno
+  // 'foo' è disponibile solo QUI DENTRO
+  console.log("Sono un'espressione");
+};
+
+// ESPRESSIONE con parentesi (IIFE pattern)
+(function foo() {
+  // 'foo' NON viene registrato nello scope esterno
+  console.log("Sono un'espressione immediata");
+})();
+
+// Test di accessibilità
+foo(); // ✅ Prima dichiarazione accessibile
+bar(); // ✅ Variabile 'bar' accessibile (contiene la funzione)
+// foo() chiamato qui riferirebbe alla PRIMA dichiarazione, non alle espressioni
+```
+
+```javascript
+// Dimostrazione dettagliata
+// DICHIARAZIONE
+function dichiarazione() {
+  console.log("dichiarazione accessibile");
+}
+
+console.log(typeof dichiarazione); // "function" (nello scope esterno)
+
+// ESPRESSIONE
+(function espressione() {
+  console.log("espressione NON accessibile fuori");
+});
+
+// console.log(typeof espressione);  // ❌ ReferenceError: espressione is not defined
+```
+
+##### Il Nome della Funzione
+
+Il comportamento del **nome della funzione** è cruciale:
+
+- **Dichiarazione**: Nel primo esempio, `function foo() {...}` è una dichiarazione, e il nome `foo` viene **registrato nello scope esterno** (globale o contenitore).
+
+- **Espressione**: Nel secondo esempio, `(function foo() {...})` è un'espressione. In questo caso, il nome `foo` **non viene registrato nello scope esterno**, ma è disponibile **solo all'interno della funzione stessa**. Questo risolve il problema dell'inquinamento dello scope.
+
+```javascript
+// Nome in Dichiarazione vs Espressione
+// DICHIARAZIONE
+function nomeDichiarazione() {
+  console.log("Il mio nome è:", nomeDichiarazione.name);
+  // 'nomeDichiarazione' accessibile qui
+}
+
+console.log(nomeDichiarazione.name); // "nomeDichiarazione" (accessibile fuori)
+
+// ESPRESSIONE
+var varEsterna = function nomeEspressione() {
+  console.log("Il mio nome è:", nomeEspressione.name);
+  // 'nomeEspressione' accessibile SOLO qui dentro
+  console.log(typeof nomeEspressione); // "function"
+};
+
+console.log(varEsterna.name); // "nomeEspressione" (proprietà .name)
+// console.log(typeof nomeEspressione);  // ❌ ReferenceError (NON nello scope esterno!)
+```
+
+```javascript
+// Vantaggio: Ricorsione con nome privato
+var fattoriale = function fatto(n) {
+  // 'fatto' è accessibile QUI per ricorsione
+  if (n <= 1) return 1;
+  return n * fatto(n - 1); // Uso ricorsivo di 'fatto'
+};
+
+console.log(fattoriale(5)); // 120
+// console.log(fatto(5));  // ❌ ReferenceError: fatto is not defined
+
+// Anche se riassegno 'fattoriale', la ricorsione funziona
+var temp = fattoriale;
+fattoriale = null;
+console.log(temp(5)); // 120 - funziona ancora perché usa 'fatto' internamente!
+```
+
+```javascript
+// Debugging migliorato con nomi interni
+var calcolaComplesso = function calcolaComplexxo() {
+  // Nome interno diverso (typo intenzionale per esempio)
+  throw new Error("Errore nel calcolo");
+};
+
+try {
+  calcolaComplesso();
+} catch (e) {
+  console.log(e.stack);
+  // Stack trace mostrerà "calcolaComplexxo" (nome interno)
+  // Utile per debugging!
+}
+```
+
+Nascondere il nome della funzione all'interno di se stessa è il primo passo per creare uno scope privato senza lasciare tracce inutili all'esterno.
+
+```javascript
+// Pattern completo: Scope privato senza inquinamento
+var a = 2;
+
+(function IIFE() {
+  // IIFE = Immediately Invoked Function Expression
+  var a = 3;
+  var b = 4;
+
+  function helper() {
+    // Helper privato
+    return a + b;
+  }
+
+  console.log(helper()); // 7
+})(); // Esecuzione immediata
+
+console.log(a); // 2 (NON inquinato)
+// console.log(b);  // ❌ ReferenceError (privato)
+// console.log(helper());  // ❌ ReferenceError (privato)
+// console.log(typeof IIFE);  // ❌ ReferenceError (nome privato)
+```
+
+```javascript
+// Confronto finale: Inquinamento vs Privacy
+// === CON DICHIARAZIONE (Inquina) ===
+var risultato1;
+
+function calcolaConDichiarazione() {
+  var temp = 10;
+  var helper = function () {
+    return temp * 2;
+  };
+  risultato1 = helper();
+}
+
+calcolaConDichiarazione();
+console.log(risultato1); // 20
+console.log(typeof calcolaConDichiarazione); // "function" ← INQUINAMENTO
+
+// === CON ESPRESSIONE (Pulito) ===
+var risultato2 = (function calcolaConEspressione() {
+  var temp = 10;
+  var helper = function () {
+    return temp * 2;
+  };
+  return helper();
+})();
+
+console.log(risultato2); // 20
+// console.log(typeof calcolaConEspressione);  // ❌ ReferenceError ← NESSUN INQUINAMENTO
+```
+
+```javascript
+// Caso d'uso reale: Inizializzazione complessa
+// Invece di inquinare lo scope con variabili temporanee
+var config = (function () {
+  // Tutte queste variabili sono PRIVATE
+  var env = "production";
+  var apiKeys = { dev: "dev123", prod: "prod456" };
+  var endpoints = { dev: "http://localhost", prod: "https://api.com" };
+
+  // Funzioni helper private
+  function getKey() {
+    return apiKeys[env];
+  }
+
+  function getEndpoint() {
+    return endpoints[env];
+  }
+
+  // Ritorna solo la configurazione finale
+  return {
+    apiUrl: getEndpoint() + "/api",
+    apiKey: getKey(),
+    timeout: 5000,
+  };
+})();
+
+// 'config' contiene solo ciò che serve
+console.log(config.apiUrl); // "https://api.com/api"
+console.log(config.apiKey); // "prod456"
+
+// Dettagli implementativi NON accessibili
+// console.log(env);  // ❌ ReferenceError
+// console.log(apiKeys);  // ❌ ReferenceError
+// console.log(getKey());  // ❌ ReferenceError
+```
+
+Questa tecnica delle **espressioni di funzione** risolve elegantemente entrambi i problemi originali:
+
+1. **Nessun inquinamento**: Il nome della funzione non è registrato nello scope esterno
+2. **Esecuzione immediata**: Aggiungendo `()` alla fine, la funzione si esegue automaticamente (pattern IIFE)
+
+#### Funzioni Anonime vs. Funzioni Nominate
+
+Le espressioni di funzione sono molto comuni, ad esempio, come parametri di **callback**.
+
+```javascript
+// Esempio comune: callback anonimo
+setTimeout(function () {
+  console.log("Sono passati 1000ms");
+}, 1000);
+
+// Event listener con callback anonimo
+document.getElementById("button").addEventListener("click", function () {
+  console.log("Bottone cliccato!");
+});
+
+// Array.map con callback anonimo
+var numeri = [1, 2, 3, 4, 5];
+var doppi = numeri.map(function (n) {
+  return n * 2;
+});
+console.log(doppi); // [2, 4, 6, 8, 10]
+```
+
+Questa è chiamata **espressione di funzione anonima**, perché la parola chiave `function` non è seguita da un nome. Mentre le espressioni di funzione possono essere anonime, le **dichiarazioni di funzione** devono sempre avere un nome per essere sintatticamente valide.
+
+```javascript
+// ❌ INVALIDO: Dichiarazione senza nome
+// function() {  // SyntaxError: Function statements require a function name
+//   console.log("Errore!");
+// }
+
+// ✅ VALIDO: Dichiarazione con nome
+function nomeDichiarazione() {
+  console.log("Dichiarazione valida");
+}
+
+// ✅ VALIDO: Espressione anonima
+var varConEspressioneAnonima = function () {
+  console.log("Espressione anonima valida");
+};
+
+// ✅ VALIDO: Espressione nominata
+var varConEspressioneNominata = function nomeEspressione() {
+  console.log("Espressione nominata valida");
+};
+```
+
+##### Svantaggi delle Funzioni Anonime
+
+Sebbene le espressioni di funzione anonime siano veloci da scrivere e molto diffuse, presentano alcuni **svantaggi**:
+
+**1. Difficoltà nel debugging** → Non avendo un nome, le funzioni anonime appaiono senza un identificatore utile negli **stack trace** (le "tracce" degli errori), rendendo più difficile individuare l'origine di un problema.
+
+```javascript
+// Funzione anonima - Stack trace poco utile
+setTimeout(function () {
+  throw new Error("Errore nella funzione anonima");
+}, 100);
+
+// Stack trace (esempio):
+// Error: Errore nella funzione anonima
+//   at <anonymous>:2:9  ← "anonymous" non è utile!
+//   at Timeout._onTimeout (...)
+
+// Funzione nominata - Stack trace chiaro
+setTimeout(function timeoutHandler() {
+  throw new Error("Errore nella funzione nominata");
+}, 100);
+
+// Stack trace (esempio):
+// Error: Errore nella funzione nominata
+//   at timeoutHandler:2:9  ← "timeoutHandler" è utile per debugging!
+//   at Timeout._onTimeout (...)
+```
+
+```javascript
+// Esempio pratico: debugging con nomi descrittivi
+function processaUtenti(utenti) {
+  // ❌ Callback anonimo - stack trace confuso
+  utenti.forEach(function (utente) {
+    utente.ordini.forEach(function (ordine) {
+      ordine.articoli.forEach(function (articolo) {
+        // Se si verifica un errore qui, lo stack trace mostrerà
+        // solo "anonymous" per tutte e tre le funzioni
+        if (articolo.prezzo < 0) {
+          throw new Error("Prezzo negativo!");
+        }
+      });
+    });
+  });
+}
+
+// ✅ Callback nominati - stack trace chiaro
+function processaUtentiConNomi(utenti) {
+  utenti.forEach(function perOgniUtente(utente) {
+    utente.ordini.forEach(function perOgniOrdine(ordine) {
+      ordine.articoli.forEach(function perOgniArticolo(articolo) {
+        // Stack trace mostrerà:
+        // perOgniArticolo → perOgniOrdine → perOgniUtente
+        if (articolo.prezzo < 0) {
+          throw new Error("Prezzo negativo!");
+        }
+      });
+    });
+  });
+}
+```
+
+**2. Impossibilità di auto-riferimento** → Se una funzione ha bisogno di fare riferimento a se stessa (ad esempio, per la **ricorsione** o per rimuovere un event handler dopo la sua esecuzione), una funzione anonima è costretta a usare la proprietà `arguments.callee`, che è **deprecata** e sconsigliata.
+
+```javascript
+// ❌ Funzione anonima ricorsiva (problematico)
+var fattoriale = function (n) {
+  if (n <= 1) return 1;
+  // Deve usare la variabile esterna 'fattoriale'
+  return n * fattoriale(n - 1);
+};
+
+console.log(fattoriale(5)); // 120
+
+// PROBLEMA: Se riassegno 'fattoriale', la ricorsione si rompe
+var temp = fattoriale;
+fattoriale = null;
+// temp(5);  // ❌ TypeError: fattoriale is not a function
+
+// ❌ Usare arguments.callee (DEPRECATO)
+var fattorialeDeprecato = function (n) {
+  if (n <= 1) return 1;
+  return n * arguments.callee(n - 1); // DEPRECATO!
+};
+
+// ✅ Funzione nominata ricorsiva (robusto)
+var fattorialeRobusto = function fatto(n) {
+  if (n <= 1) return 1;
+  return n * fatto(n - 1); // Usa il nome interno 'fatto'
+};
+
+console.log(fattorialeRobusto(5)); // 120
+
+// Anche se riassegno, funziona
+var temp2 = fattorialeRobusto;
+fattorialeRobusto = null;
+console.log(temp2(5)); // 120 - funziona ancora!
+```
+
+```javascript
+// Esempio: Event handler che si rimuove dopo l'esecuzione
+// ❌ Con funzione anonima (complicato)
+var button = document.getElementById("myButton");
+var clickHandler = function () {
+  console.log("Cliccato una volta!");
+  // Devo usare la variabile esterna 'clickHandler'
+  button.removeEventListener("click", clickHandler);
+};
+button.addEventListener("click", clickHandler);
+
+// ✅ Con funzione nominata (più chiaro)
+var button2 = document.getElementById("myButton2");
+button2.addEventListener("click", function autoRimuovente() {
+  console.log("Cliccato una volta!");
+  // Posso usare il nome interno per rimuovermi
+  button2.removeEventListener("click", autoRimuovente);
+});
+```
+
+**3. Scarsa leggibilità** → Un nome descrittivo aiuta a **documentare il codice**, rendendolo più comprensibile. Ometterlo significa perdere un'opportunità per rendere il codice più chiaro.
+
+```javascript
+// ❌ Funzioni anonime - difficile capire cosa fanno
+getData(function (data) {
+  processData(data, function (result) {
+    saveResult(result, function (response) {
+      showMessage(response, function () {
+        // Cosa fa questa funzione?
+        console.log("Fatto");
+      });
+    });
+  });
+});
+
+// ✅ Funzioni nominate - auto-documentanti
+getData(function onDataReceived(data) {
+  processData(data, function onDataProcessed(result) {
+    saveResult(result, function onResultSaved(response) {
+      showMessage(response, function onMessageShown() {
+        console.log("Fatto");
+      });
+    });
+  });
+});
+```
+
+```javascript
+// Esempio reale: Array operations
+var utenti = [
+  { nome: "Mario", età: 30 },
+  { nome: "Luigi", età: 25 },
+  { nome: "Peach", età: 28 },
+];
+
+// ❌ Anonimo (cosa fa questa funzione?)
+var adulti = utenti.filter(function (u) {
+  return u.età >= 18;
+});
+
+// ✅ Nominato (chiaro intento)
+var adultiChiari = utenti.filter(function èAdulto(u) {
+  return u.età >= 18;
+});
+
+// ✅ Ancora più chiaro con nomi descrittivi
+var mappati = utenti
+  .filter(function èMaggiorenne(utente) {
+    return utente.età >= 18;
+  })
+  .map(function estraiNome(utente) {
+    return utente.nome;
+  })
+  .sort(function ordinaAlfabeticamente(a, b) {
+    return a.localeCompare(b);
+  });
+```
+
+##### Best Practice: Nominare Sempre le Espressioni di Funzione
+
+Le espressioni di funzione, sia in linea che non, sono uno strumento potente. Fornire un nome a un'espressione di funzione risolve **tutti gli svantaggi** sopra elencati senza introdurre alcun contro significativo. Pertanto, la **best practice** è quella di **nominare sempre** le proprie espressioni di funzione.
+
+```javascript
+// ✅ BEST PRACTICE: Espressioni di funzione nominate
+setTimeout(function timeoutHandler() {
+  console.log("Timeout eseguito");
+}, 1000);
+
+document
+  .getElementById("btn")
+  .addEventListener("click", function handleClick() {
+    console.log("Click gestito");
+  });
+
+var numeri = [1, 2, 3, 4, 5];
+var raddoppiati = numeri.map(function raddoppia(n) {
+  return n * 2;
+});
+```
+
+In questo caso, `timeoutHandler` è il nome dell'espressione di funzione. Questo nome è disponibile **solo all'interno della funzione stessa** (non inquina lo scope esterno), ma sarà visibile negli **stack trace** e potrà essere usato per l'**auto-riferimento**, migliorando sia il debugging che la leggibilità del codice.
+
+```javascript
+// Confronto completo: Anonimo vs Nominato
+// === ANONIMO ===
+var risultato1 = [1, 2, 3, 4, 5]
+  .filter(function (n) {
+    return n % 2 === 0;
+  })
+  .map(function (n) {
+    return n * n;
+  });
+
+// Stack trace poco utile
+// Difficile capire a colpo d'occhio cosa fa
+// Non può auto-riferirsi
+
+// === NOMINATO ===
+var risultato2 = [1, 2, 3, 4, 5]
+  .filter(function èPari(n) {
+    return n % 2 === 0;
+  })
+  .map(function elevaaQuadrato(n) {
+    return n * n;
+  });
+
+// Stack trace con 'èPari', 'elevaAlQuadrato'
+// Chiaro intento: filtra pari, poi eleva al quadrato
+// Può auto-riferirsi se necessario
+```
+
+```javascript
+// Esempio pratico: Inizializzazione complessa
+var app = (function inizializzaApp() {
+  var config = { debug: true };
+  var utenti = [];
+
+  function caricaDati() {
+    // Se c'è un errore, stack trace mostrerà 'caricaDati'
+    console.log("Caricamento dati...");
+  }
+
+  function validaConfig() {
+    // Stack trace mostrerà 'validaConfig'
+    if (!config.debug) {
+      // validaConfig può auto-riferirsi se necessario
+    }
+  }
+
+  // L'IIFE stessa ha un nome 'inizializzaApp' nello stack trace
+  caricaDati();
+  validaConfig();
+
+  return {
+    config: config,
+    utenti: utenti,
+  };
+})();
+```
+
+#### Variazioni del pattern IIFE
+
+##### Forma Anonima vs Nominata
+
+La forma più comune di **IIFE** utilizza una funzione anonima. Tuttavia, come già discusso, darle un **nome** (es. `(function IIFE(){...})()`) è una buona pratica perché migliora la leggibilità e il debugging, senza svantaggi.
+
+```javascript
+// ❌ IIFE Anonima (comune ma non ottimale)
+(function () {
+  var messaggio = "IIFE anonima";
+  console.log(messaggio);
+})();
+
+// Stack trace mostrerà solo "<anonymous>"
+
+// ✅ IIFE Nominata (BEST PRACTICE)
+(function IIFE() {
+  var messaggio = "IIFE nominata";
+  console.log(messaggio);
+})();
+
+// Stack trace mostrerà "IIFE" - utile per debugging!
+```
+
+```javascript
+// Nomi descrittivi per IIFE complesse
+(function inizializzaModuloUtente() {
+  var utenti = [];
+  var attivo = true;
+
+  function carica() {
+    /* ... */
+  }
+  function salva() {
+    /* ... */
+  }
+
+  carica();
+})();
+
+(function configuraEventHandler() {
+  document.getElementById("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    // ...
+  });
+})();
+
+// Ogni IIFE ha un nome chiaro che descrive il suo scopo
+```
+
+##### Posizione delle Parentesi
+
+Esiste una leggera variazione stilistica in cui le **parentesi di invocazione** vengono messe all'interno delle parentesi che avvolgono la funzione: `(function(){...}())`. Le due forme sono **funzionalmente identiche**; la scelta è puramente una questione di **stile**.
+
+```javascript
+// STILE 1: Parentesi di invocazione FUORI (più comune)
+(function () {
+  console.log("Stile 1");
+})();
+
+// STILE 2: Parentesi di invocazione DENTRO (meno comune)
+(function () {
+  console.log("Stile 2");
+})();
+
+// Entrambi funzionano identicamente
+```
+
+```javascript
+// Con return value, le due forme sono equivalenti
+var risultato1 = (function () {
+  return 42;
+})();
+
+var risultato2 = (function () {
+  return 42;
+})();
+
+console.log(risultato1); // 42
+console.log(risultato2); // 42
+```
+
+```javascript
+// Altre varianti sintattiche valide
+// Usando operatori unari per forzare espressione
+!(function () {
+  console.log("Con operatore !");
+})();
+
++(function () {
+  console.log("Con operatore +");
+})();
+
+~(function () {
+  console.log("Con operatore ~");
+})();
+
+// Tutte funzionano, ma sono meno comuni e chiare
+// Le parentesi (function(){}()) restano la forma standard
+```
+
+##### Passaggio di Argomenti
+
+Poiché una **IIFE** è una normale chiamata a funzione, è possibile passarle degli argomenti. Un uso comune è passare l'**oggetto globale** (`window` nel browser) per averne un riferimento chiaro e non ambiguo all'interno della IIFE.
+
+```javascript
+// Passaggio dell'oggetto globale come argomento
+(function (global) {
+  // 'global' è il parametro che riceve 'window'
+  console.log(global === window); // true
+
+  // Accesso esplicito allo scope globale
+  global.miaVariabileGlobale = "valore";
+
+  // È chiaro che stiamo accedendo al globale
+  console.log(global.document.title);
+})(window); // Passiamo 'window' come argomento
+
+console.log(miaVariabileGlobale); // "valore"
+```
+
+In questo esempio, si passa `window` come argomento, ma lo si rinomina `global` come parametro. Questa è una scelta stilistica per rendere più esplicito quando si sta accedendo allo **scope globale**.
+
+```javascript
+// Vantaggi del passaggio esplicito
+(function (global, doc) {
+  // Chiaro che 'global' è lo scope globale
+  // 'doc' è un alias per 'document'
+
+  global.alert("Messaggio"); // Esplicito: sto usando l'oggetto globale
+
+  var elemento = doc.getElementById("test"); // Più breve di 'document'
+
+  // Riduce le ricerche nello scope (micro-ottimizzazione)
+})(window, document);
+```
+
+```javascript
+// Passaggio di librerie esterne
+(function ($, _) {
+  // '$' è jQuery, '_' è Lodash (passati come argomenti)
+
+  $(".element").hide(); // Sicuro che '$' esiste
+
+  var array = [1, 2, 3];
+  var raddoppiati = _.map(array, function (n) {
+    return n * 2;
+  });
+
+  console.log(raddoppiati); // [2, 4, 6]
+})(jQuery, Lodash);
+
+// Benefit: Se jQuery o Lodash non sono definiti,
+// l'errore si verifica immediatamente alla chiamata
+```
+
+```javascript
+// Pattern comune: Protezione dello scope
+(function (window, document, undefined) {
+  // 'window', 'document' sono parametri locali
+  // più veloci da accedere (scope lookup ridotto)
+
+  var app = {
+    init: function () {
+      console.log("App inizializzata");
+    },
+  };
+
+  // Espone 'app' nell'oggetto window
+  window.app = app;
+})(window, document);
+
+// Uso esterno
+app.init();
+```
+
+##### Garantire il valore di `undefined`
+
+Un altro uso di questo pattern è quello di proteggersi da una possibile **sovrascrittura** della variabile globale `undefined`. Dichiarando un parametro `undefined` ma non passando alcun argomento per esso, ci si assicura che all'interno della IIFE il suo valore sia quello corretto.
+
+```javascript
+// PROBLEMA: 'undefined' può essere sovrascritto (in vecchi browser)
+// (Non più possibile in ES5+, ma il pattern persiste per retrocompatibilità)
+
+// undefined = "non è più undefined!";  // Possibile in vecchi browser
+
+// SOLUZIONE: Parametro 'undefined' senza argomento
+(function (window, document, undefined) {
+  // 'undefined' qui è GARANTITO essere undefined
+  // perché non è stato passato alcun argomento
+
+  var x;
+  if (x === undefined) {
+    console.log("x è davvero undefined"); // Sicuro
+  }
+
+  // Test di esistenza sicuro
+  if (typeof qualcosa === "undefined") {
+    console.log("'qualcosa' non esiste");
+  }
+})(window, document); // Nota: NON passiamo un terzo argomento
+
+// 'undefined' come parametro senza argomento → rimane undefined
+```
+
+```javascript
+// Esempio completo: Pattern di protezione
+(function (global, doc, undef) {
+  // 'undef' è garantito essere 'undefined'
+
+  var config = {
+    debug: undef, // Esplicitamente undefined
+    apiUrl: "https://api.example.com",
+  };
+
+  function inizializza(opzioni) {
+    // Test sicuro contro undefined
+    if (opzioni === undef) {
+      opzioni = {}; // Default
+    }
+
+    // Merge sicuro
+    config.debug = opzioni.debug !== undef ? opzioni.debug : false; // Controlla se passato
+  }
+
+  global.app = {
+    init: inizializza,
+  };
+})(window, document /*, undefined non passato */);
+```
+
+```javascript
+// Pattern moderno: Parametri di default (ES6+)
+(function (config = {}) {
+  // ES6+ ha parametri di default nativi
+  var debug = config.debug ?? false; // Nullish coalescing
+  var timeout = config.timeout ?? 5000;
+
+  console.log("Debug:", debug);
+  console.log("Timeout:", timeout);
+})(); // Nessun argomento → 'config' è {}
+
+// In ES6+ non serve più il pattern 'undefined' come parametro
+```
+
+##### Pattern UMD (Universal Module Definition)
+
+Una variante più complessa **inverte l'ordine**, passando la funzione da eseguire come parametro a un'altra IIFE. Questo stile, sebbene più verboso, è utilizzato in alcuni sistemi di moduli universali per la sua chiarezza strutturale.
+
+```javascript
+// Pattern UMD: Funzione passata come argomento
+(function (global, factory) {
+  // 'factory' è la funzione che contiene il codice del modulo
+
+  // Esegue 'factory' passandogli le dipendenze
+  factory(global);
+})(window, function IIFEModulo(global) {
+  // Questo è il codice del modulo
+  var mioModulo = {
+    versione: "1.0.0",
+    inizializza: function () {
+      console.log("Modulo inizializzato v" + this.versione);
+    },
+  };
+
+  // Espone il modulo
+  global.mioModulo = mioModulo;
+});
+
+// Uso
+mioModulo.inizializza();
+```
+
+```javascript
+// UMD completo: Supporto AMD, CommonJS e Browser
+(function (root, factory) {
+  // Rileva l'ambiente e usa il sistema di moduli appropriato
+
+  if (typeof define === "function" && define.amd) {
+    // AMD (RequireJS)
+    define(["jquery"], factory);
+  } else if (typeof module === "object" && module.exports) {
+    // CommonJS (Node.js)
+    module.exports = factory(require("jquery"));
+  } else {
+    // Browser globals
+    root.MioModulo = factory(root.jQuery);
+  }
+})(typeof self !== "undefined" ? self : this, function ($) {
+  // Questo è il codice del modulo che funziona ovunque
+
+  function MioModulo() {
+    this.nome = "Modulo Universale";
+  }
+
+  MioModulo.prototype.saluta = function () {
+    console.log("Ciao da " + this.nome);
+    $("body").append("<p>Modulo caricato</p>"); // Usa jQuery
+  };
+
+  return MioModulo;
+});
+```
+
+```javascript
+// UMD semplificato per librerie standalone
+(function (root, factory) {
+  if (typeof exports === "object") {
+    // CommonJS
+    module.exports = factory();
+  } else if (typeof define === "function" && define.amd) {
+    // AMD
+    define([], factory);
+  } else {
+    // Browser
+    root.Libreria = factory();
+  }
+})(this, function () {
+  // Codice della libreria
+  function Libreria() {
+    this.versione = "1.0";
+  }
+
+  Libreria.prototype.metodo = function () {
+    return "Funziona ovunque!";
+  };
+
+  return Libreria;
+});
+```
+
+```javascript
+// Esempio pratico: Logger universale
+(function (global, factory) {
+  factory(global);
+})(typeof window !== "undefined" ? window : global, function (global) {
+  var Logger = {
+    prefix: "[LOG]",
+
+    log: function (messaggio) {
+      console.log(this.prefix, messaggio);
+    },
+
+    error: function (messaggio) {
+      console.error(this.prefix, messaggio);
+    },
+
+    setPrefix: function (nuovo) {
+      this.prefix = nuovo;
+    },
+  };
+
+  // Espone come globale o modulo a seconda dell'ambiente
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = Logger;
+  } else {
+    global.Logger = Logger;
+  }
+});
+
+// Uso
+Logger.log("Messaggio"); // [LOG] Messaggio
+Logger.setPrefix("[DEBUG]");
+Logger.log("Test"); // [DEBUG] Test
+```
+
+Il pattern UMD è particolarmente utile per scrivere librerie che devono funzionare in diversi ambienti (browser, Node.js, AMD loaders), anche se con l'avvento di **ES6 modules** e dei **bundler moderni** (Webpack, Rollup, Vite), questi pattern stanno gradualmente diventando meno necessari.
+
 #### Il Pericolo delle Variabili Globali Accidentali
 
 Un comportamento pericoloso di JavaScript (in modalità non-stretta) si verifica quando si assegna un valore a una variabile che non è stata formalmente dichiarata con var, let o const. In questo caso, JavaScript risale la catena degli scope fino in cima e, non trovando alcuna dichiarazione, crea una nuova variabile nello scope globale.

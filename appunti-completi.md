@@ -5328,6 +5328,408 @@ function connetti() {
 connetti();
 ```
 
+#### Barare con lo Scope Lessicale (Cheating Lexical)
+
+Se lo scope lessicale è definito esclusivamente dalla posizione in cui una funzione viene dichiarata in fase di scrittura, come è possibile "modificarlo" (o "barare") durante l'esecuzione del programma (runtime)?
+
+JavaScript offre due meccanismi che permettono di fare proprio questo. Entrambi, tuttavia, sono considerati delle **cattive pratiche** dalla comunità degli sviluppatori. Le argomentazioni contro il loro utilizzo spesso tralasciano il punto più importante: **barare con lo scope lessicale porta a un peggioramento delle performance**.
+
+Prima di analizzare il motivo di questo calo di prestazioni, è necessario esaminare come funzionano questi due meccanismi.
+
+##### eval
+
+Il primo strumento che JavaScript offre per modificare lo scope lessicale a runtime è la funzione `eval()`.
+
+La funzione `eval(..)` accetta una stringa come argomento e tratta il suo contenuto come se fosse codice scritto direttamente in quel punto del programma. In pratica, permette di **generare codice dinamicamente** e di eseguirlo come se fosse sempre stato lì.
+
+Questo meccanismo "bara" con lo scope lessicale perché finge che del codice, creato a runtime, fosse in realtà presente al momento della scrittura (author-time). Dopo l'esecuzione di `eval()`, l'Engine non si preoccuperà del fatto che lo scope sia stato modificato dinamicamente; continuerà semplicemente a eseguire le sue normali ricerche di scope come se nulla fosse accaduto.
+
+```javascript
+// eval() modifica lo scope lessicale a runtime
+function foo(str, a) {
+  eval(str); // ⚠️ BARARE! Esegue codice dinamico
+  console.log(a, b); // Cosa stampa?
+}
+
+let b = 2;
+foo("var b = 3;", 1); // Output: 1 3 (non 1 2)
+
+// L'eval() ha creato 'b' nello scope di foo,
+// mascherando (shadowing) la 'b' globale
+```
+
+In questo esempio, la stringa `"var b = 3;"` viene eseguita all'interno della funzione `foo`. Questa istruzione dichiara una nuova variabile `b` all'interno dello scope di `foo`, che finisce per "mascherare" (shadowing) la variabile `b` dichiarata nello scope globale.
+
+Quando viene eseguita l'istruzione `console.log()`, l'Engine trova sia `a` che `b` direttamente nello scope di `foo`. Di conseguenza, non risale mai allo scope globale per cercare `b`, e il risultato stampato è `1, 3` invece di `1, 2`.
+
+```javascript
+// Esempio dettagliato di eval()
+function test(code) {
+  let x = 10;
+
+  eval(code); // Esegue il codice passato come stringa
+
+  console.log("x:", x);
+  console.log("y:", y); // 'y' esiste grazie a eval?
+}
+
+// Crea una variabile 'y' nello scope di test
+test("var y = 20;"); // x: 10, y: 20
+
+// Modifica 'x' esistente
+test("x = 30;"); // x: 30, y: (ReferenceError se non esiste)
+
+// Crea una funzione nello scope di test
+test("function calc() { return x * 2; } console.log(calc());"); // 20
+```
+
+```javascript
+// eval() con operazioni complesse
+function elabora() {
+  let dati = [1, 2, 3];
+
+  // Crea funzioni dinamicamente (CATTIVA PRATICA!)
+  eval("function raddoppia(arr) { return arr.map(x => x * 2); }");
+
+  console.log(raddoppia(dati)); // [2, 4, 6]
+
+  // raddoppia() esiste nello scope di elabora
+  // perché eval() l'ha creata lì
+}
+
+elabora();
+// console.log(raddoppia([1, 2])); // ❌ ReferenceError: raddoppia non è globale
+```
+
+##### eval() in Strict Mode
+
+È importante notare che, per impostazione predefinita, `eval()` modifica lo scope lessicale in cui viene chiamato. Tuttavia, se il programma è in **"Strict Mode"**, il comportamento cambia: `eval()` opera all'interno del **proprio scope lessicale**, e qualsiasi dichiarazione fatta al suo interno non modifica lo scope che lo contiene.
+
+```javascript
+// eval() in STRICT MODE
+"use strict";
+
+function foo(str) {
+  eval(str);
+  console.log(a); // Cosa stampa?
+}
+
+foo("var a = 2;"); // ❌ ReferenceError: a is not defined
+
+// In strict mode, 'a' è creata nello scope INTERNO di eval(),
+// NON nello scope di foo
+```
+
+In questo caso, la variabile `"a"` viene creata all'interno dello scope privato di `eval()` e non è accessibile dall'esterno, causando un **ReferenceError**.
+
+```javascript
+// Confronto: Non-Strict vs Strict Mode
+function nonStrict(code) {
+  eval(code);
+  console.log(typeof localVar); // 'string' (eval ha modificato scope)
+}
+
+nonStrict("var localVar = 'test';");
+
+function strict(code) {
+  "use strict";
+  eval(code);
+  // console.log(typeof localVar); // ❌ ReferenceError (eval NON modifica scope)
+}
+
+// strict("var localVar = 'test';");
+```
+
+```javascript
+// eval() in strict mode: scope isolato
+"use strict";
+
+function test() {
+  let x = 10;
+
+  eval("var x = 20; console.log('Inside eval:', x);"); // Inside eval: 20
+
+  console.log("Outside eval:", x); // Outside eval: 10
+  // La 'x' di eval è confinata al suo scope
+}
+
+test();
+```
+
+##### Meccanismi Simili a eval()
+
+Esistono altri meccanismi simili a `eval()` in JavaScript, come `setTimeout()` e `setInterval()`, che in versioni legacy del linguaggio potevano accettare una stringa di codice da eseguire. Questa pratica è **deprecata** e da evitare. Anche il costruttore `new Function(...)` permette di creare una funzione da una stringa di codice, ma, sebbene leggermente più sicuro di `eval()`, è comunque una pratica sconsigliata.
+
+```javascript
+// setTimeout/setInterval con stringhe (DEPRECATO)
+// ❌ EVITA
+setTimeout("console.log('Hello')", 1000); // Deprecato!
+setInterval("count++", 1000); // Deprecato!
+
+// ✅ USA funzioni
+setTimeout(() => console.log("Hello"), 1000);
+setInterval(() => count++, 1000);
+```
+
+```javascript
+// new Function() - Simile a eval()
+// ❌ EVITA (genera funzioni da stringhe)
+let somma = new Function("a", "b", "return a + b");
+console.log(somma(2, 3)); // 5
+
+// ✅ PREFERISCI dichiarazioni normali
+function somma(a, b) {
+  return a + b;
+}
+```
+
+```javascript
+// Differenza tra eval() e new Function()
+let x = 10;
+
+// eval() accede allo scope circostante
+eval("console.log(x)"); // 10
+
+// new Function() NON accede allo scope locale (solo globale)
+let fn = new Function("console.log(x)"); // Cerca 'x' solo nello scope globale
+// fn(); // 10 se 'x' è globale, altrimenti ReferenceError
+```
+
+I casi in cui è realmente necessario generare codice dinamicamente sono **estremamente rari**, e il degrado delle performance che ne consegue non giustifica quasi mai il loro utilizzo.
+
+##### with
+
+Il secondo meccanismo che permette di modificare lo scope lessicale è la parola chiave `with`. Anche questa funzionalità è **fortemente sconsigliata** e, di fatto, è stata **deprecata** nelle versioni moderne di JavaScript (ed è completamente vietata in "Strict Mode").
+
+A prima vista, `with` sembra una semplice scorciatoia per evitare di ripetere il nome di un oggetto quando si devono accedere a più sue proprietà.
+
+```javascript
+// with: scorciatoia apparente
+let obj = {
+  a: 1,
+  b: 2,
+  c: 3,
+};
+
+// ❌ Senza with (ripetitivo)
+obj.a = 2;
+obj.b = 3;
+obj.c = 4;
+
+// ⚠️ Con with (sembra più pulito, MA È PERICOLOSO)
+with (obj) {
+  a = 2;
+  b = 3;
+  c = 4;
+}
+
+console.log(obj); // { a: 2, b: 3, c: 4 }
+```
+
+Tuttavia, il suo funzionamento è molto più complesso e insidioso. La parola chiave `with` prende un oggetto e, **a runtime**, crea un **nuovo scope lessicale dal nulla**, trattando le proprietà di quell'oggetto come se fossero variabili dichiarate all'interno di quello scope.
+
+##### Come with modifica lo scope
+
+```javascript
+// with crea uno scope dalle proprietà dell'oggetto
+function foo(obj) {
+  with (obj) {
+    a = 2; // Assegna a 'obj.a' o crea globale?
+  }
+}
+
+let o1 = { a: 3 };
+let o2 = { b: 3 };
+
+foo(o1);
+console.log(o1.a); // 2 (modificato)
+
+foo(o2);
+console.log(o2.a); // undefined (o2 non ha 'a')
+console.log(a); // 2 (⚠️ VARIABILE GLOBALE ACCIDENTALE!)
+```
+
+- Quando si passa `o1` a `foo`:
+  - `with (o1)` crea un nuovo scope in cui la proprietà `a` di `o1` esiste come identificatore.
+  - L'istruzione `a = 2` è una ricerca LHS. Trova l'identificatore `"a"` nello scope creato da `with` e gli assegna il valore `2`. L'effetto è che `o1.a` diventa `2`.
+
+- Quando si passa `o2` a `foo`:
+  - `with (o2)` crea un nuovo scope, ma questo scope **non contiene** un identificatore `a`, perché l'oggetto `o2` non ha una proprietà `"a"`.
+  - L'istruzione `a = 2` esegue una ricerca LHS per `a`. Non trovandola nello scope di `with`, sale di livello.
+  - Non trova `"a"` nemmeno nello scope di `foo`.
+  - Arriva fino allo scope globale. Non trovando `"a"` e non essendo in "Strict Mode", lo scope globale **crea una nuova variabile globale** `"a"` e le assegna il valore `2`.
+
+```javascript
+// Esempio dettagliato del pericolo di with
+function configura(config) {
+  with (config) {
+    // Se 'config' ha queste proprietà, vengono modificate
+    // Altrimenti, vengono create GLOBALI!
+
+    host = "localhost"; // config.host o globale?
+    port = 3000; // config.port o globale?
+    debug = true; // config.debug o globale?
+  }
+}
+
+let conf1 = { host: "example.com", port: 8080 };
+configura(conf1);
+console.log(conf1); // { host: "localhost", port: 3000 }
+console.log(debug); // true (GLOBALE ACCIDENTALE!)
+
+let conf2 = {};
+configura(conf2);
+console.log(conf2); // {} (vuoto!)
+console.log(host, port, debug); // "localhost" 3000 true (TUTTE GLOBALI!)
+```
+
+```javascript
+// with e shadowing accidentale
+let nome = "Globale";
+
+function test(obj) {
+  with (obj) {
+    // 'nome' cerca prima nell'oggetto, poi nello scope esterno
+    console.log(nome); // Quale nome?
+  }
+}
+
+test({ nome: "Oggetto" }); // "Oggetto" (dall'oggetto)
+test({ altro: "valore" }); // "Globale" (dallo scope esterno)
+```
+
+Questo comportamento imprevedibile, che può portare alla **creazione accidentale di variabili globali** (global variable leak), è uno dei motivi principali per cui `with` è considerato una pessima pratica. Trasforma un oggetto in uno scope temporaneo a runtime, rendendo il codice difficile da leggere e da ottimizzare per l'Engine.
+
+##### with in Strict Mode
+
+```javascript
+// with è VIETATO in strict mode
+"use strict";
+
+let obj = { a: 1 };
+
+// with (obj) { // ❌ SyntaxError: Strict mode code may not include a with statement
+//   a = 2;
+// }
+
+// Soluzione: accesso esplicito
+obj.a = 2; // ✅ Chiaro e sicuro
+```
+
+In sintesi, sia `eval()` che `with` modificano lo scope lessicale definito in fase di scrittura, ma in modi diversi:
+
+- **eval()** può modificare lo scope esistente (tranne in strict mode)
+- **with** crea un nuovo scope dal nulla a partire da un oggetto
+
+Entrambi sono da **evitare assolutamente**.
+
+##### Performance
+
+Sia `eval()` che `with` "barano" con lo scope lessicale, che altrimenti sarebbe definito in modo statico al momento della scrittura del codice, modificandolo o creando nuovi scope a runtime.
+
+La domanda che sorge spontanea è: qual è il problema? Se offrono maggiore flessibilità, non dovrebbero essere considerate funzionalità positive? La risposta è **no**, e il motivo principale risiede nelle **performance**.
+
+Il motore JavaScript, durante la fase di compilazione, applica numerose **ottimizzazioni**. Molte di queste si basano sulla sua capacità di analizzare **staticamente** il codice e di determinare in anticipo dove si trovano tutte le dichiarazioni di variabili e funzioni. Questa pre-analisi permette di risolvere gli identificatori molto più velocemente durante l'esecuzione.
+
+Tuttavia, quando l'Engine incontra un `eval()` o un `with` nel codice, è costretto a fare un'**ipotesi pessimistica**: deve presumere che tutte le sue conoscenze sulla posizione degli identificatori possano essere invalide. Non può sapere, in fase di compilazione, quale codice verrà passato a `eval()` per modificare lo scope, né quale oggetto verrà usato da `with` per creare un nuovo scope.
+
+In altre parole, la presenza di `eval()` o `with` rende **inutili** la maggior parte delle ottimizzazioni che l'Engine potrebbe fare. Di conseguenza, semplicemente **non le esegue**.
+
+```javascript
+// Performance: codice SENZA eval/with (VELOCE)
+function calcola(x, y) {
+  let risultato = x * y;
+  let bonus = risultato * 0.1;
+  return risultato + bonus;
+}
+
+// L'Engine può ottimizzare:
+// - Inline delle operazioni
+// - Pre-allocazione variabili
+// - Ottimizzazione registri CPU
+
+console.time("senza-eval");
+for (let i = 0; i < 1000000; i++) {
+  calcola(5, 10);
+}
+console.timeEnd("senza-eval");
+```
+
+```javascript
+// Performance: codice CON eval (LENTO)
+function calcolaConEval(x, y) {
+  eval("var risultato = x * y;");
+  eval("var bonus = risultato * 0.1;");
+  return risultato + bonus;
+}
+
+// L'Engine NON può ottimizzare:
+// - Deve presumere che eval() possa modificare qualsiasi cosa
+// - Disabilita inline, pre-allocazione, etc.
+
+console.time("con-eval");
+for (let i = 0; i < 1000000; i++) {
+  calcolaConEval(5, 10);
+}
+console.timeEnd("con-eval");
+
+// Risultato: con-eval è 10-100x più lento!
+```
+
+```javascript
+// Impatto sulle ottimizzazioni
+function funzioneLenta(obj) {
+  // La sola PRESENZA di 'with' disabilita ottimizzazioni
+  with (obj) {
+    // Anche se questo codice non viene mai eseguito,
+    // l'Engine deve essere "pessimista"
+    if (false) {
+      a = 1;
+    }
+  }
+
+  // Questo codice è più lento del necessario
+  let x = 10;
+  let y = 20;
+  return x + y;
+}
+```
+
+Il codice tenderà a essere **più lento** per il solo fatto di includere un `eval()` o un `with` in un punto qualsiasi. Per quanto i motori moderni possano tentare di limitare gli effetti collaterali di queste ipotesi pessimistiche, il fatto è che, **senza le ottimizzazioni**, il codice viene eseguito più lentamente.
+
+```javascript
+// Alternative moderne a eval/with
+// ❌ EVITA eval() per calcoli dinamici
+function calcolaDinamico(espressione) {
+  return eval(espressione); // PERICOLOSO e LENTO
+}
+
+// ✅ USA Function constructor (più sicuro) o parser dedicati
+function calcolaDinamico(espressione) {
+  // Usa librerie come math.js, expr-eval, etc.
+  // O implementa un parser sicuro
+  return new Function("return " + espressione)();
+}
+
+// ❌ EVITA with per accesso proprietà
+with (obj) {
+  a = 1;
+  b = 2;
+}
+
+// ✅ USA destructuring
+let { a, b } = obj;
+a = 1;
+b = 2;
+Object.assign(obj, { a, b });
+
+// O semplicemente accesso esplicito
+obj.a = 1;
+obj.b = 2;
+```
+
+**Conclusione**: Non usare mai `eval()` o `with`. Le alternative moderne (destructuring, template literals, parser dedicati) sono più sicure, più leggibili e molto più veloci.
+
 #### Scope Annidato (Nested Scope)
 
 Lo Scope non è quasi mai un singolo "universo"; al contrario, gli scope sono spesso annidati l'uno dentro l'altro, proprio come un blocco di codice o una funzione possono essere contenuti all'interno di un altro blocco o funzione.

@@ -4800,17 +4800,16 @@ console.log(varBlock); // ✅ "var in block" (function scoped)
 
 **Tipo**: Nuovo Topic
 
-Uno dei paradigmi fondamentali di quasi tutti i linguaggi di programmazione è la capacità di **memorizzare valori in variabili**, per poi recuperarli o modificarli in un secondo momento. Questa capacità di gestire i valori nelle variabili è ciò che conferisce a un programma uno **stato** (state). Senza questo concetto, un programma potrebbe eseguire solo compiti molto limitati e poco interessanti.
+Uno dei paradigmi fondamentali di quasi tutti i linguaggi di programmazione è la capacità di memorizzare valori in variabili, per poi recuperarli o modificarli in un secondo momento. Questa capacità di gestire i valori nelle variabili è ciò che conferisce a un programma uno stato (state). Senza questo concetto, un programma potrebbe eseguire solo compiti molto limitati e poco interessanti.
 
-L'introduzione delle variabili in un programma solleva però delle **domande cruciali**: dove "vivono" queste variabili? In altre parole, dove vengono memorizzate? E, soprattutto, come fa il programma a trovarle quando ne ha bisogno?
+L'introduzione delle variabili in un programma solleva però delle domande cruciali: dove "vivono" queste variabili? In altre parole, dove vengono memorizzate? E, soprattutto, come fa il programma a trovarle quando ne ha bisogno?
 
-Queste domande evidenziano la necessità di un insieme di regole ben definite, e questo **insieme di regole prende il nome di Scope** (ambito).
+Queste domande evidenziano la necessità di un insieme di regole ben definite, e questo insieme di regole prende il nome di Scope (ambito).
 
-#### Cos'è lo Scope
-
-In programmazione, lo **scope** (tecnicamente **lexical scope** o ambito lessicale) definisce il **contesto in cui una variabile è "visibile"** e quindi accessibile. Si può pensare allo scope come all'inventario di un negozio: un commesso può vendere solo i prodotti presenti nel suo magazzino, non quelli di un altro negozio. Allo stesso modo, il codice può accedere solo alle variabili definite nel suo scope o in uno scope esterno (un "magazzino" più grande che lo contiene).
+In programmazione, lo scope (tecnicamente lexical scope o ambito lessicale) definisce il contesto in cui una variabile è "visibile" e quindi accessibile. Si può pensare allo scope come all'inventario di un negozio: un commesso può vendere solo i prodotti presenti nel suo magazzino, non quelli di un altro negozio. Allo stesso modo, il codice può accedere solo alle variabili definite nel suo scope o in uno scope esterno (un "magazzino" più grande che lo contiene).
 
 ```javascript
+// Esempio di visibilità delle variabili in scope diversi
 function negozioA() {
   let prodottoA = "Laptop";
   console.log(prodottoA); // ✅ Accessibile (stesso scope)
@@ -4820,273 +4819,482 @@ function negozioA() {
 function negozioB() {
   let prodottoB = "Mouse";
   console.log(prodottoB); // ✅ Accessibile
-}
-```
-
-**Concetto chiave**: Lo scope determina quali variabili sono accessibili in un determinato punto del codice.
-
-#### Metafora: I Tre Attori
-
-Per comprendere a fondo il concetto di Scope, è utile immaginarlo come il risultato di una **conversazione tra tre attori principali** che collaborano per elaborare un programma JavaScript. Ognuno ha un ruolo ben preciso.
-
-Il "cast" di questi personaggi è il seguente:
-
-- **Engine (Motore)** → È il **responsabile principale** dell'intero processo. Gestisce la compilazione e l'esecuzione del codice JavaScript dall'inizio alla fine. Potremmo vederlo come il "capo" che coordina tutte le operazioni.
-
-- **Compiler (Compilatore)** → È uno stretto **collaboratore dell'Engine**. Si occupa di tutto il lavoro "sporco" di analizzare il codice (parsing) e generare la versione eseguibile (code-generation), come discusso in precedenza nella sezione sulla compilazione.
-
-- **Scope** → È un altro **amico dell'Engine**. Il suo compito è quello di **collezionare e mantenere una lista** di tutte le variabili (o più in generale, gli "identificatori") che sono state dichiarate nel programma. Inoltre, applica un **insieme rigoroso di regole** per stabilire come e dove queste variabili siano accessibili dal codice in esecuzione in un dato momento. È in pratica il "guardiano" delle variabili.
-
-```javascript
-// Esempio di conversazione tra gli attori
-let nome = "Mario"; // Compiler: "Scope, ho trovato 'nome', registrala!"
-// Scope: "Ok, registrata nello scope globale"
-
-console.log(nome); // Engine: "Scope, hai una variabile chiamata 'nome'?"
-// Scope: "Sì, eccola: 'Mario'"
-```
-
-**Principio fondamentale**: Per capire veramente come funziona JavaScript, è necessario iniziare a pensare come pensano l'Engine e i suoi collaboratori, ponendosi le stesse domande che si pongono loro durante l'elaborazione del codice.
-
-#### Scope Globale vs Scope Locale
-
-In JavaScript, esistono principalmente **due tipi di scope**:
-
-- **Scope Globale (Global Scope)** → Una variabile dichiarata al di fuori di qualsiasi funzione si trova nello **scope globale**. È accessibile da qualsiasi punto del programma, sia all'interno che all'esterno delle funzioni.
-
-- **Scope Locale (Local Scope)** → Ogni funzione crea il proprio **scope locale**. Una variabile dichiarata al suo interno è accessibile solo all'interno di quella funzione.
-
-```javascript
-// Scope Globale
-let variabileGlobale = "Accessibile ovunque";
-
-function miaFunzione() {
-  // Scope Locale (funzione)
-  let variabileLocale = "Accessibile solo qui";
-
-  console.log(variabileGlobale); // ✅ Può accedere allo scope esterno
-  console.log(variabileLocale); // ✅ Può accedere al proprio scope
+  // console.log(prodottoA);  // ❌ Non accessibile (scope diverso)
 }
 
-miaFunzione();
-// console.log(variabileLocale);  // ❌ Errore! Fuori scope
-console.log(variabileGlobale); // ✅ Scope globale accessibile
+negozioA(); // Output: "Laptop"
+negozioB(); // Output: "Mouse"
 ```
 
-**Regola fondamentale**: Il codice interno può accedere allo scope esterno, ma l'esterno **non può** accedere allo scope interno.
+#### Metafora per comprendere lo scope
+
+Per comprendere a fondo il concetto di Scope, è utile immaginarlo come il risultato di una conversazione tra tre attori principali che collaborano per elaborare un programma JavaScript. Ognuno ha un ruolo ben preciso.
+
+Il cast di questi "personaggi" è il seguente:
+
+- **Engine (Motore)** → È il responsabile principale dell'intero processo. Gestisce la compilazione e l'esecuzione del codice JavaScript dall'inizio alla fine. Potremmo vederlo come il "capo" che coordina tutte le operazioni.
+
+- **Compiler (Compilatore)** → È uno stretto collaboratore dell'Engine. Si occupa di tutto il lavoro "sporco" di analizzare il codice (parsing) e generare la versione eseguibile (code-generation), come discusso in precedenza.
+
+- **Scope** → È un altro amico dell'Engine. Il suo compito è quello di collezionare e mantenere una lista di tutte le variabili (o più in generale, gli "identificatori") che sono state dichiarate nel programma. Inoltre, applica un insieme rigoroso di regole per stabilire come e dove queste variabili siano accessibili dal codice in esecuzione in un dato momento. È in pratica il "guardiano" delle variabili.
+
+Per capire veramente come funziona JavaScript, è necessario iniziare a pensare come pensano l'Engine e i suoi collaboratori, ponendosi le stesse domande che si pongono loro durante l'elaborazione del codice.
 
 ```javascript
-let globale = 100;
+// Simulazione della conversazione tra Engine, Compiler e Scope
 
-function esempio() {
-  let locale = 50;
-  console.log(globale); // ✅ 100 (accede allo scope globale)
-  console.log(locale); // ✅ 50 (accede allo scope locale)
+// 1. FASE DI COMPILAZIONE
+// Compiler analizza: let nome = "Mario";
+// Compiler: "Scope, ho trovato una dichiarazione per l'identificatore 'nome'"
+// Scope: "Ok, l'ho registrata nello scope globale"
+
+let nome = "Mario";
+
+// 2. FASE DI ESECUZIONE
+// Engine esegue: console.log(nome);
+// Engine: "Scope, hai una variabile chiamata 'nome'?"
+// Scope: "Sì! Eccola: 'Mario'"
+console.log(nome); // Output: "Mario"
+
+// 3. VARIABILE NON DICHIARATA
+// Engine: "Scope, hai una variabile chiamata 'cognome'?"
+// Scope: "No, non la trovo"
+// Engine: "Allora genero un ReferenceError"
+// console.log(cognome);  // ❌ ReferenceError: cognome is not defined
+```
+
+#### Scope Globale e Scope Locale
+
+In JavaScript, esistono principalmente due tipi di scope:
+
+- **Scope Globale (Global Scope)** → Una variabile dichiarata al di fuori di qualsiasi funzione si trova nello scope globale. È accessibile da qualsiasi punto del programma, sia all'interno che all'esterno delle funzioni.
+
+- **Scope Locale (Local Scope)** → Ogni funzione crea il proprio scope locale. Una variabile dichiarata al suo interno è accessibile solo all'interno di quella funzione.
+
+```javascript
+// SCOPE GLOBALE
+let varGlobale = "Sono visibile ovunque";
+const PI = 3.14;
+
+function calcolaArea(raggio) {
+  // SCOPE LOCALE della funzione calcolaArea
+  let area = PI * raggio * raggio; // ✅ Può accedere a PI (scope esterno)
+  let messaggio = "Area calcolata"; // Solo qui dentro
+
+  console.log(varGlobale); // ✅ Può accedere allo scope globale
+  console.log(area); // ✅ Può accedere al proprio scope locale
+
+  return area;
 }
 
-esempio();
-console.log(globale); // ✅ 100
-// console.log(locale);  // ❌ ReferenceError: locale is not defined
+function altrafunzione() {
+  // SCOPE LOCALE di altrafunzione
+  let altroMessaggio = "Altro scope";
+
+  console.log(varGlobale); // ✅ Può accedere allo scope globale
+  // console.log(area);  // ❌ ReferenceError: area appartiene a calcolaArea
+  // console.log(messaggio);  // ❌ ReferenceError: messaggio appartiene a calcolaArea
+}
+
+console.log(varGlobale); // ✅ Accessibile (scope globale)
+console.log(PI); // ✅ Accessibile (scope globale)
+// console.log(area);  // ❌ ReferenceError: area è locale a calcolaArea
+// console.log(messaggio);  // ❌ ReferenceError: messaggio è locale a calcolaArea
+
+calcolaArea(5); // Output: "Sono visibile ovunque" e calcola l'area
+```
+
+```javascript
+// Esempio pratico: contatore con scope
+let contatoreGlobale = 0; // Tutti possono modificarlo
+
+function incrementaGlobale() {
+  contatoreGlobale++; // Modifica la variabile globale
+  console.log("Globale:", contatoreGlobale);
+}
+
+function incrementaLocale() {
+  let contatoreLocale = 0; // Variabile locale (riparte da 0 ogni volta)
+  contatoreLocale++;
+  console.log("Locale:", contatoreLocale);
+}
+
+incrementaGlobale(); // Globale: 1
+incrementaGlobale(); // Globale: 2
+incrementaGlobale(); // Globale: 3
+
+incrementaLocale(); // Locale: 1
+incrementaLocale(); // Locale: 1 (riparte sempre da 0!)
+incrementaLocale(); // Locale: 1
 ```
 
 #### Scope Annidati e Catena degli Scope
 
-Gli scope possono essere **annidati** l'uno dentro l'altro. Le regole dello **scope lessicale** stabiliscono che il codice in uno scope più interno può accedere alle variabili degli scope più esterni, ma **non viceversa**. Questo meccanismo, che permette di "risalire" gli scope alla ricerca di una variabile, è chiamato **catena degli scope** (scope chain).
+Gli scope possono essere annidati l'uno dentro l'altro. Le regole dello scope lessicale stabiliscono che il codice in uno scope più interno può accedere alle variabili degli scope più esterni, ma non viceversa. Questo meccanismo, che permette di "risalire" gli scope alla ricerca di una variabile, è chiamato catena degli scope (scope chain).
 
 ```javascript
-let a = "globale";
+// SCOPE CHAIN: Esempio con 3 livelli di annidamento
+let a = "livello globale";
 
 function esterna() {
-  let b = "esterna";
+  let b = "livello esterna";
 
   function interna() {
-    let c = "interna";
+    let c = "livello interna";
 
-    // interna può accedere a tutte le variabili degli scope esterni
-    console.log(a); // ✅ "globale"
-    console.log(b); // ✅ "esterna"
-    console.log(c); // ✅ "interna"
+    // interna può accedere a TUTTI gli scope esterni (scope chain)
+    console.log(a); // ✅ "livello globale" (risale di 2 livelli)
+    console.log(b); // ✅ "livello esterna" (risale di 1 livello)
+    console.log(c); // ✅ "livello interna" (stesso scope)
   }
 
   interna();
-  console.log(a); // ✅ "globale"
-  console.log(b); // ✅ "esterna"
+
+  // esterna può accedere al globale, ma NON a interna
+  console.log(a); // ✅ "livello globale"
+  console.log(b); // ✅ "livello esterna"
   // console.log(c);  // ❌ ReferenceError: c is not defined
 }
 
 esterna();
-console.log(a); // ✅ "globale"
+
+// Lo scope globale NON può accedere agli scope interni
+console.log(a); // ✅ "livello globale"
 // console.log(b);  // ❌ ReferenceError: b is not defined
 // console.log(c);  // ❌ ReferenceError: c is not defined
 ```
 
-In questo esempio, la funzione `interna` può "vedere" la variabile `a` perché si trova in uno scope esterno, ma `esterna` non può vedere `c`, che è confinata localmente all'interno di `interna`.
-
-**Importante**: Se si tenta di accedere a una variabile in uno scope dove non è disponibile, si ottiene un **ReferenceError**.
-
 ```javascript
-function test() {
-  console.log(variabileInesistente); // ❌ ReferenceError
+// Esempio pratico: scope chain con calcoli
+let tassaGlobale = 0.22; // 22% IVA
+
+function calcolaPrezzoFinale(prezzoBase) {
+  let margine = 1.3; // 30% di margine
+
+  function applicaTassa() {
+    let prezzoConMargine = prezzoBase * margine; // Accede a margine e prezzoBase
+    let prezzoFinale = prezzoConMargine * (1 + tassaGlobale); // Accede anche a tassaGlobale
+
+    return prezzoFinale;
+  }
+
+  return applicaTassa();
 }
+
+console.log(calcolaPrezzoFinale(100)); // 158.6
+// prezzoBase (100) * margine (1.3) = 130
+// 130 * (1 + 0.22) = 158.6
 ```
 
-La **scope chain** funziona come una ricerca a "risalita": quando JavaScript cerca una variabile, parte dallo scope corrente e, se non la trova, sale di livello fino allo scope globale. Se non la trova nemmeno lì, genera un errore.
+In questo esempio, la funzione `interna` può "vedere" la variabile `a` perché si trova in uno scope esterno, ma `esterna` non può vedere `b`, che è confinata localmente all'interno di `interna`. Se si tenta di accedere a una variabile in uno scope dove non è disponibile, si ottiene un ReferenceError.
+
+```javascript
+// La scope chain funziona come una ricerca "a risalita"
+function livello1() {
+  let x = 10;
+
+  function livello2() {
+    // JavaScript cerca 'x':
+    // 1. Cerca nello scope corrente (livello2) → Non trovato
+    // 2. Risale al livello superiore (livello1) → ✅ Trovato!
+    console.log(x); // 10
+
+    // JavaScript cerca 'y':
+    // 1. Cerca nello scope corrente (livello2) → Non trovato
+    // 2. Risale al livello superiore (livello1) → Non trovato
+    // 3. Risale allo scope globale → Non trovato
+    // 4. ❌ ReferenceError
+    // console.log(y);
+  }
+
+  livello2();
+}
+
+livello1();
+```
 
 #### Il Pericolo delle Variabili Globali Accidentali
 
-Un comportamento **pericoloso** di JavaScript (in modalità non-stretta) si verifica quando si assegna un valore a una variabile che **non è stata formalmente dichiarata** con `var`, `let` o `const`. In questo caso, JavaScript risale la catena degli scope fino in cima e, non trovando alcuna dichiarazione, **crea automaticamente una nuova variabile nello scope globale**.
+Un comportamento pericoloso di JavaScript (in modalità non-stretta) si verifica quando si assegna un valore a una variabile che non è stata formalmente dichiarata con var, let o const. In questo caso, JavaScript risale la catena degli scope fino in cima e, non trovando alcuna dichiarazione, crea una nuova variabile nello scope globale.
 
 ```javascript
+// PERICOLO: Variabile globale accidentale
 function esempio() {
   x = 10; // ❌ Nessuna dichiarazione (var/let/const)
-  // JavaScript risale la scope chain fino in cima
-  // Non trova 'x' dichiarata da nessuna parte
-  // Crea AUTOMATICAMENTE 'x' nello scope globale
+  // JavaScript cerca 'x' nella scope chain:
+  // 1. Non trova 'x' nello scope locale
+  // 2. Non trova 'x' nello scope globale
+  // 3. CREA AUTOMATICAMENTE 'x' nello scope globale
 }
 
 esempio();
-console.log(x); // 10 (variabile globale accidentale!)
+console.log(x); // 10 ← Variabile globale creata accidentalmente!
+console.log(window.x); // 10 (in ambienti browser)
 ```
 
-Questa è considerata una **pessima pratica** perché "inquina" lo scope globale e può portare a **bug difficili da tracciare**, dove parti diverse del codice modificano involontariamente la stessa variabile globale.
-
 ```javascript
-let x = 100; // Variabile globale intenzionale
-
-function funzioneA() {
-  x = 200; // ✅ OK, modifica x globale (intenzionale)
+// Esempio del problema reale
+function calcolaSconto(prezzo) {
+  sconto = prezzo * 0.1; // ❌ Dimenticato 'let'
+  return prezzo - sconto;
 }
 
-function funzioneB() {
-  y = 50; // ❌ Crea y globale (accidentale!)
+function calcolaTassa(prezzo) {
+  sconto = prezzo * 0.05; // ❌ Dimenticato 'let', SOVRASCRIVE la stessa globale!
+  return prezzo + sconto;
 }
 
-funzioneA();
-console.log(x); // 200
+let totale1 = calcolaSconto(100); // sconto = 10 (globale)
+console.log(totale1); // 90
 
-funzioneB();
-console.log(y); // 50 (variabile globale accidentale)
+let totale2 = calcolaTassa(100); // sconto = 5 (SOVRASCRIVE la globale!)
+console.log(totale2); // 105
+
+console.log(sconto); // 5 (variabile globale inquinata)
 ```
 
-La **regola fondamentale** è: **dichiara sempre formalmente le tue variabili** con `let`, `const` o `var`. L'uso dello **"strict mode"** (`"use strict"`, che vedremo più avanti) aiuta a prevenire questo problema, trasformando questi casi in errori.
+```javascript
+// SOLUZIONE: Usare 'let' o 'const'
+function calcolaScontoCorretto(prezzo) {
+  let sconto = prezzo * 0.1; // ✅ Dichiarazione esplicita
+  return prezzo - sconto;
+}
+
+function calcolaTassaCorretto(prezzo) {
+  let sconto = prezzo * 0.05; // ✅ Scope locale, NON interferisce
+  return prezzo + sconto;
+}
+
+let totale1 = calcolaScontoCorretto(100);
+let totale2 = calcolaTassaCorretto(100);
+// console.log(sconto);  // ❌ ReferenceError: sconto is not defined (come dovrebbe essere!)
+```
+
+Questa è considerata una pessima pratica perché "inquina" lo scope globale e può portare a bug difficili da tracciare, dove parti diverse del codice modificano involontariamente la stessa variabile globale.
+
+La regola fondamentale è: dichiara sempre formalmente le tue variabili. L'uso dello "strict mode" (che vedremo più avanti) aiuta a prevenire questo problema, trasformando questi casi in errori.
 
 ```javascript
+// STRICT MODE previene le variabili globali accidentali
 "use strict";
 
 function test() {
-  x = 10; // ❌ ReferenceError: x is not defined
-  // Strict mode impedisce la creazione automatica
+  y = 20; // ❌ ReferenceError: y is not defined
+  // Strict mode IMPEDISCE la creazione automatica
 }
+
+// test();  // Errore!
 
 // Soluzione corretta
 function testCorretto() {
-  let x = 10; // ✅ Dichiarazione esplicita
+  let y = 20; // ✅ Dichiarazione esplicita
+  console.log(y);
 }
+
+testCorretto(); // 20
 ```
 
-#### Block Scope con let e const
+#### Block Scope: let e const
 
-Mentre `var` crea uno **scope a livello di funzione**, le parole chiave moderne `let` e `const` introducono il concetto di **Block Scope**. Una variabile dichiarata con `let` o `const` è **confinata al blocco di codice `{...}`** in cui è definita (ad esempio un `if`, un ciclo `for` o anche un blocco autonomo).
+Mentre var crea uno scope a livello di funzione, le parole chiave moderne let e const introducono il concetto di Block Scope. Una variabile dichiarata con let o const è confinata al blocco di codice {...} in cui è definita (ad esempio un if, un ciclo for o anche un blocco autonomo).
 
 ```javascript
+// DIFFERENZA tra var, let e const rispetto al block scope
+
+// Esempio 1: Blocco IF
 if (true) {
-  let bloccoScoped = "Visibile solo nel blocco";
-  const COSTANTE = 42;
-  var funzioneScoped = "Visibile anche fuori";
+  var varVariable = "var ignora i blocchi";
+  let letVariable = "let rispetta i blocchi";
+  const constVariable = "const rispetta i blocchi";
 }
 
-// console.log(bloccoScoped);  // ❌ Errore con let
-// console.log(COSTANTE);      // ❌ Errore con const
-console.log(funzioneScoped); // ✅ var ignora block scope
+console.log(varVariable); // ✅ "var ignora i blocchi"
+// console.log(letVariable);  // ❌ ReferenceError
+// console.log(constVariable);  // ❌ ReferenceError
+
+// Esempio 2: Blocco FOR
+for (var i = 0; i < 3; i++) {
+  // var è visibile FUORI dal loop
+}
+console.log(i); // ✅ 3 (var ignora block scope)
+
+for (let j = 0; j < 3; j++) {
+  // let è confinato AL loop
+}
+// console.log(j);  // ❌ ReferenceError
+
+// Esempio 3: Blocco AUTONOMO
+{
+  var x = 10;
+  let y = 20;
+  const z = 30;
+  console.log(x, y, z); // 10 20 30
+}
+
+console.log(x); // ✅ 10 (var ignora blocchi)
+// console.log(y);  // ❌ ReferenceError
+// console.log(z);  // ❌ ReferenceError
 ```
 
-- **`let` e `const`** → Rispettano il **block scope** (blocchi `{}`)
-- **`var`** → Rispetta solo il **function scope**, ignora i blocchi
+```javascript
+// Problema pratico con VAR nei loop
+console.log("--- Problema con VAR ---");
+for (var i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log("var:", i); // Stampa sempre 3!
+  }, 100);
+}
+// Output dopo 100ms: "var: 3" "var: 3" "var: 3"
+// Perché? 'i' è condivisa (function scope)
+
+console.log("--- Soluzione con LET ---");
+for (let j = 0; j < 3; j++) {
+  setTimeout(function () {
+    console.log("let:", j); // Stampa 0, 1, 2
+  }, 100);
+}
+// Output dopo 100ms: "let: 0" "let: 1" "let: 2"
+// Perché? Ogni iterazione ha il suo 'j' (block scope)
+```
 
 ```javascript
-function esempio() {
+// Block scope nelle funzioni
+function testScope() {
   if (true) {
-    let x = 10;
-    var y = 20;
+    var functionScoped = "Visibile in tutta la funzione";
+    let blockScoped = "Visibile solo nel blocco if";
   }
 
-  // console.log(x);  // ❌ ReferenceError (fuori block scope)
-  console.log(y); // ✅ 20 (var ignora blocchi, scope di funzione)
+  console.log(functionScoped); // ✅ "Visibile in tutta la funzione"
+  // console.log(blockScoped);  // ❌ ReferenceError
+
+  {
+    let altroBlocco = "Solo qui";
+    const COSTANTE = 42;
+  }
+
+  // console.log(altroBlocco);  // ❌ ReferenceError
+  // console.log(COSTANTE);  // ❌ ReferenceError
 }
 
-// Blocco autonomo
-{
-  let messaggio = "Solo qui";
-  const PI = 3.14;
-  console.log(messaggio); // ✅ Accessibile
-}
-// console.log(messaggio);  // ❌ ReferenceError
+testScope();
 ```
 
-Block scope permette un **controllo più preciso** sulla visibilità delle variabili, rendendo il codice più sicuro e prevedibile.
+#### Shadowing
 
-#### Shadowing (Variabili Ombra)
-
-Lo **shadowing** si verifica quando una variabile dichiarata in uno **scope locale** ha lo stesso nome di una variabile in uno **scope più esterno**. In questo caso, la variabile locale **"nasconde"** o **"mette in ombra"** (shadows) quella esterna. All'interno dello scope locale, qualsiasi riferimento a quel nome di variabile utilizzerà la **versione locale**.
+Lo shadowing si verifica quando una variabile dichiarata in uno scope locale ha lo stesso nome di una variabile in uno scope più esterno. In questo caso, la variabile locale "nasconde" o "mette in ombra" (shadows) quella esterna. All'interno dello scope locale, qualsiasi riferimento a quel nome di variabile utilizzerà la versione locale.
 
 ```javascript
-let x = 10; // Scope globale
+// SHADOWING BASE
+let x = "globale";
 
 function esempio() {
-  let x = 20; // Scope locale, "shadows" la x globale
-
-  console.log(x); // 20 (usa la x locale)
+  let x = "locale"; // "Shadows" la x globale
+  console.log(x); // "locale" (usa la versione locale)
 }
 
 esempio();
-console.log(x); // 10 (usa la x globale, non modificata)
+console.log(x); // "globale" (la x globale NON è stata modificata)
 ```
 
-**Shadowing annidato** - Lo shadowing può verificarsi a più livelli:
-
 ```javascript
-let nome = "Globale";
+// SHADOWING MULTI-LIVELLO
+let nome = "Scope Globale";
 
-function esterna() {
-  let nome = "Esterna"; // Shadows globale
-  console.log(nome); // "Esterna"
+function livello1() {
+  let nome = "Scope Livello 1"; // Shadows globale
+  console.log("Livello 1:", nome); // "Scope Livello 1"
 
-  function interna() {
-    let nome = "Interna"; // Shadows esterna (e globale)
-    console.log(nome); // "Interna"
+  function livello2() {
+    let nome = "Scope Livello 2"; // Shadows livello1 (e globale)
+    console.log("Livello 2:", nome); // "Scope Livello 2"
+
+    function livello3() {
+      let nome = "Scope Livello 3"; // Shadows livello2, livello1 e globale
+      console.log("Livello 3:", nome); // "Scope Livello 3"
+    }
+
+    livello3();
+    console.log("Dopo livello3:", nome); // "Scope Livello 2" (non modificato)
   }
 
-  interna();
-  console.log(nome); // "Esterna" (non modificata)
+  livello2();
+  console.log("Dopo livello2:", nome); // "Scope Livello 1" (non modificato)
 }
 
-esterna();
-console.log(nome); // "Globale" (non modificata)
+livello1();
+console.log("Globale:", nome); // "Scope Globale" (non modificato)
+
+/* Output:
+Livello 1: Scope Livello 1
+Livello 2: Scope Livello 2
+Livello 3: Scope Livello 3
+Dopo livello3: Scope Livello 2
+Dopo livello2: Scope Livello 1
+Globale: Scope Globale
+*/
 ```
 
-**Shadowing con blocchi** - Anche i blocchi `{}` con `let`/`const` creano shadowing:
-
 ```javascript
-let x = 100;
+// SHADOWING con BLOCCHI (let/const)
+let valore = 100;
 
 if (true) {
-  let x = 200; // Shadows x esterna
-  console.log(x); // 200
+  let valore = 200; // Shadows valore esterna nel blocco if
+  console.log("Nel blocco if:", valore); // 200
+
+  {
+    let valore = 300; // Shadows anche questa nel blocco più interno
+    console.log("Nel blocco interno:", valore); // 300
+  }
+
+  console.log("Di nuovo nel blocco if:", valore); // 200
 }
 
-console.log(x); // 100
+console.log("Fuori dai blocchi:", valore); // 100
 ```
 
-**Importante**: Non puoi ri-dichiarare la stessa variabile con `let`/`const` nello stesso scope, ma puoi farlo in scope diversi (shadowing).
+```javascript
+// SHADOWING: Errore comune da evitare
+let contatore = 0;
+
+function incrementa() {
+  let contatore = 10; // ❌ Shadows! NON modifica quella globale
+  contatore++;
+  console.log("Dentro funzione:", contatore); // 11
+}
+
+incrementa();
+console.log("Fuori funzione:", contatore); // 0 (NON modificata!)
+
+// Soluzione: NON usare let se vuoi modificare quella esterna
+function incrementaCorretto() {
+  contatore++; // ✅ Modifica quella globale
+  console.log("Dentro funzione:", contatore);
+}
+
+incrementaCorretto(); // 1
+console.log("Fuori funzione:", contatore); // 1
+```
 
 ```javascript
+// REGOLA: Non puoi ri-dichiarare con let/const nello STESSO scope
 let y = 10;
-// let y = 20;  // ❌ SyntaxError: già dichiarata nello stesso scope
+// let y = 20;  // ❌ SyntaxError: Identifier 'y' has already been declared
 
+// Ma puoi farlo in SCOPE DIVERSI (shadowing)
 {
-  let y = 20; // ✅ OK, diverso scope (shadowing)
+  let y = 20; // ✅ OK, è uno scope diverso (shadowing)
+  console.log(y); // 20
+
+  {
+    let y = 30; // ✅ OK, altro scope ancora
+    console.log(y); // 30
+  }
+
   console.log(y); // 20
 }
+
 console.log(y); // 10
 ```
 
@@ -5105,29 +5313,64 @@ L'operatore di assegnamento base è `=`. La sua funzione è memorizzare il valor
 Esistono anche gli operatori di assegnamento composto (compound assignment), come `+=` o `*=`, che combinano un'operazione matematica con un assegnamento, rendendo il codice più sintetico.
 
 ```javascript
-/*
- * Operatori di assegnamento
- */
+// ASSEGNAMENTO BASE
+let x = 10; // Assegna il valore 10 alla variabile x
+let nome = "Mario"; // Assegna la stringa "Mario" alla variabile nome
+let attivo = true; // Assegna il booleano true
 
-// Assegnamento base
-let x = 10;
-
-// Assegnamento composto
+// OPERATORI DI ASSEGNAMENTO COMPOSTO
 let punteggio = 100;
-punteggio += 50; // equivale a: punteggio = punteggio + 50
+punteggio += 50; // Equivale a: punteggio = punteggio + 50
 console.log(punteggio); // 150
 
 let quantita = 20;
-quantita *= 3; // equivale a: quantita = quantita * 3
+quantita *= 3; // Equivale a: quantita = quantita * 3
 console.log(quantita); // 60
 
-let valore = 100;
-valore -= 25; // valore = valore - 25
-console.log(valore); // 75
+let budget = 1000;
+budget -= 250; // Equivale a: budget = budget - 250
+console.log(budget); // 750
 
-let dividendo = 50;
-dividendo /= 5; // dividendo = dividendo / 5
-console.log(dividendo); // 10
+let totale = 100;
+totale /= 4; // Equivale a: totale = totale / 4
+console.log(totale); // 25
+
+let resto = 17;
+resto %= 5; // Equivale a: resto = resto % 5
+console.log(resto); // 2
+
+let base = 2;
+base **= 3; // Equivale a: base = base ** 3
+console.log(base); // 8
+```
+
+```javascript
+// ESEMPI PRATICI
+function calcolaCarrello(prezzoIniziale, scontoPercentuale, tasse) {
+  let totale = prezzoIniziale;
+
+  // Applica sconto
+  totale -= (totale * scontoPercentuale) / 100;
+
+  // Aggiungi tasse
+  totale += (totale * tasse) / 100;
+
+  return totale;
+}
+
+console.log(calcolaCarrello(100, 10, 22)); // 98.78
+
+// Contatori
+let visitatori = 0;
+visitatori += 1; // Incrementa di 1
+visitatori += 5; // Incrementa di 5
+console.log(visitatori); // 6
+
+// Concatenazione di stringhe
+let messaggio = "Benvenuto";
+messaggio += " ";
+messaggio += "utente!";
+console.log(messaggio); // "Benvenuto utente!"
 ```
 
 ### Operatori Matematici (Arithmetic)
@@ -5143,47 +5386,106 @@ Eseguono le classiche operazioni aritmetiche. I principali sono:
 - `++` (Incremento di 1) e `--` (Decremento di 1)
 
 ```javascript
-/*
- * Operatori matematici
- */
-
-// Addizione e concatenazione
+// ADDIZIONE
 let somma = 5 + 3; // 8
-let testo = "Hello" + " " + "World"; // "Hello World"
-let mix = "Il numero è " + 42; // "Il numero è 42"
+let totale = 10 + 20 + 30; // 60
 
-// Sottrazione, moltiplicazione, divisione
+// CONCATENAZIONE DI STRINGHE (+ con stringhe)
+let saluto = "Ciao" + " " + "mondo"; // "Ciao mondo"
+let messaggio = "Il risultato è: " + 42; // "Il risultato è: 42"
+let mix = "Ho " + 5 + " mele"; // "Ho 5 mele"
+let attenzione = 5 + 5 + " mele"; // "10 mele" (prima calcola 5+5, poi concatena)
+
+// SOTTRAZIONE
 let differenza = 10 - 4; // 6
+let negativo = 5 - 10; // -5
+
+// MOLTIPLICAZIONE
 let prodotto = 6 * 7; // 42
+let doppio = 15 * 2; // 30
+
+// DIVISIONE
 let quoziente = 20 / 4; // 5
+let meta = 9 / 2; // 4.5 (JavaScript restituisce decimali)
+let infinito = 5 / 0; // Infinity
 
-// Resto (remainder)
-let resto = 17 % 5; // 2 (17 diviso 5 fa 3 con resto 2)
-let pari = 10 % 2; // 0 (numero pari)
-let dispari = 11 % 2; // 1 (numero dispari)
+// RESTO (REMAINDER) %
+let resto = 17 % 5; // 2 (17 = 5*3 + 2)
+let restoDue = 20 % 3; // 2 (20 = 3*6 + 2)
 
-// Esponenziazione
-let potenza = 2 ** 3; // 8 (2 elevato alla 3)
-let quadrato = 5 ** 2; // 25
+// Uso pratico: verificare pari/dispari
+let numero = 10;
+if (numero % 2 === 0) {
+  console.log("Pari"); // ✅
+} else {
+  console.log("Dispari");
+}
 
-// Incremento e decremento
+// ESPONENZIAZIONE **
+let quadrato = 5 ** 2; // 25 (5 elevato alla 2)
+let cubo = 2 ** 3; // 8 (2 elevato alla 3)
+let potenza = 10 ** 6; // 1000000
+```
+
+```javascript
+// INCREMENTO ++ e DECREMENTO --
 let contatore = 0;
-contatore++; // contatore diventa 1
+contatore++; // contatore diventa 1 (post-incremento)
 contatore++; // contatore diventa 2
 console.log(contatore); // 2
 
 let countdown = 10;
-countdown--; // countdown diventa 9
-console.log(countdown); // 9
+countdown--; // countdown diventa 9 (post-decremento)
+countdown--; // countdown diventa 8
+console.log(countdown); // 8
 
-// Pre-incremento vs Post-incremento
+// POST-INCREMENTO (a++) vs PRE-INCREMENTO (++a)
 let a = 5;
-let b = a++; // b = 5, poi a diventa 6
-console.log(a, b); // 6, 5
+let b = a++; // b riceve 5, poi a diventa 6
+console.log(a); // 6
+console.log(b); // 5
 
 let c = 5;
-let d = ++c; // c diventa 6, poi d = 6
-console.log(c, d); // 6, 6
+let d = ++c; // c diventa 6, poi d riceve 6
+console.log(c); // 6
+console.log(d); // 6
+
+// POST-DECREMENTO (a--) vs PRE-DECREMENTO (--a)
+let x = 10;
+let y = x--; // y riceve 10, poi x diventa 9
+console.log(x, y); // 9, 10
+
+let m = 10;
+let n = --m; // m diventa 9, poi n riceve 9
+console.log(m, n); // 9, 9
+```
+
+```javascript
+// ESEMPI PRATICI
+function calcolaArea(raggio) {
+  return 3.14 * raggio ** 2; // area = π * r²
+}
+console.log(calcolaArea(5)); // 78.5
+
+function convertiTemperatura(celsius) {
+  return (celsius * 9) / 5 + 32; // Formula C° → F°
+}
+console.log(convertiTemperatura(25)); // 77
+
+// Ciclo con incremento
+for (let i = 0; i < 5; i++) {
+  console.log("Iterazione:", i);
+}
+// Output: 0, 1, 2, 3, 4
+
+// Alternanza con modulo
+for (let i = 0; i < 6; i++) {
+  if (i % 2 === 0) {
+    console.log(i + " è pari");
+  } else {
+    console.log(i + " è dispari");
+  }
+}
 ```
 
 ### Operatori di Confronto ed Uguaglianza (Comparison & Equality)
@@ -5207,46 +5509,102 @@ Sebbene molti sviluppatori evitino `==` per la sua presunta imprevedibilità, se
 Gli operatori di non uguaglianza, `!=` (lasca) e `!==` (stretta), seguono le stesse identiche logiche dei loro corrispettivi.
 
 ```javascript
-/*
- * Confronto: == vs ===
- */
-
-// === Uguaglianza stretta (stesso tipo e valore)
-console.log(5 === 5); // true
+// === UGUAGLIANZA STRETTA (confronta tipo E valore)
+console.log(5 === 5); // true (stesso tipo, stesso valore)
 console.log(5 === "5"); // false (numero vs stringa)
 console.log(true === 1); // false (booleano vs numero)
+console.log(false === 0); // false (booleano vs numero)
 console.log(null === undefined); // false (tipi diversi)
+console.log("ciao" === "ciao"); // true
 
-// == Uguaglianza lasca (con coercizione)
-console.log(5 == "5"); // true (stringa convertita a numero)
+// == UGUAGLIANZA LASCA (converte i tipi prima di confrontare)
+console.log(5 == "5"); // true (stringa "5" convertita a numero 5)
 console.log(true == 1); // true (true convertito a 1)
 console.log(false == 0); // true (false convertito a 0)
-console.log(null == undefined); // true (caso speciale)
+console.log(null == undefined); // true (caso speciale ES1)
 console.log("" == 0); // true (stringa vuota convertita a 0)
+console.log(" " == 0); // true (stringa con solo spazi → 0)
 
-// Quando == può essere ingannevole
-console.log(false == ""); // true
-console.log(false == []); // true
-console.log("" == 0); // true
-console.log(0 == []); // true
-// ❌ Evitare == con: true, false, 0, "", []
+// CASI INGANNEVOLI con == (da evitare)
+console.log(false == ""); // true ⚠️
+console.log(false == []); // true ⚠️
+console.log("" == 0); // true ⚠️
+console.log(0 == []); // true ⚠️
+console.log("0" == []); // false ⚠️
+console.log([] == []); // false (riferimenti diversi)
 
-// Casi sicuri per ==
+// ❌ Evita == quando coinvolti: true, false, 0, "", []
+```
+
+```javascript
+// QUANDO == È SICURO E UTILE
+// Caso 1: Confrontare stringhe e numeri (intenzionale)
 let input = "42";
 if (input == 42) {
-  // Sicuro: confronto stringa/numero
+  // ✅ Sicuro: confronta valore
   console.log("Input valido");
 }
 
+// Caso 2: Verificare null O undefined con una sola condizione
 let valore = null;
 if (valore == null) {
-  // Sicuro: cattura sia null che undefined
+  // ✅ Cattura sia null che undefined
+  console.log("Valore non definito");
+}
+// Equivalente ma più prolisso:
+if (valore === null || valore === undefined) {
   console.log("Valore non definito");
 }
 
-// Operatori di non uguaglianza
+function processaDato(dato) {
+  // Controlla se dato è null o undefined
+  if (dato == null) {
+    return "Dato mancante";
+  }
+  return "Dato presente: " + dato;
+}
+
+console.log(processaDato(null)); // "Dato mancante"
+console.log(processaDato(undefined)); // "Dato mancante"
+console.log(processaDato(0)); // "Dato presente: 0" (0 è valido!)
+console.log(processaDato("")); // "Dato presente: " (stringa vuota valida!)
+```
+
+```javascript
+// OPERATORI DI NON UGUAGLIANZA
+// !== (non uguale stretta)
 console.log(5 !== "5"); // true (tipi diversi)
-console.log(5 != "5"); // false (valori uguali dopo coercizione)
+console.log(5 !== 5); // false
+
+// != (non uguale lasca)
+console.log(5 != "5"); // false (5 == "5" è true, quindi != è false)
+console.log(5 != 6); // true
+
+// ESEMPI PRATICI
+function validaEta(eta) {
+  // Usa === per controllo rigoroso
+  if (eta === "") {
+    return "Età non inserita";
+  }
+  if (typeof eta !== "number") {
+    return "Età deve essere un numero";
+  }
+  if (eta < 0 || eta > 120) {
+    return "Età non valida";
+  }
+  return "Età valida";
+}
+
+console.log(validaEta(25)); // "Età valida"
+console.log(validaEta("25")); // "Età deve essere un numero"
+console.log(validaEta("")); // "Età non inserita"
+
+// Confronto sicuro con ===
+let password = "12345";
+let confermaPassword = "12345";
+if (password === confermaPassword) {
+  console.log("Password confermata");
+}
 ```
 
 #### Confronto tra Oggetti e Array
@@ -5254,30 +5612,38 @@ console.log(5 != "5"); // false (valori uguali dopo coercizione)
 Quando si confrontano valori non primitivi come oggetti o array, sia `==` che `===` si comportano allo stesso modo: controllano se le due variabili puntano allo stesso riferimento in memoria, non se il loro contenuto è identico.
 
 ```javascript
-/*
- * Confronto di oggetti e array
- */
-
-// Array con stesso contenuto ma riferimenti diversi
+// ARRAY: confronto per riferimento, non per contenuto
 let arr1 = [1, 2, 3];
 let arr2 = [1, 2, 3];
-let arr3 = arr1; // stesso riferimento di arr1
+let arr3 = arr1; // arr3 punta allo stesso array di arr1
 
-console.log(arr1 === arr2); // false (riferimenti diversi)
+console.log(arr1 === arr2); // false (array diversi in memoria)
 console.log(arr1 === arr3); // true (stesso riferimento)
-console.log(arr1 == arr2); // false (riferimenti diversi anche con ==)
+console.log(arr1 == arr2); // false (anche == confronta riferimenti)
 
-// Oggetti con stesso contenuto ma riferimenti diversi
-let obj1 = { nome: "Mario" };
-let obj2 = { nome: "Mario" };
-let obj3 = obj1; // stesso riferimento di obj1
+// Modifica tramite riferimento
+arr3.push(4);
+console.log(arr1); // [1, 2, 3, 4] (arr1 modificato!)
+console.log(arr3); // [1, 2, 3, 4] (arr3 è lo stesso array)
 
-console.log(obj1 === obj2); // false (riferimenti diversi)
+// OGGETTI: stesso comportamento degli array
+let obj1 = { nome: "Mario", eta: 30 };
+let obj2 = { nome: "Mario", eta: 30 };
+let obj3 = obj1; // obj3 punta allo stesso oggetto
+
+console.log(obj1 === obj2); // false (oggetti diversi)
 console.log(obj1 === obj3); // true (stesso riferimento)
+console.log(obj1 == obj2); // false (anche == confronta riferimenti)
 
-/*
- * Per confrontare il contenuto, serve un confronto profondo
- */
+// Modifica tramite riferimento
+obj3.eta = 31;
+console.log(obj1.eta); // 31 (obj1 modificato!)
+```
+
+```javascript
+// PER CONFRONTARE IL CONTENUTO: serve logica personalizzata
+
+// Confronto array semplice
 function arrayUguali(a, b) {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) {
@@ -5287,6 +5653,34 @@ function arrayUguali(a, b) {
 }
 
 console.log(arrayUguali([1, 2, 3], [1, 2, 3])); // true
+console.log(arrayUguali([1, 2, 3], [1, 2, 4])); // false
+
+// Confronto oggetti semplice (solo proprietà dirette)
+function oggettiUguali(a, b) {
+  let keysA = Object.keys(a);
+  let keysB = Object.keys(b);
+
+  if (keysA.length !== keysB.length) return false;
+
+  for (let key of keysA) {
+    if (a[key] !== b[key]) return false;
+  }
+  return true;
+}
+
+let persona1 = { nome: "Luigi", eta: 25 };
+let persona2 = { nome: "Luigi", eta: 25 };
+let persona3 = { nome: "Luigi", eta: 26 };
+
+console.log(oggettiUguali(persona1, persona2)); // true
+console.log(oggettiUguali(persona1, persona3)); // false
+
+// Uso di JSON.stringify (attenzione: non affidabile al 100%)
+let a = { x: 1, y: 2 };
+let b = { y: 2, x: 1 }; // stesse proprietà, ordine diverso
+
+console.log(JSON.stringify(a) === JSON.stringify(b)); // false ⚠️
+// L'ordine delle chiavi può variare!
 ```
 
 #### Disuguaglianza (Operatori Relazionali)
@@ -5301,39 +5695,108 @@ Il loro comportamento dipende dal tipo di valori confrontati:
 Un'insidia comune si presenta quando un valore non può essere convertito in un numero valido, risultando in NaN (Not a Number). Per specifica, NaN non è né maggiore, né minore, né uguale a nessun altro valore.
 
 ```javascript
-/*
- * Operatori relazionali
- */
-
-// Confronto numerico
+// CONFRONTO NUMERICO
 console.log(10 > 5); // true
-console.log(3 <= 3); // true
-console.log(7 < 2); // false
+console.log(3 < 8); // true
+console.log(7 >= 7); // true (maggiore o uguale)
+console.log(4 <= 3); // false
 
-// Confronto di stringhe (lessicografico)
-console.log("apple" < "banana"); // true
-console.log("zebra" > "aardvark"); // true
-console.log("10" < "9"); // true (confronto carattere per carattere: "1" < "9")
+let eta = 18;
+if (eta >= 18) {
+  console.log("Maggiorenne");
+}
 
-// Coercizione numerica
+let punteggio = 75;
+if (punteggio > 60) {
+  console.log("Promosso");
+}
+
+// CONFRONTO LESSICOGRAFICO (stringhe)
+console.log("apple" < "banana"); // true (a < b in alfabeto)
+console.log("zebra" > "aardvark"); // true (z > a)
+console.log("Mario" < "Luigi"); // false (M > L)
+console.log("cane" < "cani"); // true ("cane" è prefisso di "cani")
+
+// Attenzione: confronto carattere per carattere
+console.log("10" < "9"); // true ⚠️ ("1" < "9" come caratteri)
+console.log("100" < "20"); // true ⚠️ ("1" < "2")
+```
+
+```javascript
+// COERCIZIONE NUMERICA (stringa → numero)
 console.log("42" > 10); // true (stringa "42" convertita a numero 42)
 console.log("100" < 50); // false (stringa "100" → numero 100)
+console.log("5" >= 5); // true
 
-// Problemi con NaN
+// Confronto misto: almeno un numero → converte tutto a numero
+console.log(5 > "3"); // true (stringa "3" → numero 3)
+console.log(10 <= "20"); // true
+
+// CASI SPECIALI E PROBLEMI
+// Problema 1: NaN
 let risultato = "ciao" - 5; // NaN (operazione non valida)
+console.log(risultato); // NaN
 console.log(risultato > 0); // false
 console.log(risultato < 0); // false
-console.log(risultato == risultato); // false
-console.log(isNaN(risultato)); // true ✅ modo corretto per verificare NaN
+console.log(risultato >= 0); // false
+console.log(risultato <= 0); // false
+console.log(risultato == risultato); // false (NaN !== NaN)
+console.log(isNaN(risultato)); // true ✅ Modo corretto per verificare NaN
 
-// Altri casi speciali
-console.log(null > 0); // false
-console.log(null == 0); // false
-console.log(null >= 0); // true (⚠️ null convertito a 0)
+// Problema 2: null
+console.log(null > 0); // false (null → 0, ma 0 > 0 è false)
+console.log(null == 0); // false (null == solo null o undefined)
+console.log(null >= 0); // true ⚠️ (null → 0, e 0 >= 0 è true)
 
-console.log(undefined > 0); // false
+// Problema 3: undefined
+console.log(undefined > 0); // false (undefined → NaN)
 console.log(undefined < 0); // false
+console.log(undefined >= 0); // false
 console.log(undefined == 0); // false
+```
+
+```javascript
+// ESEMPI PRATICI
+function classificaPunteggio(punti) {
+  if (punti >= 90) {
+    return "Eccellente";
+  } else if (punti >= 70) {
+    return "Buono";
+  } else if (punti >= 60) {
+    return "Sufficiente";
+  } else {
+    return "Insufficiente";
+  }
+}
+
+console.log(classificaPunteggio(95)); // "Eccellente"
+console.log(classificaPunteggio(75)); // "Buono"
+console.log(classificaPunteggio(50)); // "Insufficiente"
+
+// Ordinamento alfabetico
+let nomi = ["Zebra", "Mario", "Anna", "Luigi"];
+nomi.sort();
+console.log(nomi); // ["Anna", "Luigi", "Mario", "Zebra"]
+
+// Verifica range
+function èInRange(valore, min, max) {
+  return valore >= min && valore <= max;
+}
+
+console.log(èInRange(5, 1, 10)); // true
+console.log(èInRange(15, 1, 10)); // false
+
+// Validazione età
+function puòGuidare(eta) {
+  if (typeof eta !== "number" || isNaN(eta)) {
+    return false;
+  }
+  return eta >= 18 && eta <= 100;
+}
+
+console.log(puòGuidare(25)); // true
+console.log(puòGuidare(15)); // false
+console.log(puòGuidare("venti")); // false
 ```
 
 ### Operatori Logici (Logical)
@@ -5347,67 +5810,151 @@ Combinano espressioni booleane.
 Questi operatori usano il cortocircuito (short-circuit evaluation): `&&` si ferma se la prima condizione è falsa, mentre `||` si ferma se la prima è vera. Questo permette di scrivere codice più efficiente e conciso.
 
 ```javascript
-/*
- * Operatori logici
- */
-
-// && (AND logico)
+// && (AND LOGICO) - true solo se TUTTI sono true
 console.log(true && true); // true
 console.log(true && false); // false
 console.log(false && true); // false
+console.log(false && false); // false
 
 let eta = 25;
 let haPatente = true;
 if (eta >= 18 && haPatente) {
-  console.log("Può guidare");
+  console.log("Può guidare"); // ✅ Entrambe le condizioni vere
 }
 
-// || (OR logico)
+// Esempio pratico AND
+function puòAccedere(utente) {
+  return utente.attivo && utente.verificato && !utente.bannato;
+}
+
+let utente1 = { attivo: true, verificato: true, bannato: false };
+let utente2 = { attivo: true, verificato: false, bannato: false };
+console.log(puòAccedere(utente1)); // true
+console.log(puòAccedere(utente2)); // false
+
+// || (OR LOGICO) - true se ALMENO UNO è true
 console.log(true || false); // true
 console.log(false || true); // true
+console.log(true || true); // true
 console.log(false || false); // false
 
 let isWeekend = true;
 let isFestivo = false;
 if (isWeekend || isFestivo) {
-  console.log("Non si lavora");
+  console.log("Non si lavora"); // ✅ Almeno una condizione vera
 }
 
-// ! (NOT logico)
+// Esempio pratico OR
+function haScontoSpeciale(cliente) {
+  return cliente.èPremium || cliente.primoAcquisto || cliente.compleanno;
+}
+
+let cliente1 = { èPremium: false, primoAcquisto: true, compleanno: false };
+let cliente2 = { èPremium: false, primoAcquisto: false, compleanno: false };
+console.log(haScontoSpeciale(cliente1)); // true
+console.log(haScontoSpeciale(cliente2)); // false
+```
+
+```javascript
+// ! (NOT LOGICO) - Inverte il valore booleano
 console.log(!true); // false
 console.log(!false); // true
+console.log(!!true); // true (doppio NOT torna al valore originale)
 
 let piove = false;
 if (!piove) {
-  console.log("Si può uscire senza ombrello");
+  console.log("Si può uscire senza ombrello"); // ✅
 }
 
-// Short-circuit evaluation
+let èConnesso = true;
+if (!èConnesso) {
+  console.log("Errore: nessuna connessione");
+} else {
+  console.log("Connesso"); // ✅
+}
+
+// NOT con valori non booleani
+console.log(!""); // true (stringa vuota è falsy)
+console.log(!0); // true (0 è falsy)
+console.log(!"testo"); // false (stringa non vuota è truthy)
+console.log(!null); // true
+console.log(!undefined); // true
+```
+
+```javascript
+// SHORT-CIRCUIT EVALUATION (cortocircuito)
+// && si ferma al primo falsy
+console.log(false && "qualsiasi cosa"); // false (non valuta il secondo)
+console.log(true && "valore"); // "valore"
+console.log(null && eseguiQualcosa()); // null (eseguiQualcosa() NON viene chiamata)
+
 let utente = null;
 let nomeUtente = utente && utente.nome; // null (si ferma a utente)
-console.log(nomeUtente); // null
+console.log(nomeUtente); // null (evita errore: Cannot read property 'nome' of null)
 
-let valoreDefault = "" || "Valore predefinito"; // "Valore predefinito"
-console.log(valoreDefault);
+// || si ferma al primo truthy
+console.log(true || "qualsiasi cosa"); // true (non valuta il secondo)
+console.log(false || "valore"); // "valore"
+console.log("" || "default"); // "default"
+console.log(null || "fallback"); // "fallback"
 
-// Combinazioni complesse
+// Usa || per valori di default (ma attenzione ai falsy validi!)
+let nome = "";
+let nomeVisualizzato = nome || "Ospite"; // "Ospite" (anche se "" potrebbe essere valido)
+console.log(nomeVisualizzato);
+
+let punteggio = 0;
+let punteggioMostrato = punteggio || 100; // 100 ⚠️ (0 è falsy, ma valido!)
+console.log(punteggioMostrato);
+```
+
+```javascript
+// COMBINAZIONI COMPLESSE
 let temperatura = 25;
 let soleggiato = true;
 let weekend = true;
 
+// AND ha precedenza su OR
 if ((temperatura > 20 && soleggiato) || weekend) {
-  console.log("È una bella giornata!");
+  console.log("Bella giornata"); // ✅
 }
 
-// Uso pratico: prevenire errori
-function saluta(persona) {
-  // Evita errore se persona è null/undefined
-  let nome = persona && persona.nome;
-  console.log("Ciao " + (nome || "ospite"));
+// Equivalente a:
+let èBelTempo = temperatura > 20 && soleggiato;
+if (èBelTempo || weekend) {
+  console.log("Bella giornata");
 }
 
-saluta({ nome: "Mario" }); // "Ciao Mario"
-saluta(null); // "Ciao ospite"
+// Uso pratico: validazione form
+function validaForm(form) {
+  if (!form.nome || !form.email) {
+    return "Nome ed email sono obbligatori";
+  }
+  if (form.eta && (form.eta < 0 || form.eta > 120)) {
+    return "Età non valida";
+  }
+  if (form.password && form.password.length < 8) {
+    return "Password troppo corta";
+  }
+  return "Form valido";
+}
+
+console.log(validaForm({ nome: "Mario", email: "m@test.it" })); // "Form valido"
+console.log(validaForm({ nome: "Mario" })); // "Nome ed email sono obbligatori"
+console.log(validaForm({ nome: "Mario", email: "m@test.it", eta: 150 })); // "Età non valida"
+
+// Uso pratico: accesso sicuro alle proprietà
+function ottieniCitta(persona) {
+  return persona && persona.indirizzo && persona.indirizzo.citta;
+}
+
+let p1 = { nome: "Mario", indirizzo: { citta: "Roma", via: "X" } };
+let p2 = { nome: "Luigi" };
+let p3 = null;
+
+console.log(ottieniCitta(p1)); // "Roma"
+console.log(ottieniCitta(p2)); // undefined (si ferma a persona.indirizzo)
+console.log(ottieniCitta(p3)); // null (si ferma a persona)
 ```
 
 ### Operatore Condizionale (Ternario)
@@ -5417,28 +5964,41 @@ L'operatore ternario (`? :`) è una scorciatoia per un'istruzione if-else. La su
 `condizione ? valore_se_vero : valore_se_falso`
 
 ```javascript
-/*
- * Operatore ternario
- */
-
-// Esempio base
+// ESEMPIO BASE
 let eta = 20;
 let tipo = eta >= 18 ? "adulto" : "minore";
 console.log(tipo); // "adulto"
 
-// Equivalente a:
+// Equivalente if-else:
 let tipoAlt;
 if (eta >= 18) {
   tipoAlt = "adulto";
 } else {
   tipoAlt = "minore";
 }
+console.log(tipoAlt); // "adulto"
 
-// Uso in espressioni
+// USO IN ESPRESSIONI
 let punteggio = 85;
 console.log("Hai " + (punteggio >= 60 ? "superato" : "fallito") + " l'esame");
+// Output: "Hai superato l'esame"
 
-// Ternari annidati (usare con cautela)
+let nome = "Mario";
+let saluto = "Ciao " + (nome ? nome : "ospite");
+console.log(saluto); // "Ciao Mario"
+
+// IN ASSEGNAMENTI
+let isWeekend = true;
+let sveglia = isWeekend ? "09:00" : "07:00";
+console.log("Sveglia alle " + sveglia); // "Sveglia alle 09:00"
+
+let temperatura = 30;
+let abbigliamento = temperatura > 25 ? "T-shirt" : "Maglione";
+console.log(abbigliamento); // "T-shirt"
+```
+
+```javascript
+// TERNARI ANNIDATI (usare con cautela per leggibilità)
 let voto = 75;
 let giudizio =
   voto >= 90
@@ -5450,19 +6010,50 @@ let giudizio =
         : "Insufficiente";
 console.log(giudizio); // "Buono"
 
-// Uso pratico con valori di default
-function saluta(nome) {
-  let messaggio = nome ? "Ciao " + nome : "Ciao ospite";
-  return messaggio;
+// Più leggibile come if-else-if:
+let giudizioAlt;
+if (voto >= 90) {
+  giudizioAlt = "Eccellente";
+} else if (voto >= 70) {
+  giudizioAlt = "Buono";
+} else if (voto >= 60) {
+  giudizioAlt = "Sufficiente";
+} else {
+  giudizioAlt = "Insufficiente";
 }
 
-console.log(saluta("Mario")); // "Ciao Mario"
+// CASI D'USO PRATICI
+function calcolaTotale(prezzo, isPremium) {
+  let sconto = isPremium ? 0.2 : 0.1; // 20% o 10%
+  return prezzo * (1 - sconto);
+}
+console.log(calcolaTotale(100, true)); // 80
+console.log(calcolaTotale(100, false)); // 90
+
+// Rendering condizionale (pattern comune)
+function mostraMessaggio(utente) {
+  return utente ? "Benvenuto " + utente.nome : "Fai il login";
+}
+console.log(mostraMessaggio({ nome: "Mario" })); // "Benvenuto Mario"
+console.log(mostraMessaggio(null)); // "Fai il login"
+
+// Classi CSS condizionali (in frontend)
+let isAttivo = true;
+let className = "bottone " + (isAttivo ? "attivo" : "disattivo");
+console.log(className); // "bottone attivo"
+
+// Valori di default
+function saluta(nome) {
+  return "Ciao " + (nome ? nome : "ospite");
+}
+console.log(saluta("Luigi")); // "Ciao Luigi"
 console.log(saluta()); // "Ciao ospite"
 
-// In assegnamenti condizionali
-let isPremium = true;
-let sconto = isPremium ? 0.2 : 0.1;
-console.log("Sconto applicato: " + sconto * 100 + "%");
+// Validazione inline
+let password = "12345";
+let messaggioPassword =
+  password.length >= 8 ? "Password valida" : "Password troppo corta";
+console.log(messaggioPassword); // "Password troppo corta"
 ```
 
 ### Operatore di Coalescenza Nullish (??)
@@ -5470,46 +6061,113 @@ console.log("Sconto applicato: " + sconto * 100 + "%");
 Questo operatore restituisce il valore a destra solo se quello a sinistra è `null` o `undefined`. È perfetto per assegnare valori di default, perché a differenza di `||`, non scarta valori falsy validi come `0` o una stringa vuota `""`.
 
 ```javascript
-/*
- * Operatore di Coalescenza Nullish (??)
- */
-
-// Problema con || (scarta valori falsy validi)
+// PROBLEMA CON || (scarta valori falsy validi)
 let contatore = 0;
-let valore1 = contatore || 10; // 10 (0 è falsy, usa il default)
-console.log(valore1); // 10 ❌ Ma 0 è un valore valido!
+let valore1 = contatore || 10; // 10 ⚠️ (0 è falsy, usa il default)
+console.log(valore1); // 10 (Ma 0 è un valore valido!)
 
-// Soluzione con ?? (controlla solo null/undefined)
-let valore2 = contatore ?? 10; // 0 (0 non è null/undefined)
-console.log(valore2); // 0 ✅ Corretto!
+let stringa = "";
+let testo1 = stringa || "default"; // "default" ⚠️ (stringa vuota è falsy)
+console.log(testo1); // "default" (Ma "" potrebbe essere valida!)
 
-// Altri casi
-let testo = "";
-console.log(testo || "default"); // "default" (stringa vuota è falsy)
-console.log(testo ?? "default"); // "" (stringa vuota è valida)
+// SOLUZIONE CON ?? (controlla SOLO null/undefined)
+let contatore2 = 0;
+let valore2 = contatore2 ?? 10; // 0 ✅ (0 non è null/undefined)
+console.log(valore2); // 0 (Corretto!)
 
+let stringa2 = "";
+let testo2 = stringa2 ?? "default"; // "" ✅ (stringa vuota è valida)
+console.log(testo2); // "" (Corretto!)
+
+// CONFRONTO DIRETTO
 let numero = 0;
-console.log(numero || 100); // 100
-console.log(numero ?? 100); // 0
+console.log(numero || 100); // 100 (|| tratta 0 come falsy)
+console.log(numero ?? 100); // 0 (!! accetta 0 come valido)
 
-let valoreMancante = null;
-console.log(valoreMancante ?? "N/D"); // "N/D"
+let testoVuoto = "";
+console.log(testoVuoto || "nessun testo"); // "nessun testo"
+console.log(testoVuoto ?? "nessun testo"); // ""
 
-let valoreInesistente = undefined;
-console.log(valoreInesistente ?? "Non definito"); // "Non definito"
+let valoreNull = null;
+console.log(valoreNull || "default"); // "default"
+console.log(valoreNull ?? "default"); // "default" (stesso comportamento)
 
-// Uso pratico in funzioni
-function configura(opzioni) {
+let valoreUndefined = undefined;
+console.log(valoreUndefined || "default"); // "default"
+console.log(valoreUndefined ?? "default"); // "default" (stesso comportamento)
+```
+
+```javascript
+// VALORI FALSY: come vengono trattati
+// Falsy values: false, 0, "", null, undefined, NaN
+
+// Con ||
+console.log(false || "default"); // "default"
+console.log(0 || "default"); // "default"
+console.log("" || "default"); // "default"
+console.log(null || "default"); // "default"
+console.log(undefined || "default"); // "default"
+console.log(NaN || "default"); // "default"
+
+// Con ??
+console.log(false ?? "default"); // false ✅
+console.log(0 ?? "default"); // 0 ✅
+console.log("" ?? "default"); // "" ✅
+console.log(null ?? "default"); // "default"
+console.log(undefined ?? "default"); // "default"
+console.log(NaN ?? "default"); // NaN ✅
+```
+
+```javascript
+// USO PRATICO: configurazioni con valori di default
+function creaConfigurazione(opzioni) {
   // Permette timeout: 0 (valore valido)
-  let timeout = opzioni.timeout ?? 3000;
-  let maxRetry = opzioni.maxRetry ?? 3;
-  let messaggio = opzioni.messaggio ?? "Caricamento...";
-
-  console.log({ timeout, maxRetry, messaggio });
+  let config = {
+    timeout: opzioni.timeout ?? 3000, // Default 3000ms
+    maxRetry: opzioni.maxRetry ?? 3, // Default 3 tentativi
+    debug: opzioni.debug ?? false, // Default false
+    messaggio: opzioni.messaggio ?? "Caricamento...", // Default
+  };
+  return config;
 }
 
-configura({ timeout: 0 }); // { timeout: 0, maxRetry: 3, messaggio: "Caricamento..." }
-configura({}); // { timeout: 3000, maxRetry: 3, messaggio: "Caricamento..." }
+// Timeout 0 è un valore valido!
+console.log(creaConfigurazione({ timeout: 0 }));
+// { timeout: 0, maxRetry: 3, debug: false, messaggio: "Caricamento..." }
+
+console.log(creaConfigurazione({}));
+// { timeout: 3000, maxRetry: 3, debug: false, messaggio: "Caricamento..." }
+
+console.log(creaConfigurazione({ timeout: 5000, maxRetry: 5 }));
+// { timeout: 5000, maxRetry: 5, debug: false, messaggio: "Caricamento..." }
+
+// Esempio pratico: paginazione
+function ottieniPagina(numeroPagina, elementiPerPagina) {
+  let pagina = numeroPagina ?? 1; // Default pagina 1
+  let perPagina = elementiPerPagina ?? 10; // Default 10 elementi
+  // Nota: pagina 0 è valida, quindi ?? è perfetto
+  return { pagina, perPagina };
+}
+
+console.log(ottieniPagina(0, 20)); // { pagina: 0, perPagina: 20 }
+console.log(ottieniPagina(null, 20)); // { pagina: 1, perPagina: 20 }
+
+// Esempio: form con campi opzionali
+function processaForm(dati) {
+  return {
+    nome: dati.nome ?? "Sconosciuto",
+    cognome: dati.cognome ?? "",
+    età: dati.età ?? null, // null se non fornita
+    bio: dati.bio ?? "", // stringa vuota è valida
+  };
+}
+
+console.log(processaForm({ nome: "Mario", età: 0 }));
+// { nome: "Mario", cognome: "", età: 0, bio: "" }
+// età: 0 è preservata (neonato!)
+
+console.log(processaForm({}));
+// { nome: "Sconosciuto", cognome: "", età: null, bio: "" }
 ```
 
 ### L'idioma del Doppio NOT (!!)
@@ -5517,33 +6175,41 @@ configura({}); // { timeout: 3000, maxRetry: 3, messaggio: "Caricamento..." }
 `!!` non è un operatore, ma un modo di usare l'operatore `!` due volte per convertire esplicitamente qualsiasi valore nel suo equivalente booleano. È una tecnica per verificare se un valore è truthy (cioè si comporta come true) o falsy (false, 0, "", null, undefined, NaN).
 
 ```javascript
-/*
- * Doppio NOT (!!) per conversione booleana
- */
+// VALORI TRUTHY convertiti a true
+console.log(!!"Hello"); // true (stringa non vuota)
+console.log(!!42); // true (numero diverso da 0)
+console.log(!!-1); // true (numero negativo)
+console.log(!![]); // true (array vuoto è truthy!)
+console.log(!!{}); // true (oggetto vuoto è truthy!)
+console.log(!!" "); // true (stringa con spazio)
+console.log(!!new Date()); // true (oggetto Date)
+console.log(!!function () {}); // true (funzione)
 
-// Valori truthy convertiti a true
-console.log(!!"Hello"); // true
-console.log(!!42); // true
-console.log(!![]); // true (array vuoto è truthy)
-console.log(!!{}); // true (oggetto vuoto è truthy)
-console.log(!!" "); // true (stringa con spazio è truthy)
-
-// Valori falsy convertiti a false
+// VALORI FALSY convertiti a false
 console.log(!!false); // false
 console.log(!!0); // false
+console.log(!!-0); // false
 console.log(!!""); // false (stringa vuota)
 console.log(!!null); // false
 console.log(!!undefined); // false
 console.log(!!NaN); // false
 
-// Come funziona
+// COME FUNZIONA
 let valore = "testo";
+console.log(valore); // "testo" (valore originale)
 console.log(!valore); // false (primo NOT: da truthy a false)
 console.log(!!valore); // true (secondo NOT: da false a true)
 
-// Uso pratico: verificare esistenza
+let numero = 0;
+console.log(numero); // 0
+console.log(!numero); // true (primo NOT: da falsy a true)
+console.log(!!numero); // false (secondo NOT: da true a false)
+```
+
+```javascript
+// USO PRATICO: conversione esplicita a boolean
 function haValore(x) {
-  return !!x; // converte a booleano
+  return !!x; // Converte a booleano
 }
 
 console.log(haValore("test")); // true
@@ -5551,16 +6217,49 @@ console.log(haValore("")); // false
 console.log(haValore(0)); // false
 console.log(haValore(42)); // true
 console.log(haValore(null)); // false
+console.log(haValore(undefined)); // false
+console.log(haValore([])); // true (array vuoto è truthy!)
+console.log(haValore({})); // true (oggetto vuoto è truthy!)
 
-// Alternativa più esplicita
+// ALTERNATIVA PIÙ ESPLICITA: Boolean()
 function haValoreAlt(x) {
-  return Boolean(x); // stesso risultato di !!x
+  return Boolean(x); // Stesso risultato di !!x
 }
 
-// In condizioni (!! è ridondante perché if converte automaticamente)
+console.log(Boolean("test")); // true
+console.log(Boolean("")); // false
+console.log(Boolean(0)); // false
+
+// Equivalenti:
+console.log(!!"ciao" === Boolean("ciao")); // true
+console.log(!!0 === Boolean(0)); // true
+```
+
+```javascript
+// QUANDO USARE !!
+// Caso 1: Return esplicito di booleano
+function èValido(input) {
+  return !!input; // Esplicita che ritorna boolean
+}
+
+// Caso 2: Assegnamento booleano
+let isLoggedIn = !!localStorage.getItem("userId");
+let hasData = !!document.querySelector(".element");
+
+// Caso 3: In filtri o map
+let valori = [0, 1, 2, "", "ciao", null, 3];
+let booleani = valori.map((v) => !!v);
+console.log(booleani); // [false, true, true, false, true, false, true]
+
+// Filtra solo valori truthy
+let truthy = valori.filter((v) => !!v);
+console.log(truthy); // [1, 2, "ciao", 3]
+
+// QUANDO NON SERVE !!
+// In condizioni if/while, la conversione è automatica
 let input = "dati";
 if (input) {
-  // ✅ Preferibile
+  // ✅ Preferibile (conversione implicita)
   console.log("Ha input");
 }
 if (!!input) {
@@ -5568,8 +6267,28 @@ if (!!input) {
   console.log("Ha input");
 }
 
-// Utile per assegnamenti o return espliciti
-let isLoggedIn = !!localStorage.getItem("userId");
+// Operatori logici convertono automaticamente
+let valore = "test";
+let risultato = valore && "eseguito"; // ✅ Preferibile
+let risultatoAlt = !!valore && "eseguito"; // Superfluo
+
+// PATTERN COMUNE: verifica esistenza
+function componenteMontato() {
+  return !!document.getElementById("app");
+}
+
+function haDatiLocalStorage() {
+  return !!localStorage.getItem("userData");
+}
+
+function haProprietà(obj, prop) {
+  return !!obj[prop];
+}
+
+let persona = { nome: "Mario", età: 0 };
+console.log(haProprietà(persona, "nome")); // true
+console.log(haProprietà(persona, "età")); // false (età è 0! ⚠️)
+console.log(haProprietà(persona, "cognome")); // false
 ```
 
 ### Precedenza degli Operatori (Operator Precedence)
@@ -5577,43 +6296,134 @@ let isLoggedIn = !!localStorage.getItem("userId");
 La precedenza stabilisce l'ordine in cui gli operatori vengono eseguiti in un'espressione. Ad esempio, la moltiplicazione ha la precedenza sull'addizione. Per controllare l'ordine di valutazione si usano le parentesi `()`, che hanno la priorità più alta.
 
 ```javascript
-/*
- * Precedenza degli operatori
- */
-
-// Senza parentesi (precedenza naturale)
+// SENZA PARENTESI (precedenza naturale)
 let risultato1 = 2 + 3 * 4; // 14 (prima 3*4=12, poi 2+12=14)
 console.log(risultato1);
 
-// Con parentesi (controllo esplicito)
-let risultato2 = (2 + 3) * 4; // 20 (prima 2+3=5, poi 5*4=20)
+let risultato2 = 10 - 2 * 3; // 4 (prima 2*3=6, poi 10-6=4)
 console.log(risultato2);
 
-// Precedenza comune (dal più alto al più basso):
-// () → ++ -- → ** → * / % → + - → < > <= >= → == === != !== → && → || → ? : → =
+// CON PARENTESI (controllo esplicito dell'ordine)
+let risultato3 = (2 + 3) * 4; // 20 (prima 2+3=5, poi 5*4=20)
+console.log(risultato3);
 
-// Esempi di precedenza
-console.log(10 + 5 * 2); // 20 (moltiplicazione prima)
+let risultato4 = (10 - 2) * 3; // 24 (prima 10-2=8, poi 8*3=24)
+console.log(risultato4);
+
+// TABELLA DI PRECEDENZA (dal più alto al più basso)
+// ()           → Parentesi (massima priorità)
+// ++ --        → Incremento/Decremento
+// **           → Esponenziazione
+// * / %        → Moltiplicazione, Divisione, Resto
+// + -          → Addizione, Sottrazione
+// < > <= >=    → Confronti relazionali
+// == === != !== → Confronti di uguaglianza
+// &&           → AND logico
+// ||           → OR logico
+// ? :          → Operatore ternario
+// =            → Assegnamento (minima priorità)
+```
+
+```javascript
+// ESEMPI DI PRECEDENZA
+console.log(10 + 5 * 2); // 20 (moltiplicazione prima dell'addizione)
+console.log((10 + 5) * 2); // 30 (parentesi hanno precedenza)
+
 console.log(10 - 3 + 2); // 9 (stessa precedenza, da sinistra a destra)
-console.log(2 ** (3 ** 2)); // 512 (esponenziazione da destra: 3**2=9, poi 2**9=512)
+console.log(10 - (3 + 2)); // 5 (parentesi cambiano l'ordine)
 
-// Confronti e logica
+console.log(2 ** (3 ** 2)); // 512 (esponenziazione è destro-associativa: 3**2=9, poi 2**9=512)
+console.log((2 ** 3) ** 2); // 64 (parentesi cambiano: 2**3=8, poi 8**2=64)
+
+console.log(5 + 3 * 2 ** 2); // 17 (prima 2**2=4, poi 3*4=12, poi 5+12=17)
+console.log((5 + 3) * 2 ** 2); // 32 (prima 2**2=4, poi 5+3=8, poi 8*4=32)
+
+// CONFRONTI E LOGICA
 let a = 5;
 let b = 10;
-console.log(a < 10 && b > 5); // true
-console.log((a < 10 && b > 5) || false); // true (AND prima di OR)
-console.log(a < 10 && (b > 5 || false)); // true (parentesi cambiano l'ordine)
+console.log(a < 10 && b > 5); // true (confronti prima, poi AND)
+console.log(a < 10 || (b < 5 && false)); // true (AND prima di OR)
+// Interpretato come: a < 10 || (b < 5 && false)
 
-// Caso complesso
+// Con parentesi per chiarezza:
+console.log((a < 10 || b < 5) && false); // false (cambia il risultato!)
+
+// CASO COMPLESSO
 let x = 3;
 let y = 4;
 let z = x + y * 2 > 10 ? "Grande" : "Piccolo";
-// Ordine: y*2 → x+8 → 11>10 → true → "Grande"
+// Ordine di valutazione:
+// 1. y * 2 = 8
+// 2. x + 8 = 11
+// 3. 11 > 10 = true
+// 4. true ? "Grande" : "Piccolo" = "Grande"
 console.log(z); // "Grande"
+```
 
-// Best practice: usare parentesi per chiarezza
-let prezzoFinale = (prezzo + tasse) * (1 - sconto);
-// Più leggibile di: prezzo + tasse * 1 - sconto
+```javascript
+// ESEMPI PRATICI
+// Calcolo prezzo con sconto e tasse
+let prezzo = 100;
+let sconto = 0.1; // 10%
+let tasse = 0.22; // 22%
+
+// ❌ Ambiguo senza parentesi
+let totale1 = prezzo - prezzo * sconto + prezzo * tasse;
+console.log(totale1); // 112 (cosa significa?)
+
+// ✅ Chiaro con parentesi
+let totale2 = prezzo - prezzo * sconto + prezzo * tasse;
+// Meglio ancora:
+let prezzoScontato = prezzo * (1 - sconto);
+let prezzoFinale = prezzoScontato * (1 + tasse);
+console.log(prezzoFinale); // 109.8
+
+// Calcolo con priorità esplicite
+let base = 10;
+let altezza = 5;
+let area = (base * altezza) / 2; // Area triangolo
+console.log(area); // 25
+
+// Formula con più operatori
+let celsius = 25;
+let fahrenheit = (celsius * 9) / 5 + 32;
+console.log(fahrenheit); // 77
+
+// Condizioni complesse
+let età = 25;
+let haPatente = true;
+let macchinaDisponibile = true;
+
+// ❌ Difficile da leggere
+if ((età >= 18 && haPatente && macchinaDisponibile) || età >= 65) {
+  // ...
+}
+
+// ✅ Più chiaro
+let puòGuidare = età >= 18 && haPatente && macchinaDisponibile;
+let èAnziano = età >= 65;
+if (puòGuidare || èAnziano) {
+  console.log("Può usare il servizio");
+}
+```
+
+```javascript
+// BEST PRACTICE: usare parentesi per chiarezza
+
+// ❌ Non chiaro (anche se tecnicamente corretto)
+let risultato = a + (b * c) / d - e;
+
+// ✅ Chiaro (esplicita l'intenzione)
+let risultato = a + (b * c) / d - e;
+
+// ❌ Confuso
+let condizione = (x > 5 && y < 10) || (z === 0 && w !== null);
+
+// ✅ Leggibile
+let condizione = (x > 5 && y < 10) || (z === 0 && w !== null);
+
+// REGOLA D'ORO: Se non sei sicuro della precedenza, usa le parentesi!
+// Il codice deve essere leggibile prima che "smart"
 ```
 
 ---

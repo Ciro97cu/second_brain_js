@@ -5471,6 +5471,240 @@ let y = 10;
 console.log(y); // 10
 ```
 
+#### Errori
+
+La distinzione tra ricerche LHS e RHS è fondamentale perché il loro comportamento è diverso quando una variabile non viene trovata in nessuno degli scope consultati (cioè, non è stata dichiarata).
+
+##### Errore da ricerca RHS (variabile non trovata)
+
+Se una ricerca RHS non riesce a trovare una variabile in nessuno degli scope della catena, fino a quello globale, l'Engine solleva un errore di tipo **ReferenceError**. Questo accade perché si sta cercando di recuperare il valore di qualcosa che semplicemente non esiste.
+
+```javascript
+// Esempio di ReferenceError da ricerca RHS
+function foo(a) {
+  console.log(a + b); // ❌ ReferenceError: b is not defined
+}
+
+foo(2);
+
+// L'Engine cerca 'b' per recuperarne il valore (RHS):
+// 1. Scope di foo → Non trovato
+// 2. Scope globale → Non trovato
+// 3. ❌ ReferenceError: b is not defined
+```
+
+Quando viene eseguita `console.log(a + b)`, l'Engine effettua una ricerca RHS per `b`. Non trovandola né nello scope di `foo` né nello scope globale, la ricerca fallisce e l'Engine lancia immediatamente un **ReferenceError**. L'esecuzione si interrompe prima ancora di arrivare alla riga `b = a;` (se presente).
+
+```javascript
+// RHS fallisce e blocca l'esecuzione
+function test() {
+  let risultato = x + 10; // ❌ ReferenceError: x is not defined
+  console.log("Questa riga NON viene mai eseguita");
+}
+
+test();
+console.log("Neanche questa viene eseguita");
+```
+
+```javascript
+// RHS su proprietà di oggetto non esistente
+let obj = { nome: "Mario" };
+console.log(obj.cognome); // ✅ undefined (NON ReferenceError)
+console.log(variabileNonEsistente); // ❌ ReferenceError
+
+// ATTENZIONE: Accedere a proprietà NON esistenti di un oggetto esistente
+// restituisce 'undefined', NON ReferenceError
+```
+
+##### Comportamento della ricerca LHS (variabile non trovata)
+
+Se invece è una ricerca LHS a fallire, il comportamento dipende da una condizione specifica: se il programma è in esecuzione in **"Strict Mode"** oppure no.
+
+**In modalità non-Strict (la modalità "rilassata" di default)** → Se una ricerca LHS arriva fino allo scope globale senza trovare la variabile, lo scope globale, in modo "servizievole", **crea una nuova variabile** con quel nome nel contesto globale e la restituisce all'Engine. Questo meccanismo, noto come "creazione implicita di variabili globali", è una fonte comune di bug.
+
+```javascript
+// LHS in modalità NON-Strict: crea variabile globale
+function assegna(a) {
+  b = a * 2; // ❌ 'b' non dichiarata → creata automaticamente nello scope globale!
+}
+
+assegna(5);
+console.log(b); // 10 (variabile globale creata accidentalmente)
+
+// L'Engine cerca 'b' per assegnarle un valore (LHS):
+// 1. Scope di assegna → Non trovato
+// 2. Scope globale → Non trovato
+// 3. ⚠️ Scope globale CREA 'b' automaticamente
+```
+
+```javascript
+// Problema pratico: inquinamento globale
+function calcolaSconto(prezzo) {
+  totale = prezzo * 0.9; // ❌ Dimenticato 'let'
+  return totale;
+}
+
+function calcolaTassa(prezzo) {
+  totale = prezzo * 1.22; // ❌ SOVRASCRIVE la stessa globale!
+  return totale;
+}
+
+let sconto = calcolaSconto(100); // totale = 90 (globale)
+console.log(sconto); // 90
+
+let conTassa = calcolaTassa(50); // totale = 61 (SOVRASCRIVE)
+console.log(conTassa); // 61
+
+console.log(totale); // 61 (variabile globale inquinata)
+console.log(window.totale); // 61 (in browser, è proprietà di window)
+```
+
+**In "Strict Mode" (introdotto in ES5)** → Questo comportamento è vietato. Se una ricerca LHS fallisce in Strict Mode, l'Engine **non crea alcuna variabile globale** e solleva un **ReferenceError**, proprio come nel caso di una ricerca RHS fallita.
+
+```javascript
+// LHS in Strict Mode: genera ReferenceError
+"use strict";
+
+function assegna(a) {
+  b = a * 2; // ❌ ReferenceError: b is not defined
+  // Strict mode IMPEDISCE la creazione automatica
+}
+
+assegna(5); // Errore!
+```
+
+```javascript
+// Confronto: Strict vs Non-Strict
+// NON-STRICT (default)
+function nonStrict() {
+  x = 10; // ⚠️ Crea x globale (comportamento pericoloso)
+  console.log(x); // 10
+}
+
+nonStrict();
+console.log(x); // 10 (globale accidentale)
+
+// STRICT MODE
+("use strict");
+
+function strict() {
+  y = 20; // ❌ ReferenceError: y is not defined
+  console.log(y);
+}
+
+// strict();  // Errore immediato!
+```
+
+```javascript
+// Strict mode: Best practice
+"use strict";
+
+function calcola(a, b) {
+  let risultato = a + b; // ✅ Dichiarazione esplicita
+  return risultato;
+}
+
+console.log(calcola(5, 3)); // 8
+
+// Se dimentichi 'let':
+function calcolaErrato(a, b) {
+  risultatoErrato = a + b; // ❌ ReferenceError in strict mode
+  return risultatoErrato;
+}
+
+// calcolaErrato(5, 3);  // Errore!
+```
+
+##### ReferenceError vs. TypeError
+
+È importante distinguere tra questi due tipi di errore:
+
+**ReferenceError** → Questo errore è legato a un **fallimento nella risoluzione dello scope**. Significa che l'Engine non è riuscito a trovare la variabile che stava cercando in nessuno degli scope disponibili.
+
+```javascript
+// ReferenceError: variabile non trovata
+console.log(variabileInesistente); // ❌ ReferenceError: variabileInesistente is not defined
+
+function test() {
+  return altroNome * 2; // ❌ ReferenceError: altroNome is not defined
+}
+
+test();
+```
+
+**TypeError** → Questo errore, invece, implica che la **risoluzione dello scope è andata a buon fine** (la variabile è stata trovata), ma si è tentato di eseguire un'operazione illegale o impossibile sul suo valore. Ad esempio:
+
+- Provare a eseguire come funzione un valore che non è una funzione
+- Tentare di accedere a una proprietà di `null` o `undefined`
+- Assegnare un valore a una costante (`const`)
+- Modificare una proprietà non scrivibile
+
+```javascript
+// TypeError: operazione illegale su valore trovato
+let numero = 42;
+numero(); // ❌ TypeError: numero is not a function
+// La variabile 'numero' ESISTE, ma non è una funzione
+
+let obj = null;
+console.log(obj.proprieta); // ❌ TypeError: Cannot read property 'proprieta' of null
+// La variabile 'obj' ESISTE, ma è null
+
+const PI = 3.14;
+PI = 3.14159; // ❌ TypeError: Assignment to constant variable
+// La variabile 'PI' ESISTE, ma è const (non modificabile)
+```
+
+```javascript
+// Confronto diretto: ReferenceError vs TypeError
+let persona = {
+  nome: "Mario",
+};
+
+// ReferenceError: variabile non dichiarata
+console.log(altriDati); // ❌ ReferenceError: altriDati is not defined
+
+// TypeError: variabile esiste, operazione illegale
+console.log(persona.saluta()); // ❌ TypeError: persona.saluta is not a function
+// 'persona' esiste, ma 'saluta' non è una funzione
+
+let valore = undefined;
+console.log(valore.length); // ❌ TypeError: Cannot read property 'length' of undefined
+// 'valore' esiste, ma undefined non ha proprietà
+```
+
+```javascript
+// Esempio pratico completo
+"use strict";
+
+function elaboraDati(dati) {
+  // ReferenceError se 'dati' viene scritto male
+  // console.log(datii);  // ❌ ReferenceError: datii is not defined
+
+  // TypeError se 'dati' non è un array
+  if (dati === null) {
+    // dati.forEach(item => console.log(item));  // ❌ TypeError: Cannot read property 'forEach' of null
+  }
+
+  // TypeError se si cerca di chiamare un non-funzione
+  let numero = 42;
+  // numero();  // ❌ TypeError: numero is not a function
+
+  // ReferenceError se si usa variabile non dichiarata
+  // risultato = dati.length;  // ❌ ReferenceError: risultato is not defined (strict mode)
+
+  // ✅ Corretto
+  let risultato = dati.length;
+  return risultato;
+}
+
+elaboraDati([1, 2, 3]); // 3
+```
+
+**In sintesi:**
+
+- **ReferenceError** = "Non ho trovato la variabile" (problema di scope)
+- **TypeError** = "Ho trovato la variabile, ma non puoi farci quello che stai cercando di fare" (problema di tipo/operazione)
+
 ---
 
 ## 5. Operatori

@@ -6427,3 +6427,642 @@ let condizione = (x > 5 && y < 10) || (z === 0 && w !== null);
 ```
 
 ---
+
+## 6. Gestire le Vecchie e Nuove Funzionalità di JavaScript
+
+Molte delle funzionalità di JavaScript, specialmente quelle più recenti, non sono disponibili nei browser più datati. Invece di attendere che i vecchi browser vengano dismessi, è possibile utilizzare delle tecniche per rendere il codice moderno compatibile con ambienti JavaScript meno recenti. Le due principali sono il Polyfilling e il Transpiling.
+
+### 6.1 Polyfilling
+
+Il termine Polyfill (coniato da Remy Sharp) si riferisce a un pezzo di codice che replica il comportamento di una funzionalità nativa più recente, permettendone l'uso anche in ambienti JavaScript più vecchi che non la supportano.
+
+Ad esempio, ES6 ha introdotto il metodo `Number.isNaN()` per fornire un controllo accurato e privo di bug per i valori NaN, superando la vecchia funzione `isNaN()`. È possibile creare un polyfill per `Number.isNaN()` in modo da poterlo usare nel proprio codice a prescindere dal browser dell'utente finale.
+
+```javascript
+// POLYFILL per Number.isNaN()
+if (!Number.isNaN) {
+  Number.isNaN = function isNaN(x) {
+    return x !== x;
+  };
+}
+
+// Spiegazione: NaN è l'unico valore in JavaScript che non è uguale a se stesso
+console.log(NaN !== NaN); // true (proprietà unica di NaN)
+console.log(5 !== 5); // false (tutti gli altri valori sono uguali a se stessi)
+
+// Uso del polyfill
+console.log(Number.isNaN(NaN)); // true
+console.log(Number.isNaN("ciao")); // false
+console.log(Number.isNaN(42)); // false
+console.log(Number.isNaN(undefined)); // false
+
+// Confronto con il vecchio isNaN() (problematico)
+console.log(isNaN("ciao")); // true ⚠️ (converte "ciao" a NaN prima di controllare)
+console.log(Number.isNaN("ciao")); // false ✅ (controlla se è VERAMENTE NaN)
+```
+
+L'istruzione `if` serve come "guardia": controlla se `Number.isNaN` esiste già (come nei browser ES6) e, in caso contrario, lo definisce. In questo modo, si evita di sovrascrivere l'implementazione nativa.
+
+```javascript
+// PATTERN COMPLETO DI POLYFILLING
+
+// 1. Controlla se la funzionalità esiste
+if (!Array.prototype.includes) {
+  // 2. Se non esiste, implementala
+  Array.prototype.includes = function (searchElement, fromIndex) {
+    // Gestione dei parametri
+    if (this == null) {
+      throw new TypeError('"this" is null or not defined');
+    }
+
+    let array = Object(this);
+    let len = array.length >>> 0;
+
+    if (len === 0) {
+      return false;
+    }
+
+    let n = fromIndex | 0;
+    let k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+    // Ricerca dell'elemento
+    while (k < len) {
+      if (array[k] === searchElement) {
+        return true;
+      }
+      k++;
+    }
+
+    return false;
+  };
+}
+
+// Test del polyfill
+let numeri = [1, 2, 3, 4, 5];
+console.log(numeri.includes(3)); // true
+console.log(numeri.includes(10)); // false
+
+let frutti = ["mela", "banana", "arancia"];
+console.log(frutti.includes("banana")); // true
+console.log(frutti.includes("kiwi")); // false
+```
+
+```javascript
+// ESEMPIO: Polyfill per Array.prototype.find() (ES6)
+if (!Array.prototype.find) {
+  Array.prototype.find = function (predicate) {
+    if (this == null) {
+      throw new TypeError("Array.prototype.find called on null or undefined");
+    }
+    if (typeof predicate !== "function") {
+      throw new TypeError("predicate must be a function");
+    }
+
+    let list = Object(this);
+    let length = list.length >>> 0;
+    let thisArg = arguments[1];
+
+    for (let i = 0; i < length; i++) {
+      let value = list[i];
+      if (predicate.call(thisArg, value, i, list)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+}
+
+// Test del polyfill
+let utenti = [
+  { id: 1, nome: "Mario" },
+  { id: 2, nome: "Luigi" },
+  { id: 3, nome: "Peach" },
+];
+
+let utente = utenti.find((u) => u.id === 2);
+console.log(utente); // { id: 2, nome: 'Luigi' }
+
+let nonEsiste = utenti.find((u) => u.id === 10);
+console.log(nonEsiste); // undefined
+```
+
+```javascript
+// ESEMPIO: Polyfill per String.prototype.startsWith() (ES6)
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function (search, position) {
+    position = position || 0;
+    return this.indexOf(search, position) === position;
+  };
+}
+
+// Test del polyfill
+let testo = "JavaScript è fantastico";
+console.log(testo.startsWith("Java")); // true
+console.log(testo.startsWith("Script")); // false
+console.log(testo.startsWith("Script", 4)); // true (inizia dalla posizione 4)
+
+let url = "https://example.com";
+console.log(url.startsWith("https://")); // true
+console.log(url.startsWith("http://")); // false
+```
+
+Non tutte le nuove funzionalità sono completamente "polyfillabili". A volte, un polyfill può replicare la maggior parte del comportamento, ma con piccole deviazioni rispetto alla specifica ufficiale. Per questo motivo, è fondamentale essere molto attenti nell'implementare un polyfill da soli.
+
+La pratica migliore è affidarsi a raccolte di polyfill già testate e affidabili, come quelle fornite da librerie quali ES5-Shim e ES6-Shim.
+
+```javascript
+// LIBRERIE DI POLYFILL POPOLARI
+
+// 1. core-js (la più completa)
+// npm install core-js
+// import 'core-js/stable';
+
+// 2. polyfill.io (servizio CDN)
+// <script src="https://polyfill.io/v3/polyfill.min.js"></script>
+
+// 3. ES6-Shim
+// npm install es6-shim
+// import 'es6-shim';
+
+// Esempio di utilizzo con polyfill automatico
+// Il browser scarica solo i polyfill che gli servono
+```
+
+### 6.2 Transpiling
+
+A differenza del polyfilling, che replica funzionalità mancanti, non è possibile creare un "polyfill" per una nuova sintassi del linguaggio. Un motore JavaScript datato non riconoscerebbe la nuova sintassi e genererebbe un errore di validazione.
+
+La soluzione a questo problema è il Transpiling (un termine che unisce transforming e compiling). Si tratta di un processo in cui uno strumento, chiamato transpiler, converte il codice sorgente scritto con la sintassi più recente in una versione equivalente che utilizza una sintassi più vecchia e compatibile con un maggior numero di ambienti.
+
+In pratica, lo sviluppatore scrive codice moderno e pulito, ma ciò che viene eseguito nel browser è il codice "tradotto". Questo processo viene solitamente integrato nella fase di build dell'applicazione, insieme ad altri strumenti come linter e minifier.
+
+#### Perché Usare il Transpiling?
+
+Ci sono diverse ragioni importanti per adottare questo approccio:
+
+- **Leggibilità e Manutenibilità** → La nuova sintassi è progettata per rendere il codice più chiaro e facile da gestire. Le alternative più vecchie sono spesso più complesse e verbose.
+
+- **Ottimizzazione delle Performance** → È possibile configurare il processo di build per servire il codice con la sintassi moderna ai browser più recenti (che possono avere ottimizzazioni specifiche) e il codice transpilato solo a quelli più vecchi.
+
+- **Feedback alla Community** → Usare le nuove funzionalità in anticipo permette di testarle su larga scala nel mondo reale. Questo fornisce un feedback prezioso al comitato TC39 (che standardizza JavaScript), consentendo di correggere eventuali errori di progettazione prima che diventino permanenti.
+
+#### Esempio di Transpiling
+
+ES6 ha introdotto i valori di default per i parametri delle funzioni:
+
+```javascript
+// CODICE ES6 (moderno)
+function saluta(nome = "Ospite") {
+  console.log("Ciao, " + nome + "!");
+}
+
+saluta(); // "Ciao, Ospite!"
+saluta("Mario"); // "Ciao, Mario!"
+saluta(undefined); // "Ciao, Ospite!" (undefined attiva il default)
+saluta(null); // "Ciao, null!" (null NON attiva il default)
+```
+
+Questa sintassi non è valida nei motori pre-ES6. Un transpiler la convertirebbe in un codice simile a questo:
+
+```javascript
+// CODICE ES5 (transpilato, compatibile con browser vecchi)
+function saluta(nome) {
+  if (nome === undefined) {
+    nome = "Ospite";
+  }
+  console.log("Ciao, " + nome + "!");
+}
+
+// Oppure, versione più concisa
+function saluta(nome) {
+  nome = nome === undefined ? "Ospite" : nome;
+  console.log("Ciao, " + nome + "!");
+}
+
+saluta(); // "Ciao, Ospite!"
+saluta("Mario"); // "Ciao, Mario!"
+saluta(undefined); // "Ciao, Ospite!"
+saluta(null); // "Ciao, null!"
+```
+
+Questo esempio mostra non solo come la sintassi venga resa compatibile, ma chiarisce anche il comportamento della funzionalità: il valore di default viene applicato solo se al parametro viene passato `undefined` (o nessun valore).
+
+```javascript
+// ALTRO ESEMPIO: Arrow Functions
+
+// ES6 (moderno)
+const numeri = [1, 2, 3, 4, 5];
+const doppi = numeri.map((n) => n * 2);
+console.log(doppi); // [2, 4, 6, 8, 10]
+
+// ES5 (transpilato)
+var numeri = [1, 2, 3, 4, 5];
+var doppi = numeri.map(function (n) {
+  return n * 2;
+});
+console.log(doppi); // [2, 4, 6, 8, 10]
+```
+
+```javascript
+// ESEMPIO: Template Literals
+
+// ES6 (moderno)
+const nome = "Mario";
+const età = 30;
+const messaggio = `Ciao, mi chiamo ${nome} e ho ${età} anni.`;
+console.log(messaggio); // "Ciao, mi chiamo Mario e ho 30 anni."
+
+// ES5 (transpilato)
+var nome = "Mario";
+var età = 30;
+var messaggio = "Ciao, mi chiamo " + nome + " e ho " + età + " anni.";
+console.log(messaggio); // "Ciao, mi chiamo Mario e ho 30 anni."
+```
+
+```javascript
+// ESEMPIO: Destructuring
+
+// ES6 (moderno)
+const persona = { nome: "Luigi", età: 25, città: "Roma" };
+const { nome, età } = persona;
+console.log(nome); // "Luigi"
+console.log(età); // 25
+
+const colori = ["rosso", "verde", "blu"];
+const [primo, secondo] = colori;
+console.log(primo); // "rosso"
+console.log(secondo); // "verde"
+
+// ES5 (transpilato)
+var persona = { nome: "Luigi", età: 25, città: "Roma" };
+var nome = persona.nome;
+var età = persona.età;
+console.log(nome); // "Luigi"
+console.log(età); // 25
+
+var colori = ["rosso", "verde", "blu"];
+var primo = colori[0];
+var secondo = colori[1];
+console.log(primo); // "rosso"
+console.log(secondo); // "verde"
+```
+
+```javascript
+// ESEMPIO: Classes
+
+// ES6 (moderno)
+class Animale {
+  constructor(nome) {
+    this.nome = nome;
+  }
+
+  parla() {
+    console.log(this.nome + " fa un verso");
+  }
+}
+
+class Cane extends Animale {
+  parla() {
+    console.log(this.nome + " abbaia");
+  }
+}
+
+const cane = new Cane("Fido");
+cane.parla(); // "Fido abbaia"
+
+// ES5 (transpilato - versione semplificata)
+function Animale(nome) {
+  this.nome = nome;
+}
+
+Animale.prototype.parla = function () {
+  console.log(this.nome + " fa un verso");
+};
+
+function Cane(nome) {
+  Animale.call(this, nome);
+}
+
+Cane.prototype = Object.create(Animale.prototype);
+Cane.prototype.constructor = Cane;
+
+Cane.prototype.parla = function () {
+  console.log(this.nome + " abbaia");
+};
+
+var cane = new Cane("Fido");
+cane.parla(); // "Fido abbaia"
+```
+
+```javascript
+// CONFIGURAZIONE TIPICA DI BABEL (transpiler)
+
+// .babelrc o babel.config.json
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": ["> 0.5%", "last 2 versions", "not dead"]
+        }
+      }
+    ]
+  ]
+}
+
+// Babel transpila automaticamente:
+// - Arrow functions → function expressions
+// - const/let → var
+// - Template literals → concatenazione stringhe
+// - Destructuring → assegnamenti multipli
+// - Classes → constructor functions + prototype
+// - Spread operator → Array.prototype.concat/Object.assign
+// - E molto altro...
+```
+
+In conclusione il transpiling è oggi considerato una parte standard del processo di sviluppo in JavaScript. Poiché il linguaggio evolve rapidamente, l'uso di un transpiler permette di adottare le nuove sintassi non appena diventano utili, senza dover attendere anni per la dismissione dei vecchi browser.
+
+Tra i transpiler più noti ci sono **Babel** (precedentemente conosciuto come 6to5) e **Traceur**.
+
+```javascript
+// TRANSPILER POPOLARI
+
+// 1. BABEL (il più usato)
+// npm install --save-dev @babel/core @babel/cli @babel/preset-env
+// npx babel src --out-dir dist
+
+// 2. TYPESCRIPT (transpiler + type checker)
+// npm install --save-dev typescript
+// tsc src/index.ts
+
+// 3. SWC (molto veloce, scritto in Rust)
+// npm install --save-dev @swc/core @swc/cli
+// npx swc src -d dist
+
+// 4. ESBUILD (velocissimo)
+// npm install --save-dev esbuild
+// node esbuild.config.js
+```
+
+### 6.3 Non-JavaScript
+
+Quando si scrive codice JavaScript, la maggior parte del tempo lo si fa per eseguirlo all'interno di ambienti specifici, come i browser. È importante capire che una parte significativa del codice che si scrive non è, in senso stretto, controllata direttamente dal linguaggio JavaScript stesso.
+
+L'esempio più comune di questo concetto è l'API del DOM (Document Object Model). Quando si utilizza un'istruzione come:
+
+```javascript
+// DOM API (fornita dal BROWSER, non da JavaScript)
+let elemento = document.getElementById("mioId");
+
+// 'document' è un oggetto globale fornito dal browser
+console.log(typeof document); // "object"
+console.log(document); // Document { ... }
+
+// Questi metodi NON fanno parte della specifica JavaScript
+elemento.addEventListener("click", function () {
+  console.log("Cliccato!");
+});
+
+elemento.style.color = "red";
+elemento.innerHTML = "Nuovo testo";
+elemento.classList.add("attivo");
+```
+
+La variabile `document` è una variabile globale disponibile quando il codice viene eseguito in un browser. Tuttavia, non è fornita dal motore JavaScript (JS engine), né è definita dalle specifiche del linguaggio. Si presenta come un normale oggetto JavaScript, ma in realtà è un tipo speciale di oggetto, spesso chiamato "oggetto ospite" (host object).
+
+Allo stesso modo, il metodo `getElementById()` su document sembra una normale funzione JavaScript, ma in realtà è solo un'interfaccia esposta verso una funzionalità interna del browser, fornita dal DOM. Tradizionalmente, il DOM e i suoi comportamenti sono implementati in linguaggi come C/C++.
+
+```javascript
+// ALTRI ESEMPI DI API DEL BROWSER (non JavaScript puro)
+
+// 1. WINDOW OBJECT
+console.log(window.innerWidth); // Larghezza finestra
+console.log(window.location.href); // URL corrente
+window.scrollTo(0, 100); // Scroll della pagina
+
+// 2. TIMERS
+setTimeout(function () {
+  console.log("Dopo 1 secondo");
+}, 1000);
+
+setInterval(function () {
+  console.log("Ogni 2 secondi");
+}, 2000);
+
+// 3. FETCH API (richieste HTTP)
+fetch("https://api.example.com/data")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+
+// 4. LOCAL STORAGE
+localStorage.setItem("chiave", "valore");
+let valore = localStorage.getItem("chiave");
+
+// 5. GEOLOCATION
+navigator.geolocation.getCurrentPosition(function (position) {
+  console.log("Latitudine:", position.coords.latitude);
+  console.log("Longitudine:", position.coords.longitude);
+});
+```
+
+Un altro esempio riguarda l'input/output (I/O). La funzione `alert()`, che mostra una finestra di dialogo nel browser, non è fornita dal motore JavaScript, ma dall'ambiente del browser. La chiamata a questa funzione invia il messaggio alle componenti interne del browser, che si occupano di creare e visualizzare la finestra di dialogo.
+
+```javascript
+// DIALOG API (fornite dal browser)
+
+// Alert (blocca l'esecuzione)
+alert("Questo è un messaggio di avviso");
+
+// Confirm (restituisce true/false)
+let risposta = confirm("Sei sicuro?");
+if (risposta) {
+  console.log("Utente ha confermato");
+} else {
+  console.log("Utente ha annullato");
+}
+
+// Prompt (chiede input all'utente)
+let nome = prompt("Come ti chiami?", "Mario");
+console.log("Ciao, " + nome);
+
+// NOTA: Questi metodi sono SINCRONI e bloccano l'esecuzione
+// Non sono considerati best practice nelle applicazioni moderne
+```
+
+Lo stesso vale per `console.log()`, un meccanismo fornito dal browser e collegato agli strumenti per sviluppatori.
+
+```javascript
+// CONSOLE API (fornita dall'ambiente di esecuzione)
+
+// Vari metodi di logging
+console.log("Messaggio normale"); // Log normale
+console.info("Informazione"); // Info
+console.warn("Attenzione!"); // Warning (giallo)
+console.error("Errore!"); // Errore (rosso)
+
+// Debugging
+console.table([
+  { nome: "Mario", età: 30 },
+  { nome: "Luigi", età: 25 },
+]);
+
+console.group("Gruppo di log");
+console.log("Messaggio 1");
+console.log("Messaggio 2");
+console.groupEnd();
+
+// Timing
+console.time("operazione");
+// ... codice da misurare ...
+console.timeEnd("operazione"); // Mostra il tempo trascorso
+
+// Assert
+console.assert(5 > 10, "5 non è maggiore di 10"); // Mostra errore se false
+
+// Trace
+function funzione1() {
+  funzione2();
+}
+function funzione2() {
+  console.trace("Stack trace qui");
+}
+funzione1(); // Mostra lo stack delle chiamate
+```
+
+```javascript
+// CONFRONTO: JavaScript PURO vs API DEL BROWSER
+
+// ✅ JAVASCRIPT PURO (specifica ECMAScript)
+let array = [1, 2, 3];
+let somma = array.reduce((acc, n) => acc + n, 0);
+console.log(typeof Array); // "function" (costruttore nativo JS)
+console.log(typeof Object); // "function" (costruttore nativo JS)
+console.log(typeof String); // "function" (costruttore nativo JS)
+
+// ❌ API DEL BROWSER (NON parte di JavaScript)
+let elemento = document.querySelector(".classe");
+fetch("https://api.example.com");
+localStorage.setItem("key", "value");
+console.log(typeof document); // "object" (host object)
+console.log(typeof window); // "object" (host object)
+console.log(typeof navigator); // "object" (host object)
+
+// Node.js ha le SUE API (diverse dal browser)
+// require(), __dirname, process, fs, http, ecc.
+```
+
+```javascript
+// DIFFERENZE TRA AMBIENTI
+
+// IN BROWSER:
+if (typeof window !== "undefined") {
+  console.log("Siamo in un browser");
+  console.log("User agent:", navigator.userAgent);
+  document.body.style.backgroundColor = "lightblue";
+}
+
+// IN NODE.JS:
+if (typeof process !== "undefined") {
+  console.log("Siamo in Node.js");
+  console.log("Versione Node:", process.version);
+  // const fs = require('fs');
+  // fs.readFileSync('file.txt');
+}
+
+// AMBIENTE UNIVERSALE:
+if (typeof globalThis !== "undefined") {
+  console.log("globalThis è disponibile (ES2020+)");
+  // globalThis funziona in browser (= window) e Node.js (= global)
+}
+```
+
+```javascript
+// WEB APIs COMUNI (non JavaScript puro)
+
+// 1. XMLHttpRequest (vecchio modo di fare richieste HTTP)
+let xhr = new XMLHttpRequest();
+xhr.open("GET", "https://api.example.com/data");
+xhr.onload = function () {
+  console.log(xhr.responseText);
+};
+xhr.send();
+
+// 2. WebSocket (comunicazione bidirezionale)
+let socket = new WebSocket("ws://example.com/socket");
+socket.onmessage = function (event) {
+  console.log("Messaggio ricevuto:", event.data);
+};
+
+// 3. IndexedDB (database nel browser)
+let request = indexedDB.open("MioDatabase", 1);
+request.onsuccess = function (event) {
+  let db = event.target.result;
+  console.log("Database aperto");
+};
+
+// 4. Web Workers (thread paralleli)
+let worker = new Worker("worker.js");
+worker.postMessage("Inizia lavoro");
+worker.onmessage = function (event) {
+  console.log("Risultato worker:", event.data);
+};
+
+// 5. Canvas API (grafica 2D)
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+ctx.fillStyle = "red";
+ctx.fillRect(10, 10, 100, 100);
+```
+
+```javascript
+// HOST OBJECTS vs NATIVE OBJECTS
+
+// NATIVE OBJECTS (parte di JavaScript)
+let nativo1 = new Array(1, 2, 3); // Array nativo
+let nativo2 = new Date(); // Date nativo
+let nativo3 = new RegExp("pattern"); // RegExp nativo
+console.log(Array.toString()); // "function Array() { [native code] }"
+
+// HOST OBJECTS (forniti dall'ambiente)
+let host1 = document.createElement("div"); // HTMLDivElement (browser)
+let host2 = new XMLHttpRequest(); // XMLHttpRequest (browser)
+let host3 = window.performance; // Performance API (browser)
+// In Node.js: Buffer, process, require, ecc.
+
+// DIFFERENZA CHIAVE:
+// - Native objects: definiti dalla specifica ECMAScript
+// - Host objects: definiti dall'ambiente (browser, Node.js, Deno, ecc.)
+```
+
+Sebbene questi meccanismi non facciano parte del linguaggio JavaScript puro, è fondamentale esserne consapevoli, poiché sono presenti in quasi tutti i programmi JavaScript che si scrivono per il web.
+
+```javascript
+// BEST PRACTICE: Verifica della disponibilità delle API
+
+// Prima di usare un'API del browser, controlla se esiste
+if (typeof localStorage !== "undefined") {
+  localStorage.setItem("chiave", "valore");
+} else {
+  console.log("localStorage non disponibile");
+}
+
+if (typeof fetch === "function") {
+  fetch("https://api.example.com");
+} else {
+  console.log("fetch() non disponibile, usa XMLHttpRequest o un polyfill");
+}
+
+if ("geolocation" in navigator) {
+  navigator.geolocation.getCurrentPosition(callback);
+} else {
+  console.log("Geolocation API non supportata");
+}
+
+// Feature detection (meglio di user-agent sniffing)
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+```
+
+---

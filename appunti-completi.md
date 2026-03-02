@@ -4928,12 +4928,77 @@ incrementaLocale(); // Locale: 1 (riparte sempre da 0!)
 incrementaLocale(); // Locale: 1
 ```
 
-#### Scope Annidati e Catena degli Scope
+#### Scope Annidato (Nested Scope)
 
-Gli scope possono essere annidati l'uno dentro l'altro. Le regole dello scope lessicale stabiliscono che il codice in uno scope più interno può accedere alle variabili degli scope più esterni, ma non viceversa. Questo meccanismo, che permette di "risalire" gli scope alla ricerca di una variabile, è chiamato catena degli scope (scope chain).
+Lo Scope non è quasi mai un singolo "universo"; al contrario, gli scope sono spesso annidati l'uno dentro l'altro, proprio come un blocco di codice o una funzione possono essere contenuti all'interno di un altro blocco o funzione.
+
+Questo annidamento crea una catena di scope (o scope chain). Quando l'Engine ha bisogno di trovare una variabile e non la trova nello scope corrente, il suo comportamento è molto prevedibile:
+
+1. Inizia la ricerca nello scope in cui si trova in quel momento.
+2. Se non trova la variabile, "sale" di un livello e cerca nello scope immediatamente esterno che lo contiene.
+3. Continua questo processo, salendo di livello in livello, finché non trova la variabile o finché non raggiunge lo scope più esterno di tutti: lo scope globale (global scope).
+4. Se arriva allo scope globale e ancora non ha trovato la variabile, la ricerca si ferma.
 
 ```javascript
-// SCOPE CHAIN: Esempio con 3 livelli di annidamento
+// Esempio base di ricerca nella scope chain
+let a = 10; // Scope globale
+
+function foo() {
+  // 'a' non è dichiarato qui, ma foo può accedervi
+  console.log(a + b); // Cerca 'a' (trova nel globale) e 'b' (trova nel globale)
+}
+
+let b = 20; // Scope globale
+foo(); // Output: 30
+```
+
+Quando viene eseguita la riga `console.log(a + b)`, l'Engine ha bisogno di trovare il valore di `b`. La ricerca RHS (Right-Hand Side) per `b` non può essere soddisfatta all'interno della funzione `foo`, perché `b` non è stato dichiarato lì.
+
+Ecco la conversazione che ne deriva tra Engine e i vari Scope:
+
+- **Engine** → "Ehi, Scope di foo, conosci per caso b? Ho una ricerca RHS per lui."
+- **Scope di foo** → "No, mai sentito. Prova più in alto."
+- **Engine** → (Sale di un livello) "Ehi, Scope fuori da foo... ah, sei lo Scope globale, perfetto. Conosci b? Ho una ricerca RHS."
+- **Scope globale** → "Sì, certo. Eccolo qui."
+
+```javascript
+// Esempio dettagliato della conversazione Engine-Scope
+let nome = "Mario"; // Dichiarato nello scope globale
+
+function saluta() {
+  // Engine cerca 'nome':
+  // 1. Engine: "Scope di saluta, hai 'nome'?"
+  // 2. Scope di saluta: "No"
+  // 3. Engine: "Scope globale, hai 'nome'?"
+  // 4. Scope globale: "Sì! Ecco: 'Mario'"
+
+  let messaggio = "Ciao"; // Dichiarato nello scope di saluta
+
+  function completaSaluto() {
+    // Engine cerca 'messaggio':
+    // 1. Engine: "Scope di completaSaluto, hai 'messaggio'?"
+    // 2. Scope di completaSaluto: "No"
+    // 3. Engine: "Scope di saluta, hai 'messaggio'?"
+    // 4. Scope di saluta: "Sì! Ecco: 'Ciao'"
+
+    // Engine cerca 'nome':
+    // 1. Scope di completaSaluto → No
+    // 2. Scope di saluta → No
+    // 3. Scope globale → Sì!
+
+    console.log(messaggio + ", " + nome); // "Ciao, Mario"
+  }
+
+  completaSaluto();
+}
+
+saluta();
+```
+
+La regola per attraversare gli scope annidati è quindi molto semplice: l'Engine parte dallo scope corrente e, se non trova ciò che cerca, continua a salire lungo la catena degli scope, un livello alla volta, fino a raggiungere la cima (lo scope globale).
+
+```javascript
+// Scope chain con 3 livelli di annidamento
 let a = "livello globale";
 
 function esterna() {
@@ -4964,32 +5029,112 @@ console.log(a); // ✅ "livello globale"
 // console.log(c);  // ❌ ReferenceError: c is not defined
 ```
 
+#### La Metafora dell'Edificio
+
+Per visualizzare meglio il processo di risoluzione dello scope annidato, possiamo usare la metafora di un edificio a più piani.
+
+Immaginiamo che questo edificio rappresenti l'insieme delle regole dello scope del nostro programma:
+
+- Il **primo piano** (il piano terra) rappresenta lo scope corrente in cui ci troviamo in un dato momento dell'esecuzione.
+- L'**ultimo piano** dell'edificio rappresenta lo scope globale.
+
+Quando l'Engine deve risolvere una ricerca (sia LHS che RHS) per una variabile, il processo è simile a questo:
+
+1. Inizia a cercare la variabile al piano corrente.
+2. Se non la trova, prende l'ascensore e sale al piano successivo (lo scope immediatamente esterno) e cerca lì.
+3. Continua a salire, piano dopo piano, ripetendo la ricerca.
+4. Una volta raggiunto l'ultimo piano (lo scope globale), o trova finalmente quello che sta cercando, oppure no. In ogni caso, la sua ricerca termina lì. Non può andare oltre.
+
 ```javascript
-// Esempio pratico: scope chain con calcoli
-let tassaGlobale = 0.22; // 22% IVA
+// METAFORA DELL'EDIFICIO: Codice con 4 "piani"
+// Piano 4 (Roof/Globale)
+let piano4 = "Attico - Scope Globale";
 
-function calcolaPrezzoFinale(prezzoBase) {
-  let margine = 1.3; // 30% di margine
+function entraNelPalazzo() {
+  // Piano 3
+  let piano3 = "Terzo piano";
 
-  function applicaTassa() {
-    let prezzoConMargine = prezzoBase * margine; // Accede a margine e prezzoBase
-    let prezzoFinale = prezzoConMargine * (1 + tassaGlobale); // Accede anche a tassaGlobale
+  function scendiAlSecondo() {
+    // Piano 2
+    let piano2 = "Secondo piano";
 
-    return prezzoFinale;
+    function scendiAlPrimo() {
+      // Piano 1 (Ground Floor)
+      let piano1 = "Piano terra";
+
+      // Dal piano terra, l'Engine può salire fino all'attico
+      console.log(piano1); // ✅ Piano corrente
+      console.log(piano2); // ✅ Sale di 1 piano
+      console.log(piano3); // ✅ Sale di 2 piani
+      console.log(piano4); // ✅ Sale di 3 piani (attico/globale)
+    }
+
+    scendiAlPrimo();
+
+    // Dal secondo piano:
+    console.log(piano2); // ✅ Piano corrente
+    console.log(piano3); // ✅ Sale di 1 piano
+    console.log(piano4); // ✅ Sale di 2 piani
+    // console.log(piano1);  // ❌ Non può SCENDERE al piano terra
   }
 
-  return applicaTassa();
+  scendiAlSecondo();
 }
 
-console.log(calcolaPrezzoFinale(100)); // 158.6
-// prezzoBase (100) * margine (1.3) = 130
-// 130 * (1 + 0.22) = 158.6
+entraNelPalazzo();
 ```
 
-In questo esempio, la funzione `interna` può "vedere" la variabile `a` perché si trova in uno scope esterno, ma `esterna` non può vedere `b`, che è confinata localmente all'interno di `interna`. Se si tenta di accedere a una variabile in uno scope dove non è disponibile, si ottiene un ReferenceError.
+```javascript
+// Esempio pratico: ricerca con fallback multipli
+let configGlobale = {
+  tema: "chiaro",
+  lingua: "it",
+};
+
+function applicazione() {
+  let configApp = {
+    tema: "scuro", // Override del tema globale
+  };
+
+  function componente() {
+    let configComponente = {
+      animazioni: true,
+    };
+
+    function mostraImpostazioni() {
+      // L'Engine cerca ogni proprietà risalendo la scope chain:
+
+      // 1. Cerca 'animazioni' nello scope corrente → Non trovato
+      // 2. Sale a 'componente' scope → ✅ Trovato!
+      console.log("Animazioni:", configComponente.animazioni);
+
+      // 1. Cerca 'tema' nello scope corrente → Non trovato
+      // 2. Sale a 'componente' → Non trovato
+      // 3. Sale a 'applicazione' → ✅ Trovato!
+      console.log("Tema:", configApp.tema); // "scuro"
+
+      // 1. Cerca 'lingua' nello scope corrente → Non trovato
+      // 2. Sale a 'componente' → Non trovato
+      // 3. Sale a 'applicazione' → Non trovato
+      // 4. Sale allo scope globale → ✅ Trovato!
+      console.log("Lingua:", configGlobale.lingua); // "it"
+    }
+
+    mostraImpostazioni();
+  }
+
+  componente();
+}
+
+applicazione();
+// Output:
+// Animazioni: true
+// Tema: scuro
+// Lingua: it
+```
 
 ```javascript
-// La scope chain funziona come una ricerca "a risalita"
+// La scope chain si ferma al globale
 function livello1() {
   let x = 10;
 
@@ -5003,7 +5148,7 @@ function livello1() {
     // 1. Cerca nello scope corrente (livello2) → Non trovato
     // 2. Risale al livello superiore (livello1) → Non trovato
     // 3. Risale allo scope globale → Non trovato
-    // 4. ❌ ReferenceError
+    // 4. ❌ ReferenceError: y is not defined
     // console.log(y);
   }
 
@@ -5011,6 +5156,32 @@ function livello1() {
 }
 
 livello1();
+```
+
+```javascript
+// Esempio pratico: scope chain con calcoli
+let tassaGlobale = 0.22; // 22% IVA
+
+function calcolaPrezzoFinale(prezzoBase) {
+  let margine = 1.3; // 30% di margine
+
+  function applicaTassa() {
+    // applicaTassa può accedere a:
+    // - tassaGlobale (scope globale, 2 livelli sopra)
+    // - margine (scope di calcolaPrezzoFinale, 1 livello sopra)
+    // - prezzoBase (parametro di calcolaPrezzoFinale, 1 livello sopra)
+
+    let prezzoConMargine = prezzoBase * margine;
+    let prezzoFinale = prezzoConMargine * (1 + tassaGlobale);
+
+    return prezzoFinale;
+  }
+
+  return applicaTassa();
+}
+
+console.log(calcolaPrezzoFinale(100)); // 158.6
+// Calcolo: 100 * 1.3 = 130 → 130 * 1.22 = 158.6
 ```
 
 #### Il Pericolo delle Variabili Globali Accidentali

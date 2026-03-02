@@ -4928,6 +4928,406 @@ incrementaLocale(); // Locale: 1 (riparte sempre da 0!)
 incrementaLocale(); // Locale: 1
 ```
 
+#### Scope Lessicale (Lexical Scope)
+
+Esistono due modelli principali che definiscono il funzionamento dello scope in un linguaggio di programmazione: lo **scope lessicale** (lexical scope) e lo **scope dinamico** (dynamic scope). JavaScript, come la maggior parte dei linguaggi moderni, adotta il modello dello **scope lessicale**.
+
+Il termine "lessicale" trova la sua origine nella fase di **lexing** (anche detta tokenizing) del compilatore. Questo suggerisce una caratteristica fondamentale di questo modello: lo scope viene definito nel momento in cui il codice viene **scritto** (author-time), e non quando viene **eseguito** (run-time). In altre parole, la struttura degli scope e la loro gerarchia sono determinate dalla **posizione fisica** in cui le variabili e i blocchi di codice sono scritti all'interno del programma. Una volta che il lexer ha analizzato il codice, questa struttura è essenzialmente **immutabile**.
+
+Sebbene esistano tecniche per modificare lo scope lessicale durante l'esecuzione (come `eval()` e `with`), queste pratiche sono fortemente sconsigliate. La best practice consiste nel trattare lo scope come un elemento definito esclusivamente in fase di scrittura.
+
+```javascript
+// SCOPE LESSICALE: determinato dalla POSIZIONE nel codice
+function esterna() {
+  let x = 10;
+
+  function interna() {
+    // 'interna' può accedere a 'x' perché è SCRITTA DENTRO 'esterna'
+    console.log(x); // 10
+  }
+
+  return interna;
+}
+
+let fn = esterna();
+fn(); // 10 - 'interna' ricorda dove è stata DEFINITA, non dove viene CHIAMATA
+```
+
+```javascript
+// Confronto teorico: Lexical vs Dynamic Scope
+// (JavaScript usa SOLO lexical scope)
+
+let valore = "globale";
+
+function mostraValore() {
+  console.log(valore);
+}
+
+function test() {
+  let valore = "locale";
+  mostraValore(); // Cosa stampa?
+}
+
+test();
+// LEXICAL SCOPE (JavaScript): "globale"
+// Perché? mostraValore() è SCRITTA nello scope globale
+
+// DYNAMIC SCOPE (ipotetico): "locale"
+// Perché? mostraValore() è CHIAMATA da test() che ha valore = "locale"
+```
+
+##### Le "Bolle di Scope" Annidate
+
+Per visualizzare meglio questo concetto, si può ricorrere alla metafora delle **"bolle di scope"** annidate. Ogni blocco di scope può essere immaginato come una bolla che ne contiene altre più piccole.
+
+![Immagine: Bolle di Scope Annidate](assets/lexical_scope.png)
+
+In questo frammento, si possono identificare tre "bolle" di scope, annidate l'una dentro l'altra:
+
+1. **Bolla 1 (Scope Globale)** → È la bolla più esterna e contiene un solo identificatore, la funzione `foo`.
+2. **Bolla 2 (Scope della funzione foo)** → Questa bolla è contenuta nello scope globale e al suo interno si trovano tre identificatori: il parametro `a`, la variabile `b` e la funzione `bar`.
+3. **Bolla 3 (Scope della funzione bar)** → È la bolla più interna, contenuta nello scope di `foo`, e definisce un solo identificatore, il parametro `c`.
+
+La posizione della bolla di `bar` all'interno di `foo` dipende unicamente dal fatto che la funzione `bar` è stata **definita lì**. Questo annidamento è rigoroso: una bolla di scope è sempre contenuta interamente in un'altra e non può mai esistere parzialmente all'interno di due scope esterni differenti.
+
+```javascript
+// Visualizzazione delle bolle annidate
+let globale = "Sono nella Bolla 1";
+
+function livello1() {
+  let locale1 = "Sono nella Bolla 2";
+
+  function livello2() {
+    let locale2 = "Sono nella Bolla 3";
+
+    // Bolla 3 può vedere:
+    console.log(locale2); // ✅ Bolla 3 (propria)
+    console.log(locale1); // ✅ Bolla 2 (esterna)
+    console.log(globale); // ✅ Bolla 1 (più esterna)
+  }
+
+  livello2();
+
+  // Bolla 2 può vedere:
+  console.log(locale1); // ✅ Bolla 2 (propria)
+  console.log(globale); // ✅ Bolla 1 (esterna)
+  // console.log(locale2);  // ❌ Bolla 3 (più interna, NON accessibile)
+}
+
+livello1();
+
+// Bolla 1 può vedere:
+console.log(globale); // ✅ Bolla 1 (propria)
+// console.log(locale1);  // ❌ Bolla 2 (più interna)
+// console.log(locale2);  // ❌ Bolla 3 (ancora più interna)
+```
+
+##### Il Processo di Ricerca (Look-up) nello Scope Lessicale
+
+La struttura delle "bolle" di scope annidate, definita in fase di scrittura, fornisce all'Engine una **mappa precisa** dei luoghi in cui deve cercare un identificatore.
+
+Riprendendo l'esempio precedente, quando l'Engine esegue l'istruzione `console.log(a, b, c)` all'interno della funzione `bar`, inizia la sua ricerca per le tre variabili:
+
+1. Il processo di **look-up** parte dalla bolla di scope più interna, quella della funzione `bar`.
+2. Qui non trova né `a` né `b`, quindi "sale" di un livello, nella bolla di scope della funzione `foo`. Lì trova sia `a` che `b` e li utilizza.
+3. Per la variabile `c`, invece, la trova subito all'interno dello scope di `bar` e quindi usa quella.
+
+```javascript
+// Look-up dettagliato
+function foo(a) {
+  let b = a * 2;
+
+  function bar(c) {
+    // Engine esegue: console.log(a, b, c)
+
+    // Cerca 'a':
+    // 1. Scope di bar? No
+    // 2. Scope di foo? Sì! Usa a = 2
+
+    // Cerca 'b':
+    // 1. Scope di bar? No
+    // 2. Scope di foo? Sì! Usa b = 4
+
+    // Cerca 'c':
+    // 1. Scope di bar? Sì! Usa c = 12
+
+    console.log(a, b, c); // 2 4 12
+  }
+
+  bar(b * 3);
+}
+
+foo(2);
+```
+
+```javascript
+// Esempio pratico di look-up
+let tassa = 0.22; // Bolla 1: Globale
+
+function calcolaPrezzoFinale(prezzoBase) {
+  // Bolla 2: calcolaPrezzoFinale
+  let margine = 0.3; // 30% di margine
+
+  function applicaTassa() {
+    // Bolla 3: applicaTassa
+
+    // Look-up per 'prezzoBase':
+    // Bolla 3 → No | Bolla 2 → Sì!
+    let prezzoConMargine = prezzoBase * (1 + margine);
+
+    // Look-up per 'tassa':
+    // Bolla 3 → No | Bolla 2 → No | Bolla 1 → Sì!
+    let prezzoFinale = prezzoConMargine * (1 + tassa);
+
+    return prezzoFinale;
+  }
+
+  return applicaTassa();
+}
+
+console.log(calcolaPrezzoFinale(100)); // 158.6
+// 100 * 1.3 = 130 → 130 * 1.22 = 158.6
+```
+
+La ricerca dello scope si ferma non appena viene trovata la **prima corrispondenza**. Se, ad esempio, fosse esistita una variabile `c` sia all'interno di `bar` che all'interno di `foo`, l'istruzione `console.log()` avrebbe utilizzato quella definita in `bar`, senza mai raggiungere quella più esterna.
+
+Questo fenomeno, in cui un identificatore interno "nasconde" un identificatore con lo stesso nome presente in uno scope esterno, è noto come **shadowing** (in italiano, "mascheramento" o "ombreggiatura"). Indipendentemente dallo shadowing, la ricerca parte sempre dallo scope più interno e si sposta verso l'esterno, fermandosi al primo risultato utile.
+
+```javascript
+// Shadowing nella ricerca lessicale
+function foo(a) {
+  let b = a * 2;
+
+  function bar(c) {
+    let a = 100; // ⚠️ Shadows il parametro 'a' di foo
+
+    // Look-up per 'a':
+    // 1. Scope di bar? Sì! Usa a = 100 (NON il parametro di foo)
+    console.log(a, b, c); // 100 4 12 (non 2 4 12)
+  }
+
+  bar(b * 3);
+}
+
+foo(2);
+```
+
+##### Variabili Globali e l'Oggetto `window`
+
+È importante notare che le variabili globali sono anche **proprietà dell'oggetto globale** (l'oggetto `window` nei browser). Questo permette di accedere a una variabile globale anche se è stata "mascherata" da una variabile locale, utilizzando la notazione `window.nomeVariabile`. Tuttavia, questo trucco non funziona per le variabili mascherate che non sono globali; esse rimangono inaccessibili.
+
+```javascript
+// Accesso a variabili globali tramite window
+let varGlobale = "Sono globale";
+
+function test() {
+  let varGlobale = "Sono locale"; // Shadows
+
+  console.log(varGlobale); // "Sono locale"
+  console.log(window.varGlobale); // "Sono globale" (in browser)
+  // Posso "bypassare" lo shadowing per variabili globali
+}
+
+test();
+```
+
+```javascript
+// Non funziona per variabili non globali
+function esterna() {
+  let x = 10;
+
+  function interna() {
+    let x = 20; // Shadows
+
+    console.log(x); // 20
+    // console.log(esterna.x);  // ❌ Non funziona
+    // console.log(window.x);  // ❌ undefined (x non è globale)
+
+    // La x di 'esterna' è INACCESSIBILE qui dentro
+  }
+
+  interna();
+}
+
+esterna();
+```
+
+```javascript
+// var vs let/const con window
+var globalVar = "Sono una proprietà di window";
+let globalLet = "NON sono una proprietà di window";
+
+console.log(window.globalVar); // "Sono una proprietà di window"
+console.log(window.globalLet); // undefined
+
+function test() {
+  var globalVar = "Locale"; // Shadows
+
+  console.log(globalVar); // "Locale"
+  console.log(window.globalVar); // "Sono una proprietà di window" (bypass shadowing)
+}
+
+test();
+```
+
+##### Lo Scope è Determinato dalla Dichiarazione, Non dall'Invocazione
+
+Un principio fondamentale dello scope lessicale è che lo **scope di una funzione** è determinato unicamente da **dove la funzione è stata dichiarata**, non da dove o come viene invocata.
+
+```javascript
+// Lo scope dipende da DOVE è SCRITTA la funzione
+let messaggio = "Scope Globale";
+
+function mostraMessaggio() {
+  // Questa funzione è SCRITTA nello scope globale
+  console.log(messaggio);
+}
+
+function test() {
+  let messaggio = "Scope Locale di test";
+
+  mostraMessaggio(); // Cosa stampa?
+}
+
+test(); // "Scope Globale"
+// mostraMessaggio() cerca 'messaggio' dove è STATA DEFINITA (globale),
+// NON dove viene CHIAMATA (test)
+```
+
+```javascript
+// Esempio pratico: closure con lexical scope
+function creaContatore(iniziale) {
+  let contatore = iniziale;
+
+  function incrementa() {
+    // 'incrementa' è DEFINITA dentro 'creaContatore'
+    // Quindi ha accesso al suo scope lessicale
+    contatore++;
+    return contatore;
+  }
+
+  return incrementa;
+}
+
+let contatore1 = creaContatore(0);
+let contatore2 = creaContatore(100);
+
+console.log(contatore1()); // 1 (ricorda il SUO scope lessicale)
+console.log(contatore1()); // 2
+console.log(contatore2()); // 101 (ricorda il SUO diverso scope lessicale)
+console.log(contatore2()); // 102
+
+// Ogni funzione 'incrementa' ricorda dove è stata CREATA
+```
+
+```javascript
+// Lexical scope vs invocazione
+let config = { tema: "chiaro" };
+
+function mostraConfig() {
+  console.log(config);
+}
+
+function eseguiInAltroContesto() {
+  let config = { tema: "scuro" };
+
+  // Anche se chiamiamo mostraConfig() qui,
+  // essa cerca 'config' nel SUO scope lessicale (globale)
+  mostraConfig(); // { tema: "chiaro" }
+}
+
+eseguiInAltroContesto();
+mostraConfig(); // { tema: "chiaro" }
+```
+
+##### Scope Lessicale vs Accesso a Proprietà
+
+Infine, bisogna distinguere il processo di **ricerca dello scope lessicale** dalla **risoluzione delle proprietà di un oggetto**. Se il codice contenesse un riferimento come `foo.bar.baz`, la ricerca dello scope lessicale si applicherebbe solo per trovare l'identificatore `foo`. Una volta localizzata questa variabile, subentrerebbero le regole di accesso alle proprietà degli oggetti per risolvere `bar` e `baz`.
+
+```javascript
+// Scope lessicale SI APPLICA SOLO al primo identificatore
+let oggetto = {
+  livello1: {
+    livello2: {
+      valore: 42,
+    },
+  },
+};
+
+function test() {
+  // Look-up SCOPE LESSICALE per 'oggetto':
+  // 1. Scope di test? No
+  // 2. Scope globale? Sì! Trovato
+
+  // Look-up PROPRIETÀ OGGETTO per 'livello1', 'livello2', 'valore':
+  // Usa le regole di accesso alle proprietà (prototype chain)
+  console.log(oggetto.livello1.livello2.valore); // 42
+}
+
+test();
+```
+
+```javascript
+// Confronto: scope lessicale vs proprietà
+let x = 10;
+let obj = {
+  x: 20,
+  y: 30,
+};
+
+function mostra() {
+  // 'x' → Ricerca SCOPE LESSICALE (trova 10)
+  console.log(x); // 10
+
+  // 'obj.x' → Ricerca SCOPE (trova 'obj'), poi PROPRIETÀ (trova 'x')
+  console.log(obj.x); // 20
+
+  // 'obj.y' → Ricerca SCOPE (trova 'obj'), poi PROPRIETÀ (trova 'y')
+  console.log(obj.y); // 30
+
+  // 'obj.z' → Ricerca SCOPE (trova 'obj'), poi PROPRIETÀ (non trova 'z')
+  console.log(obj.z); // undefined (NON ReferenceError!)
+
+  // 'z' → Ricerca SCOPE LESSICALE (non trova in nessuno scope)
+  // console.log(z);  // ❌ ReferenceError: z is not defined
+}
+
+mostra();
+```
+
+```javascript
+// Esempio complesso
+let config = {
+  server: {
+    host: "localhost",
+    port: 3000,
+  },
+};
+
+function connetti() {
+  // SCOPE LESSICALE: 'config'
+  // 1. Scope di connetti? No
+  // 2. Scope globale? Sì!
+
+  // PROPRIETÀ OGGETTO: 'server', 'host'
+  let host = config.server.host; // ✅ OK
+
+  function stampaInfo() {
+    // SCOPE LESSICALE: 'host'
+    // 1. Scope di stampaInfo? No
+    // 2. Scope di connetti? Sì!
+    console.log(host); // "localhost"
+
+    // SCOPE LESSICALE: 'config' | PROPRIETÀ: 'server', 'port'
+    console.log(config.server.port); // 3000
+  }
+
+  stampaInfo();
+}
+
+connetti();
+```
+
 #### Scope Annidato (Nested Scope)
 
 Lo Scope non è quasi mai un singolo "universo"; al contrario, gli scope sono spesso annidati l'uno dentro l'altro, proprio come un blocco di codice o una funzione possono essere contenuti all'interno di un altro blocco o funzione.

@@ -5988,6 +5988,455 @@ console.log(calcolaPrezzoFinale(100)); // 158.6
 // Calcolo: 100 * 1.3 = 130 → 130 * 1.22 = 158.6
 ```
 
+#### Nascondere nello Scope (Hiding in Plain Scope)
+
+Tradizionalmente, si pensa a una funzione come a qualcosa che viene dichiarato per poi aggiungervi del codice. Un approccio inverso, ma altrettanto potente, consiste nel prendere una qualsiasi porzione di codice e "avvolgerla" in una dichiarazione di funzione. L'effetto pratico di questa operazione è quello di "nascondere" quel codice.
+
+Creando una funzione attorno a un blocco di codice, si crea una nuova bolla di scope. Di conseguenza, qualsiasi variabile o funzione dichiarata all'interno di quel codice apparterrà allo scope della nuova funzione "contenitore", invece che allo scope in cui si trovava prima. In questo modo, si possono nascondere variabili e funzioni alla vista del mondo esterno.
+
+##### Perché nascondere variabili e funzioni?
+
+Questa tecnica è motivata da un importante principio di progettazione del software: il **Principio del Minimo Privilegio** (in inglese, **Principle of Least Privilege**). Questo principio afferma che si dovrebbe esporre solo ciò che è strettamente necessario per il funzionamento di un componente (come l'API di un modulo o di un oggetto), nascondendo tutto il resto.
+
+Applicato allo scope, questo significa che non è saggio dichiarare tutte le variabili e le funzioni nello scope globale. Sebbene questo le renderebbe accessibili ovunque, violerebbe il principio, esponendo dettagli "privati" che non dovrebbero essere accessibili o modificabili dall'esterno. Questo potrebbe portare a usi impropri o inaspettati, violando le pre-condizioni su cui si basa il codice.
+
+```javascript
+// ❌ CATTIVA PRATICA: Tutto nello scope globale
+function doSomething(a) {
+  b = a + doSomethingElse(a * 2);
+  console.log(b * 3);
+}
+
+function doSomethingElse(a) {
+  return a - 1;
+}
+
+var b;
+
+doSomething(2); // 15
+```
+
+In questo caso, la variabile `b` e la funzione `doSomethingElse` sono probabilmente dettagli implementativi "privati" della funzione `doSomething`. Lasciarli nello scope globale è inutile e potenzialmente pericoloso.
+
+Un design più corretto nasconderebbe questi dettagli all'interno dello scope di `doSomething`:
+
+```javascript
+// ✅ BUONA PRATICA: Dettagli privati nascosti
+function doSomething(a) {
+  // 'b' e 'doSomethingElse' sono ora PRIVATI a doSomething
+  function doSomethingElse(a) {
+    return a - 1;
+  }
+
+  var b;
+  b = a + doSomethingElse(a * 2);
+  console.log(b * 3);
+}
+
+doSomething(2); // 15
+
+// Ora questi dettagli implementativi NON sono più accessibili dall'esterno
+// console.log(b);  // ❌ ReferenceError: b is not defined
+// doSomethingElse(5);  // ❌ ReferenceError: doSomethingElse is not defined
+```
+
+Ora, `b` e `doSomethingElse` non sono più accessibili dall'esterno e sono controllati esclusivamente da `doSomething`. La funzionalità finale non è cambiata, ma il design è migliorato perché i dettagli privati rimangono tali. Questo è considerato un approccio più robusto alla scrittura del software.
+
+```javascript
+// Esempio pratico: modulo con dettagli privati
+function creaCalcolatrice() {
+  // Dettagli implementativi PRIVATI
+  let risultatoCorrente = 0;
+  let storia = [];
+
+  function registraOperazione(operazione) {
+    // Funzione helper privata
+    storia.push(operazione);
+  }
+
+  // API PUBBLICA: solo queste funzioni sono esposte
+  return {
+    somma: function (n) {
+      risultatoCorrente += n;
+      registraOperazione(`+${n}`);
+      return risultatoCorrente;
+    },
+    sottrai: function (n) {
+      risultatoCorrente -= n;
+      registraOperazione(`-${n}`);
+      return risultatoCorrente;
+    },
+    getRisultato: function () {
+      return risultatoCorrente;
+    },
+    // NON esponiamo 'storia' o 'registraOperazione' direttamente
+  };
+}
+
+let calc = creaCalcolatrice();
+console.log(calc.somma(5)); // 5
+console.log(calc.somma(3)); // 8
+console.log(calc.sottrai(2)); // 6
+console.log(calc.getRisultato()); // 6
+
+// Dettagli privati NON accessibili:
+// console.log(calc.risultatoCorrente);  // undefined
+// console.log(calc.storia);  // undefined
+// calc.registraOperazione("+100");  // TypeError: non è una funzione
+```
+
+```javascript
+// Esempio: API pubblica vs implementazione privata
+function creaContatore(iniziale) {
+  let contatore = iniziale || 0; // Variabile PRIVATA
+
+  // Helper privato
+  function valida(valore) {
+    return typeof valore === "number" && valore >= 0;
+  }
+
+  // API PUBBLICA
+  return {
+    incrementa: function () {
+      contatore++;
+      return contatore;
+    },
+    decrementa: function () {
+      if (contatore > 0) contatore--;
+      return contatore;
+    },
+    imposta: function (valore) {
+      if (valida(valore)) {
+        contatore = valore;
+      } else {
+        console.log("Valore non valido");
+      }
+      return contatore;
+    },
+    leggi: function () {
+      return contatore;
+    },
+  };
+}
+
+let c1 = creaContatore(10);
+console.log(c1.incrementa()); // 11
+console.log(c1.decrementa()); // 10
+console.log(c1.leggi()); // 10
+
+// Protezione dei dati interni:
+// console.log(c1.contatore);  // undefined (protetto!)
+// c1.contatore = -100;  // Non modifica il vero contatore
+console.log(c1.leggi()); // 10 (ancora protetto)
+```
+
+##### Prevenzione delle Collisioni (Collision Avoidance)
+
+Un altro importante beneficio che deriva dal "nascondere" variabili e funzioni all'interno di uno scope è la capacità di **evitare collisioni involontarie**. Una collisione si verifica quando due identificatori diversi, che condividono lo stesso nome ma hanno scopi differenti, interferiscono tra loro. Questo porta spesso a una sovrascrittura inaspettata di valori, causando bug difficili da individuare.
+
+```javascript
+// ❌ PROBLEMA: Collisione di variabili
+function foo() {
+  function bar(a) {
+    i = 3; // ⚠️ Sovrascrive la 'i' del ciclo for!
+    console.log(a + i);
+  }
+
+  for (var i = 0; i < 10; i++) {
+    bar(i * 2); // 0, 2, 4, 6, 8, ...
+  }
+}
+
+foo(); // ⚠️ CICLO INFINITO!
+```
+
+In questo frammento, l'intenzione è probabilmente quella di avere un ciclo che esegua la funzione `bar` per 10 volte. Tuttavia, l'assegnazione `i = 3` all'interno di `bar` non dichiara una nuova variabile locale. Invece, a causa delle regole dello scope, risale la catena degli scope e sovrascrive il valore della variabile `i` dichiarata nel ciclo `for` della funzione `foo`.
+
+Il risultato è un **ciclo infinito**: ad ogni iterazione, `i` viene incrementato dal ciclo, ma subito dopo la funzione `bar` lo reimposta a `3`. La condizione `i < 10` sarà quindi sempre vera.
+
+La soluzione a questo problema è dichiarare correttamente una variabile locale all'interno della funzione `bar`, in modo da "nasconderla" e separarla da quella dello scope esterno.
+
+```javascript
+// ✅ SOLUZIONE 1: Dichiarare 'i' locale (shadowing)
+function foo() {
+  function bar(a) {
+    var i = 3; // ✅ Nuova variabile locale (shadows la 'i' esterna)
+    console.log(a + i);
+  }
+
+  for (var i = 0; i < 10; i++) {
+    bar(i * 2); // 3, 5, 7, 9, 11, 13, 15, 17, 19, 21
+  }
+}
+
+foo(); // ✅ Funziona correttamente (10 iterazioni)
+```
+
+In questo modo, si crea una nuova variabile `"i"` che "maschera" (shadows) quella del ciclo, risolvendo il problema. In alternativa, si potrebbe scegliere un nome diverso per la variabile (es. `j`), ma se il design del software richiede l'uso dello stesso nome, sfruttare lo scope per nascondere la dichiarazione interna è la soluzione migliore e più robusta.
+
+```javascript
+// ✅ SOLUZIONE 2: Usare un nome diverso
+function foo() {
+  function bar(a) {
+    j = 3; // Variabile diversa, nessuna collisione
+    console.log(a + j);
+  }
+
+  var j; // Dichiarata esplicitamente
+  for (var i = 0; i < 10; i++) {
+    bar(i * 2); // 3, 5, 7, 9, 11, 13, 15, 17, 19, 21
+  }
+}
+
+foo(); // ✅ Funziona correttamente
+```
+
+```javascript
+// Esempio reale: collisione in gestione eventi
+function gestisciForm() {
+  let valoreCorrente = "";
+
+  function validaInput(input) {
+    // ❌ Se dimentico 'let', questa 'valoreCorrente' sovrascrive quella esterna
+    valoreCorrente = input.trim(); // Sovrascrive!
+
+    if (valoreCorrente.length < 3) {
+      return false;
+    }
+    return true;
+  }
+
+  function salvaForm() {
+    // Usa la 'valoreCorrente' esterna (che potrebbe essere stata modificata)
+    console.log("Salvataggio:", valoreCorrente);
+  }
+
+  // Simulazione
+  if (validaInput("  ab  ")) {
+    salvaForm(); // "ab" - la validazione ha MODIFICATO il valore esterno
+  }
+}
+
+gestisciForm();
+```
+
+```javascript
+// Versione corretta con scope isolato
+function gestisciFormCorretto() {
+  let valoreCorrente = "";
+
+  function validaInput(input) {
+    let valorePulito = input.trim(); // ✅ Variabile locale, NO collisione
+
+    if (valorePulito.length < 3) {
+      return false;
+    }
+    valoreCorrente = valorePulito; // Assegnazione esplicita e controllata
+    return true;
+  }
+
+  function salvaForm() {
+    console.log("Salvataggio:", valoreCorrente);
+  }
+
+  // Simulazione
+  if (validaInput("  ok  ")) {
+    salvaForm(); // "ok" - controllo esplicito del flusso
+  }
+}
+
+gestisciFormCorretto();
+```
+
+##### Namespace Globali (Global Namespaces)
+
+Un esempio particolarmente evidente di collisione tra variabili si verifica nello **scope globale**. Quando si caricano più librerie di terze parti in un programma, è molto facile che queste entrino in conflitto tra loro se non nascondono adeguatamente le loro funzioni e variabili interne.
+
+Per risolvere questo problema, le librerie ben progettate adottano una strategia comune: invece di "inquinare" lo scope globale con decine di variabili, creano un'**unica variabile globale**, solitamente un oggetto, con un nome sufficientemente unico.
+
+Questo oggetto agisce come un **"namespace"** (spazio dei nomi) per quella libreria. Tutte le funzionalità che la libreria vuole esporre vengono aggiunte come proprietà di questo oggetto, invece di essere dichiarate come identificatori di primo livello nello scope globale.
+
+```javascript
+// ❌ CATTIVA PRATICA: Inquinare lo scope globale
+// Libreria 1
+function utilityFunction() {
+  /* ... */
+}
+function helper() {
+  /* ... */
+}
+function doSomething() {
+  /* ... */
+}
+var version = "1.0";
+
+// Libreria 2 (CONFLITTO!)
+function utilityFunction() {
+  /* ... */
+  // ⚠️ SOVRASCRIVE la funzione della Libreria 1!
+}
+function helper() {
+  /* ... */
+  // ⚠️ SOVRASCRIVE!
+}
+```
+
+```javascript
+// ✅ BUONA PRATICA: Uso di namespace
+// Libreria 1: Tutto incapsulato in un namespace
+var MyReallyCoolLibrary = {
+  awesome: "stuff",
+  doSomething: function () {
+    console.log("Doing something cool!");
+  },
+  doAnotherThing: function () {
+    console.log("Doing another thing!");
+  },
+};
+
+// Libreria 2: Usa il SUO namespace
+var AnotherLibrary = {
+  awesome: "different stuff", // NO conflitto!
+  doSomething: function () {
+    // NO conflitto!
+    console.log("Doing something else!");
+  },
+};
+
+// Uso senza conflitti
+MyReallyCoolLibrary.doSomething(); // "Doing something cool!"
+AnotherLibrary.doSomething(); // "Doing something else!"
+
+console.log(MyReallyCoolLibrary.awesome); // "stuff"
+console.log(AnotherLibrary.awesome); // "different stuff"
+```
+
+In questo modo, l'unico nome che la libreria "riserva" nello scope globale è `MyReallyCoolLibrary`. Qualsiasi altra libreria può tranquillamente usare al suo interno variabili chiamate `awesome` o `doSomething` senza creare alcun conflitto, perché sono tutte incapsulate all'interno dei rispettivi namespace. Per accedere alle funzionalità della libreria, si userebbe una sintassi come `MyReallyCoolLibrary.doSomething()`.
+
+```javascript
+// Esempio reale: pattern namespace complesso
+var MiaApp = {
+  // Metadata della libreria
+  version: "2.0.1",
+  author: "Developer",
+
+  // Sub-namespace per organizzazione
+  utils: {
+    formatta: function (str) {
+      return str.toUpperCase();
+    },
+    valida: function (email) {
+      return email.includes("@");
+    },
+  },
+
+  ui: {
+    mostraMessaggio: function (msg) {
+      console.log("[UI]", msg);
+    },
+    nascondiElemento: function (id) {
+      console.log("Nascondendo", id);
+    },
+  },
+
+  // Metodo di inizializzazione
+  init: function () {
+    this.ui.mostraMessaggio("App inizializzata v" + this.version);
+  },
+};
+
+// Uso dell'API pubblica
+MiaApp.init(); // "[UI] App inizializzata v2.0.1"
+console.log(MiaApp.utils.formatta("hello")); // "HELLO"
+console.log(MiaApp.utils.valida("test@test.com")); // true
+```
+
+```javascript
+// Esempio: librerie moderne (jQuery, Lodash, etc.)
+// jQuery usa '$' e 'jQuery' come namespace
+var jQuery = {
+  version: "3.6.0",
+  ajax: function (/* ... */) {
+    /* ... */
+  },
+  each: function (/* ... */) {
+    /* ... */
+  },
+  // ...migliaia di metodi
+};
+
+var $ = jQuery; // Alias
+
+// Lodash usa '_' come namespace
+var _ = {
+  version: "4.17.21",
+  map: function (/* ... */) {
+    /* ... */
+  },
+  filter: function (/* ... */) {
+    /* ... */
+  },
+  // ...centinaia di utility functions
+};
+
+// React usa 'React' come namespace
+var React = {
+  version: "18.2.0",
+  createElement: function (/* ... */) {
+    /* ... */
+  },
+  Component: function (/* ... */) {
+    /* ... */
+  },
+  // ...
+};
+
+// Nessun conflitto tra librerie diverse!
+```
+
+```javascript
+// Pattern moderno: Module con namespace privato
+var CalcolatriceAvanzata = (function () {
+  // *** PRIVATO (non accessibile dall'esterno) ***
+  let risultato = 0;
+  let precisione = 2;
+
+  function arrotonda(num) {
+    return (
+      Math.round(num * Math.pow(10, precisione)) / Math.pow(10, precisione)
+    );
+  }
+
+  // *** PUBBLICO (API esposta nel namespace) ***
+  return {
+    somma: function (a, b) {
+      risultato = arrotonda(a + b);
+      return risultato;
+    },
+    moltiplica: function (a, b) {
+      risultato = arrotonda(a * b);
+      return risultato;
+    },
+    getRisultato: function () {
+      return risultato;
+    },
+    setPrecisione: function (p) {
+      precisione = p;
+    },
+  };
+})();
+
+// Uso: unico nome globale, API chiara
+console.log(CalcolatriceAvanzata.somma(10.555, 20.333)); // 30.89
+console.log(CalcolatriceAvanzata.moltiplica(3.14159, 2)); // 6.28
+CalcolatriceAvanzata.setPrecisione(4);
+console.log(CalcolatriceAvanzata.somma(1.23456, 2.34567)); // 3.5802
+
+// Dettagli privati non accessibili
+// console.log(risultato);  // ReferenceError
+// console.log(arrotonda(3.14159));  // ReferenceError
+```
+
 #### Il Pericolo delle Variabili Globali Accidentali
 
 Un comportamento pericoloso di JavaScript (in modalità non-stretta) si verifica quando si assegna un valore a una variabile che non è stata formalmente dichiarata con var, let o const. In questo caso, JavaScript risale la catena degli scope fino in cima e, non trovando alcuna dichiarazione, crea una nuova variabile nello scope globale.

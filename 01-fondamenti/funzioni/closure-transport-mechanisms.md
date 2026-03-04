@@ -1,4 +1,4 @@
-# Closure nel Mondo Reale [[../../appunti-completi#closure|📚]]
+# [[../../appunti-completi#39-scope-closure-e-illuminazione-enlightenment|Closure nel Mondo Reale]]
 
 ## Closure Ovunque nel Codice Quotidiano
 

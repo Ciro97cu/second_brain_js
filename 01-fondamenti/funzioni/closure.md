@@ -1,4 +1,4 @@
-# Closure (Chiusura) [[../../appunti-completi#closure|📚]]
+# [[../../appunti-completi#closure|Closure (Chiusura)]]
 
 ## 🎯 Enlightenment: Vedere la Matrix
 

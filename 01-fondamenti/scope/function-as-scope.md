@@ -1,4 +1,4 @@
-# Funzioni come Scope [[../../appunti-completi#funzioni-come-scope|📚]]
+# [[../../appunti-completi#funzioni-come-scope|Funzioni come Scope]]
 
 ## 🎯 Concetto
 

@@ -1,4 +1,4 @@
-# Pattern IIFE (Immediately Invoked Function Expression) [[../../appunti-completi#variazioni-del-pattern-iife|📚]]
+# [[../../appunti-completi#variazioni-del-pattern-iife|Pattern IIFE (Immediately Invoked Function Expression)]]
 
 ## 🎯 Concetto
 

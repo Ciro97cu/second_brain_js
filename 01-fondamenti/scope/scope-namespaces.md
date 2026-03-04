@@ -1,4 +1,4 @@
-# Namespace Globali (Global Namespaces) [[../../appunti-completi#namespace-globali-global-namespaces|📚]]
+# [[../../appunti-completi#namespace-globali-global-namespaces|Namespace Globali (Global Namespaces)]]
 
 ## 🎯 Concetto
 

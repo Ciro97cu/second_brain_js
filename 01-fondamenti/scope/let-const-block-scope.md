@@ -1,4 +1,4 @@
-# let e const: Block Scope Moderno [[../../appunti-completi#blocchi-come-scope-blocks-as-scopes|📚]]
+# [[../../appunti-completi#blocchi-come-scope-blocks-as-scopes|let e const: Block Scope Moderno]]
 
 ## 🎯 Concetto
 

@@ -1,4 +1,4 @@
-# Block Scope e Garbage Collection [[../../appunti-completi#blocchi-come-scope-blocks-as-scopes|📚]]
+# [[../../appunti-completi#blocchi-come-scope-blocks-as-scopes|Block Scope e Garbage Collection]]
 
 ## 🎯 Concetto
 

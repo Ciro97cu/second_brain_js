@@ -1,4 +1,4 @@
-# Closure: Concetto Fondamentale [[../../appunti-completi#closure|📚]]
+# [[../../appunti-completi#39-scope-closure-e-illuminazione-enlightenment|Closure: Concetto Fondamentale]]
 
 ## 🎯 Enlightenment: Vedere la Matrix
 

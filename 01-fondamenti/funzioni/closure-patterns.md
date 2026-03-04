@@ -1,4 +1,4 @@
-# Closure: Pattern Pratici [[../../appunti-completi#closure|📚]]
+# [[../../appunti-completi#39-scope-closure-e-illuminazione-enlightenment|Closure: Pattern Pratici]]
 
 ## 📦 Factory Functions
 

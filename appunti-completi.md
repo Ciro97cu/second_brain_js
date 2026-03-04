@@ -3185,263 +3185,255 @@ for (let i = 1; i <= 5; i++) {
 
 In questo scenario, Block Scoping e Closure lavorano di concerto, risolvendo in modo elegante uno dei problemi più comuni nello sviluppo JavaScript.
 
-### 3.10 Module Pattern
+### 3.10 Il Pattern Modulo (Modules)
 
-L'uso più comune della closure in JavaScript è il Module Pattern. Questo pattern permette di definire dettagli implementativi privati (variabili e funzioni) che sono nascosti al mondo esterno, e allo stesso tempo di esporre un'interfaccia pubblica (public API) che può essere utilizzata per interagire con essi.
+Oltre alle callback, esistono altri pattern di codice che sfruttano la potenza della Closure. Il più potente e significativo è senza dubbio il Modulo.
 
-È una tecnica fondamentale per l'incapsulamento e l'organizzazione del codice.
-
-Consideriamo il seguente esempio:
+Inizialmente, si potrebbe considerare una funzione che incapsula dati e funzioni interne:
 
 ```javascript
-/*
- * Module Pattern base
- */
+function foo() {
+  var something = "cool";
+  var another = [1, 2, 3];
 
-function User() {
-  // Variabili private (non accessibili dall'esterno)
-  let username;
-  let password;
-
-  // Funzione privata (non accessibile dall'esterno)
-  function doLogin(user, pw) {
-    username = user;
-    password = pw;
-    console.log("Login effettuato per:", username);
+  function doSomething() {
+    console.log(something);
   }
 
-  // API pubblica (ciò che viene esposto)
-  let publicAPI = {
-    login: doLogin,
+  function doAnother() {
+    console.log(another.join(" ! "));
+  }
+}
+```
+
+Allo stato attuale, non vi è alcuna Closure osservabile. I dati e le funzioni sono semplicemente racchiusi nello scope di "foo".
+
+Per trasformare questo codice in un Modulo, è necessario applicare il pattern del Revealing Module:
+
+```javascript
+function CoolModule() {
+  var something = "cool";
+  var another = [1, 2, 3];
+
+  function doSomething() {
+    console.log(something);
+  }
+
+  function doAnother() {
+    console.log(another.join(" ! "));
+  }
+
+  return {
+    doSomething: doSomething,
+    doAnother: doAnother,
+  };
+}
+
+var foo = CoolModule();
+
+foo.doSomething(); // cool
+foo.doAnother(); // 1 ! 2 ! 3
+```
+
+Analizzando il codice, emergono due requisiti fondamentali affinché il Module Pattern si verifichi:
+
+1. Deve esistere una funzione esterna (nell'esempio CoolModule) che deve essere invocata almeno una volta. Ogni invocazione crea una nuova istanza del modulo.
+2. La funzione esterna deve restituire almeno una funzione interna. Questo permette alla funzione restituita di mantenere una Closure sullo scope privato interno, garantendo l'accesso e la modifica dello stato privato.
+
+Un oggetto che possiede metodi ma nessuna closure su dati privati non è un vero modulo in senso osservabile; è solo un oggetto con funzioni.
+
+#### Varianti del Modulo
+
+Il pattern si presta a diverse varianti utili. Una di queste è la creazione di un Singleton, ottenuta trasformando la funzione del modulo in una IIFE (Immediately Invoked Function Expression):
+
+```javascript
+var foo = (function CoolModule() {
+  var something = "cool";
+  var another = [1, 2, 3];
+
+  function doSomething() {
+    console.log(something);
+  }
+
+  function doAnother() {
+    console.log(another.join(" ! "));
+  }
+
+  return {
+    doSomething: doSomething,
+    doAnother: doAnother,
+  };
+})();
+
+foo.doSomething(); // cool
+foo.doAnother(); // 1 ! 2 ! 3
+```
+
+In questo caso, il modulo viene eseguito immediatamente e il valore di ritorno (l'API pubblica) viene assegnato direttamente alla variabile "foo".
+
+I moduli, essendo funzioni, possono anche accettare parametri per la configurazione:
+
+```javascript
+function CoolModule(id) {
+  function identify() {
+    console.log(id);
+  }
+
+  return {
+    identify: identify,
+  };
+}
+
+var foo1 = CoolModule("foo 1");
+var foo2 = CoolModule("foo 2");
+
+foo1.identify(); // "foo 1"
+foo2.identify(); // "foo 2"
+```
+
+Infine, una variante potente prevede di mantenere un riferimento interno all'oggetto dell'API pubblica. Ciò consente al modulo di modificare la propria struttura (aggiungere/rimuovere metodi o cambiarne il valore) dall'interno durante l'esecuzione:
+
+```javascript
+var foo = (function CoolModule(id) {
+  function change() {
+    // modificare l'API pubblica
+    publicAPI.identify = identify2;
+  }
+
+  function identify1() {
+    console.log(id);
+  }
+
+  function identify2() {
+    console.log(id.toUpperCase());
+  }
+
+  var publicAPI = {
+    change: change,
+    identify: identify1,
   };
 
   return publicAPI;
-}
+})("foo module");
 
-// Creiamo un'istanza del modulo
-let fred = User();
-fred.login("fred", "12Battery34!"); // Login effettuato per: fred
-
-// Non possiamo accedere alle variabili private
-console.log(fred.username); // undefined (privato!)
-console.log(fred.password); // undefined (privato!)
-// console.log(fred.doLogin); // undefined (privato!)
-
-// Ogni istanza è indipendente
-let john = User();
-john.login("john", "password123");
-// fred e john hanno stati privati separati
+foo.identify(); // foo module
+foo.change();
+foo.identify(); // FOO MODULE
 ```
 
-Analizziamo il funzionamento:
+#### Moduli Moderni
 
-1. **Scope Esterno** → La funzione `User()` agisce come uno scope esterno che contiene le variabili `username` e `password`, e la funzione `doLogin()`. Questi elementi sono privati e non possono essere raggiunti direttamente dall'esterno.
-
-2. **Creazione dell'Istanza** → Eseguendo `User()`, si crea un'istanza del modulo. Viene generato un nuovo scope e, di conseguenza, una nuova copia di tutte le variabili e funzioni interne. L'oggetto restituito, `publicAPI`, viene assegnato alla variabile `fred`. Se si eseguisse di nuovo `User()`, si otterrebbe una nuova istanza completamente separata da `fred`.
-
-3. **Nota** → Si usa `User()` e non `new User()` perché `User` è una semplice funzione che funge da factory, non una classe da istanziare. L'uso di `new` in questo contesto sarebbe inappropriato.
-
-4. **API Pubblica** → L'oggetto `publicAPI` contiene i metodi che si vogliono rendere pubblici. In questo caso, ha una sola proprietà, `login`, che è un riferimento alla funzione interna `doLogin()`.
-
-5. **Il Ruolo della Closure** → Quando la funzione `User()` termina la sua esecuzione, le sue variabili interne (`username`, `password`) non vengono distrutte. Esse vengono "mantenute in vita" dalla closure creata dalla funzione `doLogin()`. Per questo motivo, quando si chiama `fred.login(...)`, la funzione `doLogin` può ancora accedere e modificare le variabili `username` e `password` definite nel suo scope genitore.
-
-In sintesi, il Module Pattern sfrutta le closure per creare uno stato privato e un'interfaccia pubblica, un concetto chiave per scrivere codice robusto e manutenibile.
+Diversi gestori e caricatori di dipendenze (dependency managers/loaders) incapsulano il pattern del modulo in API più amichevoli e strutturate. Senza analizzare una libreria specifica, è utile esaminare un semplice Proof of Concept per comprendere come questi strumenti operino "sotto il cofano":
 
 ```javascript
-/*
- * Module Pattern più completo
- */
+var MyModules = (function Manager() {
+  var modules = {};
 
-function BankAccount(initialBalance) {
-  // Variabili private
-  let balance = initialBalance || 0;
-  let transactionHistory = [];
-  let accountNumber = Math.floor(Math.random() * 1000000);
-
-  // Funzioni private (helper)
-  function recordTransaction(type, amount) {
-    transactionHistory.push({
-      type: type,
-      amount: amount,
-      date: new Date(),
-      balance: balance,
-    });
-  }
-
-  function isValidAmount(amount) {
-    return typeof amount === "number" && amount > 0;
-  }
-
-  // API pubblica
-  return {
-    deposit: function (amount) {
-      if (!isValidAmount(amount)) {
-        console.log("Importo non valido");
-        return false;
-      }
-      balance += amount;
-      recordTransaction("deposit", amount);
-      console.log(`Depositati €${amount}. Saldo: €${balance}`);
-      return true;
-    },
-
-    withdraw: function (amount) {
-      if (!isValidAmount(amount)) {
-        console.log("Importo non valido");
-        return false;
-      }
-      if (amount > balance) {
-        console.log("Fondi insufficienti");
-        return false;
-      }
-      balance -= amount;
-      recordTransaction("withdraw", amount);
-      console.log(`Prelevati €${amount}. Saldo: €${balance}`);
-      return true;
-    },
-
-    getBalance: function () {
-      return balance;
-    },
-
-    getAccountNumber: function () {
-      return accountNumber;
-    },
-
-    getHistory: function () {
-      // Restituisce una copia per evitare modifiche esterne
-      return transactionHistory.slice();
-    },
-  };
-}
-
-// Uso del modulo
-let myAccount = BankAccount(1000);
-console.log("Numero conto:", myAccount.getAccountNumber());
-
-myAccount.deposit(500); // Depositati €500. Saldo: €1500
-myAccount.withdraw(200); // Prelevati €200. Saldo: €1300
-myAccount.withdraw(2000); // Fondi insufficienti
-
-console.log("Saldo attuale:", myAccount.getBalance()); // 1300
-
-// Variabili private non accessibili
-console.log(myAccount.balance); // undefined
-console.log(myAccount.accountNumber); // undefined
-console.log(myAccount.recordTransaction); // undefined
-```
-
-```javascript
-/*
- * Module Pattern con IIFE (Singleton)
- */
-
-let AppConfig = (function () {
-  // Stato privato
-  let apiKey = "abc123xyz";
-  let environment = "production";
-  let debugMode = false;
-
-  // Funzioni private
-  function log(message) {
-    if (debugMode) {
-      console.log(`[CONFIG] ${message}`);
+  function define(name, deps, impl) {
+    for (var i = 0; i < deps.length; i++) {
+      deps[i] = modules[deps[i]];
     }
+    modules[name] = impl.apply(impl, deps);
   }
 
-  // API pubblica
+  function get(name) {
+    return modules[name];
+  }
+
   return {
-    getApiUrl: function () {
-      if (environment === "development") {
-        return "http://localhost:3000/api";
-      }
-      return "https://api.production.com";
-    },
-
-    setEnvironment: function (env) {
-      if (env === "development" || env === "production") {
-        environment = env;
-        log(`Ambiente cambiato in: ${env}`);
-      }
-    },
-
-    enableDebug: function () {
-      debugMode = true;
-      log("Debug mode attivato");
-    },
-
-    disableDebug: function () {
-      debugMode = false;
-    },
-
-    // apiKey rimane privato, non esposto
+    define: define,
+    get: get,
   };
 })();
-
-// Uso del singleton
-console.log(AppConfig.getApiUrl()); // https://api.production.com
-AppConfig.enableDebug();
-AppConfig.setEnvironment("development"); // [CONFIG] Ambiente cambiato in: development
-console.log(AppConfig.getApiUrl()); // http://localhost:3000/api
-
-// Stato privato non accessibile
-console.log(AppConfig.apiKey); // undefined
-console.log(AppConfig.environment); // undefined
 ```
+
+La parte chiave di questo codice è l'istruzione `modules[name] = impl.apply(impl, deps)`. Questa riga invoca la funzione "wrapper" che definisce il modulo (passandole le dipendenze) e memorizza il valore restituito (l'API pubblica del modulo) in una lista interna gestita per nome.
+
+Ecco come questo gestore potrebbe essere utilizzato per definire dei moduli:
 
 ```javascript
-/*
- * Module Pattern con namespace
- */
-
-let MyApp = MyApp || {};
-
-MyApp.Utils = (function () {
-  // Metodi privati
-  function privateHelper() {
-    return "Helper privato";
+MyModules.define("bar", [], function () {
+  function hello(who) {
+    return "Let me introduce: " + who;
   }
 
-  // API pubblica
   return {
-    formatDate: function (date) {
-      return date.toLocaleDateString("it-IT");
-    },
-
-    generateId: function () {
-      return "id_" + Math.random().toString(36).substr(2, 9);
-    },
-
-    capitalize: function (str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    },
+    hello: hello,
   };
-})();
+});
 
-MyApp.Database = (function () {
-  let data = {}; // storage privato
+MyModules.define("foo", ["bar"], function (bar) {
+  var hungry = "hippo";
+
+  function awesome() {
+    console.log(bar.hello(hungry).toUpperCase());
+  }
 
   return {
-    save: function (key, value) {
-      data[key] = value;
-    },
-
-    get: function (key) {
-      return data[key];
-    },
-
-    remove: function (key) {
-      delete data[key];
-    },
+    awesome: awesome,
   };
-})();
+});
 
-// Uso dei moduli organizzati
-console.log(MyApp.Utils.formatDate(new Date()));
-let id = MyApp.Utils.generateId();
-MyApp.Database.save(id, { nome: "Mario" });
-console.log(MyApp.Database.get(id)); // { nome: "Mario" }
+var bar = MyModules.get("bar");
+var foo = MyModules.get("foo");
+
+console.log(bar.hello("hippo")); // Let me introduce: hippo
+foo.awesome(); // LET ME INTRODUCE: HIPPO
 ```
+
+Si osserva che entrambi i moduli, "foo" e "bar", sono definiti tramite una funzione che restituisce un'API pubblica. Il modulo "foo" riceve addirittura l'istanza di "bar" come parametro di dipendenza e può utilizzarla liberamente.
+
+L'aspetto fondamentale da cogliere è che non esiste alcuna "magia" particolare dietro i gestori di moduli. Essi soddisfano semplicemente le due caratteristiche essenziali del pattern: invocano un wrapper di definizione della funzione e conservano il suo valore di ritorno come API del modulo. In sintesi, i moduli rimangono moduli, anche se avvolti da strumenti che ne facilitano la gestione.
+
+#### Moduli Futuri (ES6 Modules)
+
+ES6 introduce un supporto sintattico di prima classe per il concetto di moduli. Quando caricato tramite il sistema di moduli, ES6 tratta ogni file come un modulo separato. Ogni modulo può sia importare altri moduli o membri specifici di un'API, sia esportare i propri membri dell'API pubblica.
+
+A differenza dei moduli basati su funzioni, che non sono un pattern staticamente riconosciuto dal compilatore (e la cui semantica viene considerata solo a runtime), le API dei moduli ES6 sono statiche. Questo significa che l'API non cambia a runtime. Poiché il compilatore è a conoscenza di ciò, può verificare durante la compilazione (e il caricamento del file) che un riferimento a un membro di un modulo importato esista effettivamente. Se il riferimento non esiste, il compilatore solleva un errore "early" al momento della compilazione, invece di attendere la risoluzione dinamica a runtime.
+
+I moduli ES6 non hanno un formato "inline"; devono essere definiti in file separati (uno per modulo). I browser e gli engine dispongono di un "module loader" predefinito che carica in modo sincrono un file di modulo quando viene importato.
+
+Si consideri il seguente esempio suddiviso in file:
+
+**bar.js**
+
+```javascript
+function hello(who) {
+  return "Let me introduce: " + who;
+}
+
+export hello;
+```
+
+**foo.js**
+
+```javascript
+// import solo `hello()` dal modulo "bar"
+import hello from "bar";
+
+var hungry = "hippo";
+
+function awesome() {
+  console.log(hello(hungry).toUpperCase());
+}
+
+export awesome;
+```
+
+**baz.js**
+
+```javascript
+// import dell'intero modulo "foo" e "bar"
+module foo from "foo";
+module bar from "bar";
+
+console.log(bar.hello("rhino")); // Let me introduce: rhino
+foo.awesome(); // LET ME INTRODUCE: HIPPO
+```
+
+In questo scenario, `import` importa uno o più membri dall'API di un modulo nello Scope corrente, legandoli a una variabile (es. hello). La keyword `module` (nota: nella specifica finale ES6 standardizzata come `import * as name`) importa l'intera API del modulo. `export` esporta un identificatore (variabile, funzione) nell'API pubblica del modulo corrente.
+
+Il contenuto all'interno del file del modulo viene trattato come se fosse racchiuso in una Scope Closure, esattamente come accade con i moduli basati su funzioni visti in precedentemente.
 
 ### 3.11 L'identificatore this
 

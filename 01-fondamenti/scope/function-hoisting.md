@@ -1,4 +1,4 @@
-# Hoisting delle Funzioni [[../../appunti-completi#hoisting|📚]]
+# [[../../appunti-completi#hoisting|Hoisting delle Funzioni]]
 
 ## 🎯 Concetto
 

@@ -1,4 +1,4 @@
-# Nascondere nello Scope (Hiding in Plain Scope) [[../../appunti-completi#nascondere-nello-scope-hiding-in-plain-scope|📚]]
+# [[../../appunti-completi#nascondere-nello-scope-hiding-in-plain-scope|Nascondere nello Scope (Hiding in Plain Scope)]]
 
 ## 🎯 Concetto
 

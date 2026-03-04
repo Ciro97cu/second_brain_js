@@ -1,4 +1,4 @@
-# Barare con lo Scope Lessicale (Cheating Lexical Scope) [[../../appunti-completi#barare-con-lo-scope-lessicale-cheating-lexical|📚]]
+# [[../../appunti-completi#barare-con-lo-scope-lessicale-cheating-lexical|Barare con lo Scope Lessicale (Cheating Lexical Scope)]]
 
 ## 🎯 Concetto
 

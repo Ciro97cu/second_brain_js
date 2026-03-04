@@ -1,4 +1,4 @@
-# Gestione dei Moduli (Module Management) [[../../appunti-completi#gestione-dei-moduli-module-management|📚]]
+# [[../../appunti-completi#gestione-dei-moduli-module-management|Gestione dei Moduli (Module Management)]]
 
 ## 🎯 Concetto
 

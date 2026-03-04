@@ -1,4 +1,4 @@
-# Funzioni Anonime vs Nominate [[../../appunti-completi#funzioni-anonime-vs-funzioni-nominate|📚]]
+# [[../../appunti-completi#funzioni-anonime-vs-funzioni-nominate|Funzioni Anonime vs Nominate]]
 
 ## 🎯 Concetto
 

@@ -105,6 +105,22 @@ const config = (function () {
 })();
 ```
 
+## IIFE e Closure: Una Precisazione
+
+È doveroso fare una precisazione riguardo al pattern IIFE. Spesso si cita l'IIFE come esempio di Closure, ma secondo una definizione rigorosa, non è esattamente così.
+
+```javascript
+var a = 2;
+
+(function IIFE() {
+  console.log(a); // 2
+})();
+```
+
+Sebbene questo codice funzioni, **non è un'osservazione diretta della Closure**. Perché? Perché la funzione IIFE non viene eseguita al di fuori del suo Lexical Scope. Viene invocata esattamente nello stesso scope in cui è stata dichiarata. La variabile `a` viene trovata tramite le normali regole di lookup del Lexical Scope, non tramite Closure.
+
+Anche se l'IIFE in sé non è un esempio di Closure osservata (è come un albero che cade nella foresta senza nessuno che lo senta), essa **crea uno scope**, ed è uno degli strumenti più comuni per **creare scope su cui altre funzioni potranno poi effettuare una Closure**.
+
 ## Collegamenti
 
 - [[funzioni]] - Concetti base delle funzioni

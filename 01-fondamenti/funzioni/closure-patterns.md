@@ -104,59 +104,90 @@ console.log(account.withdraw(200)); // 1300
 // account.balance = 99999; // ❌ Non funziona, balance è privato!
 ```
 
-## 🔄 Closure nei Loop (Problema Classico)
+## 🔄 Cicli e Closure
 
-Un errore comune è non comprendere come le closure si comportano nei loop:
+L'esempio più comune e canonico utilizzato per illustrare la Closure coinvolge un semplice ciclo for. Spesso, questo scenario confonde gli sviluppatori, portando i Linters a segnalare errori quando si definiscono funzioni all'interno di cicli. Tuttavia, comprendendo la Closure, è possibile sfruttare questa struttura correttamente.
 
-### ❌ Il Problema con `var`
+Si consideri il seguente codice, dal quale ci si aspetterebbe logicamente la stampa dei numeri da 1 a 5, uno al secondo:
 
 ```javascript
-for (var i = 1; i <= 3; i++) {
-  setTimeout(function () {
-    console.log(i); // 4, 4, 4 (non 1, 2, 3!)
+for (var i = 1; i <= 5; i++) {
+  setTimeout(function timer() {
+    console.log(i);
   }, i * 1000);
 }
 ```
 
-**Perché stampa `4, 4, 4`?**
+### Il Problema
 
-- `var` ha **function scope** (non block scope)
-- Tutte e 3 le closure fanno riferimento alla **stessa variabile `i`**
-- Quando i setTimeout si attivano, il loop è già finito e `i` vale `4`
+Eseguendo questo codice, il risultato è sorprendente: viene stampato il numero **6 per cinque volte**.
 
-### ✅ Soluzione 1: Usa `let` (Block Scope)
+Il motivo risiede nel fatto che la callback timer viene eseguita solo dopo che il ciclo ha terminato la sua esecuzione. La condizione di terminazione del ciclo è che i non sia più <= a 5, il che accade quando i diventa 6. Quindi, quando i timer scattano, accedono al valore corrente di i, che è appunto 6.
+
+L'errore concettuale sta nel pensare che ogni iterazione del ciclo catturi una propria "copia" di "i". In realtà, a causa di come funziona lo Scope (specialmente con var), tutte e cinque le funzioni condividono lo stesso ambito globale e, di conseguenza, lo stesso riferimento all'unica variabile i.
+
+### Soluzione con IIFE
+
+Per risolvere il problema, è necessario creare uno Scope nuovo e dedicato per ogni iterazione del ciclo. Come visto in precedenza, l'IIFE è uno strumento eccellente per creare Scope.
+
+Un primo tentativo potrebbe essere semplicemente avvolgere la funzione in una IIFE:
 
 ```javascript
-for (let i = 1; i <= 3; i++) {
-  setTimeout(function () {
-    console.log(i); // 1, 2, 3 ✅
-  }, i * 1000);
+for (var i = 1; i <= 5; i++) {
+  (function () {
+    setTimeout(function timer() {
+      console.log(i);
+    }, i * 1000);
+  })();
 }
 ```
 
-**Perché funziona?**
+**Questo non funziona ancora!** Il problema persiste.
 
-- `let` ha **block scope**
-- Ogni iterazione crea un **nuovo scope** con una nuova `i`
-- Ogni closure cattura la propria copia di `i`
-
-### ✅ Soluzione 2: IIFE (Immediately Invoked Function Expression)
+Affinché la soluzione funzioni, il nuovo Scope creato dall'IIFE non deve essere vuoto: deve contenere una propria variabile che memorizzi il valore di i in quel preciso momento dell'iterazione. Si può passare i come argomento all'IIFE, creando così una variabile locale (nell'esempio chiamata j) che "congela" il valore:
 
 ```javascript
-for (var i = 1; i <= 3; i++) {
+for (var i = 1; i <= 5; i++) {
   (function (j) {
-    setTimeout(function () {
-      console.log(j); // 1, 2, 3 ✅
+    setTimeout(function timer() {
+      console.log(j);
     }, j * 1000);
   })(i);
 }
 ```
 
-**Perché funziona?**
+L'uso di un IIFE all'interno di ogni iterazione crea un nuovo Scope per ogni passaggio, offrendo alle funzioni di callback l'opportunità di effettuare una Closure su un valore specifico e corretto per quella iterazione.
 
-- L'IIFE crea un **nuovo scope** per ogni iterazione
-- `j` è un parametro della funzione, quindi ogni iterazione ha la sua copia
-- La closure del setTimeout cattura `j`, non `i`
+### Block Scoping Rivisitato
+
+Analizzando la soluzione precedente basata sulle IIFE, si nota che l'obiettivo fondamentale era creare un nuovo Scope per ogni iterazione del ciclo. In altre parole, era necessario uno Scope di blocco (Block Scope) per ogni iterazione.
+
+Il Capitolo 3 ha introdotto la dichiarazione let, che permette di dichiarare una variabile valida limitatamente a un blocco. Questo trasforma essenzialmente il blocco in uno Scope su cui è possibile applicare la Closure. È quindi possibile semplificare il codice inserendo una dichiarazione let all'interno del ciclo for che utilizza ancora var nell'intestazione:
+
+```javascript
+for (var i = 1; i <= 5; i++) {
+  let j = i; // Crea un nuovo scope di blocco per ogni iterazione
+  setTimeout(function timer() {
+    console.log(j);
+  }, j * 1000);
+}
+```
+
+Tuttavia, esiste un comportamento speciale e ancora più potente definito per le dichiarazioni let utilizzate direttamente nell'intestazione di un ciclo for.
+
+Questo comportamento prevede che la variabile non venga dichiarata una sola volta per tutto il ciclo (come accade con var), ma venga dichiarata nuovamente per ogni singola iterazione. Inoltre, l'Engine si occupa di inizializzare la variabile ad ogni iterazione successiva con il valore che aveva alla fine dell'iterazione precedente.
+
+Questo permette di ottenere il risultato desiderato senza l'uso di variabili d'appoggio o IIFE:
+
+```javascript
+for (let i = 1; i <= 5; i++) {
+  setTimeout(function timer() {
+    console.log(i);
+  }, i * 1000);
+}
+```
+
+In questo scenario, Block Scoping e Closure lavorano di concerto, risolvendo in modo elegante uno dei problemi più comuni nello sviluppo JavaScript.
 
 ## ✅ Punti Chiave
 

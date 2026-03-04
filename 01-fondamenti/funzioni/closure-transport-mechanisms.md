@@ -1,10 +1,10 @@
-# Closure: Meccanismi di Trasporto [[../../appunti-completi#closure|📚]]
+# Closure nel Mondo Reale [[../../appunti-completi#closure|📚]]
 
-## 🚀 Trasportare Funzioni Fuori dal Loro Scope
+## Closure Ovunque nel Codice Quotidiano
 
-La Closure funziona **indipendentemente da come la funzione viene trasportata** al di fuori del suo scope. Non importa se viene restituita come valore di ritorno o passata come argomento: qualunque sia il mezzo utilizzato per trasportare una funzione interna al di fuori del suo Lexical Scope, essa **manterrà sempre un riferimento di closure** allo scope originale.
+Gli esempi visti finora erano costruzioni accademiche utili a definire il concetto. Tuttavia, la promessa iniziale era dimostrare che la Closure è ovunque nel codice che scriviamo quotidianamente. È il momento di osservare questa verità.
 
-La funzione potrà sempre accedere a quello scope **ovunque venga eseguita**.
+Qualunque sia il mezzo utilizzato per trasportare una funzione fuori dal suo Lexical Scope, essa manterrà un riferimento allo scope in cui è stata originariamente dichiarata (al momento della scrittura, o "author-time") e lo utilizzerà ovunque venga eseguita.
 
 ## 1. Passare come Argomento
 
@@ -33,7 +33,9 @@ foo();
 3. `bar` esegue `fn()` (che è `baz`)
 4. `baz()` accede ancora a `a`, anche se eseguita dentro `bar`
 
-## 2. Callback e Timer
+## Timer e Callback
+
+Si consideri un classico esempio di utilizzo di un timer:
 
 ```javascript
 function wait(message) {
@@ -42,84 +44,33 @@ function wait(message) {
   }, 1000);
 }
 
-wait("Hello, closure!"); // Dopo 1 secondo: "Hello, closure!"
+wait("Hello, closure!");
 ```
 
-La funzione `timer` ha una **closure su `message`**. Anche dopo che `wait()` ha terminato, `timer` ricorda `message` e può stamparlo 1 secondo dopo.
+In questo codice, la funzione interna timer viene passata all'utility setTimeout. La funzione timer possiede una Closure sullo scope di wait, mantenendo quindi un riferimento alla variabile message.
 
-### Esempio Pratico: Debounce
+Mille millisecondi dopo l'esecuzione di wait, quando il suo scope interno dovrebbe essere teoricamente sparito, quella funzione anonima mantiene ancora vivo il collegamento a quello scope. All'interno dell'Engine, l'utility setTimeout invoca la funzione passata, e il riferimento al Lexical Scope risulta ancora intatto. Questa è la Closure.
 
-```javascript
-function debounce(fn, delay) {
-  let timeoutId;
+## Event Handlers
 
-  return function (...args) {
-    clearTimeout(timeoutId); // Closure su timeoutId
-    timeoutId = setTimeout(() => fn(...args), delay);
-  };
-}
-
-const debouncedSearch = debounce((query) => {
-  console.log("Searching for:", query);
-}, 300);
-```
-
-La funzione restituita mantiene una closure su `timeoutId` e `fn`, permettendo di implementare il pattern debounce.
-
-## 3. Event Handlers
+Lo stesso principio si applica, ad esempio, nella gestione degli eventi (qui in stile jQuery, ma valido per qualsiasi framework):
 
 ```javascript
-function setupButton(buttonId) {
-  var clickCount = 0;
+function setupButton(btn) {
+  let name = "Brian";
+  let selector = "#" + btn;
 
-  document.getElementById(buttonId).addEventListener("click", function () {
-    clickCount++;
-    console.log(`Button clicked ${clickCount} times`);
+  $(selector).click(function activator() {
+    console.log("Activating: " + name);
   });
 }
 
-setupButton("myButton");
+setupButton("my-button");
 ```
 
-Il callback dell'evento ha una **closure su `clickCount`**. Ogni click incrementa e stampa il contatore, anche se `setupButton` ha già terminato.
+## Funzioni Come Valori di Prima Classe
 
-### Esempio: Rimuovere Event Listener
-
-```javascript
-function attachClickHandler(element) {
-  let clicks = 0;
-
-  function handler() {
-    clicks++;
-    console.log(`Clicks: ${clicks}`);
-
-    if (clicks >= 5) {
-      element.removeEventListener("click", handler); // Closure su handler stesso
-      console.log("Handler removed");
-    }
-  }
-
-  element.addEventListener("click", handler);
-}
-```
-
-## 4. Return Values (Ritorno di Funzione)
-
-```javascript
-function makeMultiplier(factor) {
-  return function (number) {
-    return number * factor; // Closure su factor
-  };
-}
-
-const double = makeMultiplier(2);
-const triple = makeMultiplier(3);
-
-console.log(double(5)); // 10
-console.log(triple(5)); // 15
-```
-
-Restituire una funzione è il modo più comune di sfruttare le closure. La funzione restituita mantiene l'accesso allo scope esterno.
+Essenzialmente, ogni volta che si trattano le funzioni come valori di prima classe e le si passano in giro (come callback), è molto probabile che si stia esercitando la Closure. Che si tratti di timer, gestori di eventi, richieste Ajax o Web Workers, se si passa una funzione callback che accede al proprio scope lessicale, si sta utilizzando la Closure.
 
 ## ✅ Punti Chiave
 

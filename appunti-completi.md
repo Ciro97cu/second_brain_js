@@ -3055,6 +3055,136 @@ loggerApp("Utente loggato"); // [APP] #2: Utente loggato
 loggerDB("Query eseguita"); // [DB] #2: Query eseguita
 ```
 
+#### Closure nel Mondo Reale e IIFE
+
+Gli esempi visti finora erano costruzioni accademiche utili a definire il concetto. Tuttavia, la promessa iniziale era dimostrare che la Closure è ovunque nel codice che scriviamo quotidianamente. È il momento di osservare questa verità.
+
+Si consideri un classico esempio di utilizzo di un timer:
+
+```javascript
+function wait(message) {
+  setTimeout(function timer() {
+    console.log(message);
+  }, 1000);
+}
+
+wait("Hello, closure!");
+```
+
+In questo codice, la funzione interna timer viene passata all'utility setTimeout. La funzione timer possiede una Closure sullo scope di wait, mantenendo quindi un riferimento alla variabile message.
+
+Mille millisecondi dopo l'esecuzione di wait, quando il suo scope interno dovrebbe essere teoricamente sparito, quella funzione anonima mantiene ancora vivo il collegamento a quello scope. All'interno dell'Engine, l'utility setTimeout invoca la funzione passata, e il riferimento al Lexical Scope risulta ancora intatto. Questa è la Closure.
+
+Lo stesso principio si applica, ad esempio, nella gestione degli eventi (qui in stile jQuery, ma valido per qualsiasi framework):
+
+```javascript
+function setupButton(btn) {
+  let name = "Brian";
+  let selector = "#" + btn;
+
+  $(selector).click(function activator() {
+    console.log("Activating: " + name);
+  });
+}
+
+setupButton("my-button");
+```
+
+Essenzialmente, ogni volta che si trattano le funzioni come valori di prima classe e le si passano in giro (come callback), è molto probabile che si stia esercitando la Closure. Che si tratti di timer, gestori di eventi, richieste Ajax o Web Workers, se si passa una funzione callback che accede al proprio scope lessicale, si sta utilizzando la Closure.
+
+È doveroso fare una precisazione riguardo al pattern IIFE (Immediately Invoked Function Expression), introdotto precedentemente. Spesso si cita l'IIFE come esempio di Closure, ma secondo la definizione rigorosa data in precedenza, non è esattamente così.
+
+```javascript
+var a = 2;
+
+(function IIFE() {
+  console.log(a); // 2
+})();
+```
+
+Sebbene questo codice funzioni, non è un'osservazione diretta della Closure. Perché? Perché la funzione IIFE non viene eseguita al di fuori del suo Lexical Scope. Viene invocata esattamente nello stesso scope in cui è stata dichiarata. La variabile a viene trovata tramite le normali regole di lookup del Lexical Scope, non tramite Closure.
+
+Anche se l'IIFE in sé non è un esempio di Closure osservata (è come un albero che cade nella foresta senza nessuno che lo senta), essa crea uno scope, ed è uno degli strumenti più comuni per creare scope su cui altre funzioni potranno poi effettuare una Closure.
+
+#### Cicli e Closure
+
+L'esempio più comune e canonico utilizzato per illustrare la Closure coinvolge un semplice ciclo for. Spesso, questo scenario confonde gli sviluppatori, portando i Linters a segnalare errori quando si definiscono funzioni all'interno di cicli. Tuttavia, comprendendo la Closure, è possibile sfruttare questa struttura correttamente.
+
+Si consideri il seguente codice, dal quale ci si aspetterebbe logicamente la stampa dei numeri da 1 a 5, uno al secondo:
+
+```javascript
+for (var i = 1; i <= 5; i++) {
+  setTimeout(function timer() {
+    console.log(i);
+  }, i * 1000);
+}
+```
+
+Eseguendo questo codice, il risultato è sorprendente: viene stampato il numero 6 per cinque volte.
+
+Il motivo risiede nel fatto che la callback timer viene eseguita solo dopo che il ciclo ha terminato la sua esecuzione. La condizione di terminazione del ciclo è che i non sia più <= a 5, il che accade quando i diventa 6. Quindi, quando i timer scattano, accedono al valore corrente di i, che è appunto 6.
+
+L'errore concettuale sta nel pensare che ogni iterazione del ciclo catturi una propria "copia" di "i". In realtà, a causa di come funziona lo Scope (specialmente con var), tutte e cinque le funzioni condividono lo stesso ambito globale e, di conseguenza, lo stesso riferimento all'unica variabile i.
+
+Per risolvere il problema, è necessario creare uno Scope nuovo e dedicato per ogni iterazione del ciclo. Come visto in precedenza, l'IIFE è uno strumento eccellente per creare Scope.
+
+Un primo tentativo potrebbe essere semplicemente avvolgere la funzione in una IIFE:
+
+```javascript
+for (var i = 1; i <= 5; i++) {
+  (function () {
+    setTimeout(function timer() {
+      console.log(i);
+    }, i * 1000);
+  })();
+}
+```
+
+Affinché la soluzione funzioni, il nuovo Scope creato dall'IIFE non deve essere vuoto: deve contenere una propria variabile che memorizzi il valore di i in quel preciso momento dell'iterazione. Si può passare i come argomento all'IIFE, creando così una variabile locale (nell'esempio chiamata j) che "congela" il valore:
+
+```javascript
+for (var i = 1; i <= 5; i++) {
+  (function (j) {
+    setTimeout(function timer() {
+      console.log(j);
+    }, j * 1000);
+  })(i);
+}
+```
+
+L'uso di un IIFE all'interno di ogni iterazione crea un nuovo Scope per ogni passaggio, offrendo alle funzioni di callback l'opportunità di effettuare una Closure su un valore specifico e corretto per quella iterazione.
+
+#### Block Scoping Rivisitato
+
+Analizzando la soluzione precedente basata sulle IIFE, si nota che l'obiettivo fondamentale era creare un nuovo Scope per ogni iterazione del ciclo. In altre parole, era necessario uno Scope di blocco (Block Scope) per ogni iterazione.
+
+Il Capitolo 3 ha introdotto la dichiarazione let, che permette di dichiarare una variabile valida limitatamente a un blocco. Questo trasforma essenzialmente il blocco in uno Scope su cui è possibile applicare la Closure. È quindi possibile semplificare il codice inserendo una dichiarazione let all'interno del ciclo for che utilizza ancora var nell'intestazione:
+
+```javascript
+for (var i = 1; i <= 5; i++) {
+  let j = i; // Crea un nuovo scope di blocco per ogni iterazione
+  setTimeout(function timer() {
+    console.log(j);
+  }, j * 1000);
+}
+```
+
+Tuttavia, esiste un comportamento speciale e ancora più potente definito per le dichiarazioni let utilizzate direttamente nell'intestazione di un ciclo for.
+
+Questo comportamento prevede che la variabile non venga dichiarata una sola volta per tutto il ciclo (come accade con var), ma venga dichiarata nuovamente per ogni singola iterazione. Inoltre, l'Engine si occupa di inizializzare la variabile ad ogni iterazione successiva con il valore che aveva alla fine dell'iterazione precedente.
+
+Questo permette di ottenere il risultato desiderato senza l'uso di variabili d'appoggio o IIFE:
+
+```javascript
+for (let i = 1; i <= 5; i++) {
+  setTimeout(function timer() {
+    console.log(i);
+  }, i * 1000);
+}
+```
+
+In questo scenario, Block Scoping e Closure lavorano di concerto, risolvendo in modo elegante uno dei problemi più comuni nello sviluppo JavaScript.
+
 ### 3.10 Module Pattern
 
 L'uso più comune della closure in JavaScript è il Module Pattern. Questo pattern permette di definire dettagli implementativi privati (variabili e funzioni) che sono nascosti al mondo esterno, e allo stesso tempo di esporre un'interfaccia pubblica (public API) che può essere utilizzata per interagire con essi.

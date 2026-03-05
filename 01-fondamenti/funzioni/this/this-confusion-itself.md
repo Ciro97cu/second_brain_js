@@ -161,7 +161,7 @@ setTimeout(function () {
 **Prerequisiti**:
 
 - [[this-concept]] - Comprendere cos'è this
-- [[this-binding-rules]] - Default binding
+- [[this-binding-default]] - Default binding
 - [[funzioni]] - Funzioni come oggetti
 
 **Concetti Correlati**:

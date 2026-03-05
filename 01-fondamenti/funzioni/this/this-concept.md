@@ -120,11 +120,53 @@ Quando una funzione viene invocata, JavaScript crea un **execution context** (co
 
 Il riferimento `this` viene determinato al momento dell'invocazione e rimane fisso per tutta la durata dell'esecuzione della funzione.
 
+### Call-Site e Call-Stack
+
+Per comprendere il binding di `this`, è fondamentale capire il concetto di **call-site**: **la posizione nel codice dove una funzione viene chiamata** (non dove viene dichiarata).
+
+#### Call-Stack
+
+Il **call-stack** è lo stack delle funzioni che sono state chiamate per arrivare al momento corrente nell'esecuzione. Il call-site che ci interessa si trova nell'invocazione **immediatamente precedente** alla funzione attualmente in esecuzione.
+
+```javascript
+function baz() {
+  // call-stack: `baz`
+  // call-site: scope globale
+
+  console.log("baz");
+  bar(); // <-- call-site per `bar`
+}
+
+function bar() {
+  // call-stack: `baz` -> `bar`
+  // call-site: dentro `baz`
+
+  console.log("bar");
+  foo(); // <-- call-site per `foo`
+}
+
+function foo() {
+  // call-stack: `baz` -> `bar` -> `foo`
+  // call-site: dentro `bar`
+
+  console.log("foo");
+}
+
+baz(); // <-- call-site per `baz`
+```
+
+**Visualizzare il call-stack**:
+
+1. Usare il debugger del browser (Developer Tools)
+2. Impostare un breakpoint o inserire `debugger;`
+3. Il debugger mostra il call-stack completo
+4. Il **secondo elemento dall'alto** è il vero call-site
+
 ### Come Determinare this
 
 Per capire quale sarà il valore di `this`:
 
-1. **Trova il call-site** - Il punto nel codice dove la funzione viene invocata
+1. **Trova il call-site** - Il punto nel codice dove la funzione viene invocata (usa il debugger se necessario)
 2. **Applica le regole di binding** - Nell'ordine di precedenza (new > explicit > implicit > default)
 3. **L'oggetto risultante è `this`** - Per tutta la durata dell'esecuzione
 
@@ -139,7 +181,11 @@ Per capire quale sarà il valore di `this`:
 
 - [[this-confusion-itself]] - Confusione: "this = funzione stessa"
 - [[this-confusion-scope]] - Confusione: "this = scope lessicale"
-- [[this-binding-rules]] - Le quattro regole del binding
+- [[this-binding-default]] - Regola 1: Default binding
+- [[this-binding-implicit]] - Regola 2: Implicit binding
+- [[this-binding-explicit]] - Regola 3: Explicit binding
+- [[this-binding-new]] - Regola 4: New binding
+- [[this-binding-precedence]] - Ordine di precedenza
 - [[this-call-apply-bind]] - Metodi per controllare this
 - [[this-binding-problems]] - Problemi comuni e soluzioni
 

@@ -256,7 +256,7 @@ foo(); // 2
 **Concetti Correlati**:
 
 - [[this-confusion-itself]] - L'altra confusione comune
-- [[this-binding-rules]] - Come funziona this veramente
+- [[this-binding-precedence]] - Come funziona this veramente
 
 **Approfondimenti**:
 

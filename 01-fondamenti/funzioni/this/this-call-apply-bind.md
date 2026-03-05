@@ -219,7 +219,7 @@ Questo pattern manuale mostra come `bind()` funziona internamente.
 **Prerequisiti**:
 
 - [[this-concept]] - Comprendere this
-- [[this-binding-rules]] - Regola di explicit binding
+- [[this-binding-explicit]] - Regola di explicit binding
 
 **Concetti Correlati**:
 

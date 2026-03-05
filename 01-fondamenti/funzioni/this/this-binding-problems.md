@@ -260,7 +260,7 @@ items.filter((item) => this.isValid(item));
 **Prerequisiti**:
 
 - [[this-concept]] - Comprendere il binding di this
-- [[this-binding-rules]] - Le regole di binding
+- [[this-binding-precedence]] - Le regole di binding
 - [[funzioni]] - Funzioni JavaScript
 
 **Concetti Correlati**:

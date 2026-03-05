@@ -273,7 +273,7 @@ Arrow functions rendono obsoleto il pattern `var self = this`.
 **Prerequisiti**:
 
 - [[this-concept]] - Comprendere il binding di this
-- [[this-binding-rules]] - Le regole che arrow functions NON seguono
+- [[this-binding-precedence]] - Le regole che arrow functions NON seguono
 - [[funzioni]] - Funzioni JavaScript base
 
 **Concetti Correlati**:

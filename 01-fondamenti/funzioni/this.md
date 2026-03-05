@@ -1,8 +1,67 @@
 # [[../../appunti-completi#311-lidentificatore-this|L'identificatore this]]
 
-La parola chiave `this` in JavaScript è spesso fraintesa. Se una funzione contiene un riferimento a `this`, quel riferimento punta a un **oggetto**, ma l'**oggetto dipende da come la funzione è stata chiamata** (call-site).
+La keyword `this` è uno dei meccanismi più fraintesi in JavaScript. Si tratta di un identificatore speciale definito automaticamente nello scope di ogni funzione, ma ciò a cui si riferisce rappresenta fonte di confusione anche per sviluppatori esperti.
 
-**Equivoco comune**: `this` **NON** si riferisce alla funzione stessa.
+## 🎯 Concetti Chiave
+
+- **Call-site determina this**: L'oggetto a cui `this` punta dipende **esclusivamente da come la funzione viene chiamata** (call-site), non da dove è stata definita
+- **Binding dinamico**: Il valore di `this` è determinato al momento dell'invocazione, non al momento della scrittura
+- **Equivoco comune**: `this` **NON** si riferisce alla funzione stessa
+- **Quattro regole**: Default, Implicit, Explicit, New binding (in ordine di precedenza crescente)
+
+## 💡 Perché this?
+
+Il meccanismo `this` fornisce un modo elegante per **passare implicitamente** un riferimento a un oggetto, permettendo il riutilizzo delle funzioni su multipli contesti:
+/\*
+
+- Con this: contesto implicito (più elegante)
+  \*/
+  function identify() {
+  return this.name.toUpperCase();
+  }
+
+function speak() {
+var greeting = "Hello, I'm " + identify.call(this);
+console.log(greeting);
+}
+
+var me = { name: "Kyle" };
+var you = { name: "Reader" };
+
+identify.call(me); // KYLE
+identify.call(you); // READER
+speak.call(me); // Hello, I'm KYLE
+speak.call(you); // Hello, I'm READER
+
+/\*
+
+- Senza this: passaggio esplicito (più verboso)
+  \*/
+  function identifyContext(context) {
+  return context.name.toUpperCase();
+  }
+
+function speakContext(context) {
+var greeting = "Hello, I'm " + identifyContext(context);
+console.log(greeting);
+}
+
+identifyContext(you); // READER
+speakContext(me); // Hello, I'm KYLE
+
+````
+
+Più complesso diventa il pattern di utilizzo, più chiaramente si vede che passare il contesto come parametro esplicito risulta più disordinato rispetto all'uso di `this`.
+
+## Confusioni Comuni
+
+**Principio fondamentale**: quando una funzione contiene un riferimento a `this`, quel riferimento punta a un oggetto. Tuttavia, **l'oggetto dipende esclusivamente da come la funzione viene chiamata** (call-site), non da dove è stata definita.
+
+**Equivoco più comune**: pensare che `this` si riferisca alla funzione stessa. Non è così. Il valore di `this` è un binding dinamico determinato al momento dell'invocazione secondo regole specifiche.
+
+## Le Quattro Regole del Binding
+
+Per capire a cosa si riferisce `this`, si esamina il punto esatto in cui la funzione viene chiamata. Il contesto determina il valore di `this` secondo una di queste quattro regole:
 
 ```javascript
 function foo() {
@@ -13,92 +72,118 @@ var bar = "global";
 var obj1 = { bar: "obj1", foo: foo };
 var obj2 = { bar: "obj2" };
 
+// Le quattro regole in azione:
 foo(); // "global" - default binding
 obj1.foo(); // "obj1" - implicit binding
 foo.call(obj2); // "obj2" - explicit binding
 new foo(); // undefined - new binding
-```
-
-## Le Quattro Regole del Binding
+````
 
 ### 1. Default Binding
 
-Chiamata **diretta** → `this` = oggetto **globale** (`window` nel browser).
+Chiamata **diretta** senza contesto specifico → `this` = oggetto **globale** (`window` nel browser).
 
 ```javascript
-function identify() {
-  console.log(this.name);
+function mostraNome() {
+  console.log(this.nome);
 }
 
-var name = "Global Context";
-identify(); // "Global Context"
+var nome = "Globale";
+mostraNome(); // "Globale" (this = window/global)
 ```
 
-⚠️ **Strict Mode** → `this` rimane `undefined` invece del globale.
+⚠️ **Strict Mode**: `this` rimane `undefined` invece del globale, causando un TypeError se si tenta di accedere alle sue proprietà.
 
 ### 2. Implicit Binding
 
 Chiamata come **metodo di un oggetto** → `this` = l'**oggetto** stesso.
 
 ```javascript
-var person = {
-  name: "Alice",
-  greet: function () {
-    console.log("Ciao, sono " + this.name);
+var persona = {
+  nome: "Mario",
+  saluta: function () {
+    console.log("Ciao, sono " + this.nome);
   },
 };
 
-person.greet(); // "Ciao, sono Alice"
+persona.saluta(); // "Ciao, sono Mario" (this = persona)
 ```
 
-⚠️ **Perdita del Binding** → Estraendo il metodo si perde il binding:
+**⚠️ Perdita del Binding**: Estraendo il metodo si perde il riferimento all'oggetto:
 
 ```javascript
-var greetFunc = person.greet;
-greetFunc(); // this = globale (default binding)
+var saluto = persona.saluta;
+saluto(); // "Ciao, sono Globale" (this = window, default binding!)
 ```
 
-Questo accade spesso con i **callback**.
+Questo è un problema frequente con i **callback**. Con oggetti annidati, `this` si riferisce all'oggetto più vicino nella catena di chiamata.
 
 ### 3. Explicit Binding
 
 Impostare **esplicitamente** `this` con `.call()`, `.apply()`, o `.bind()`.
 
 ```javascript
-function greet() {
-  console.log("Ciao, sono " + this.name);
+function descrivi() {
+  console.log(this.tipo + ": " + this.nome);
 }
 
-var person1 = { name: "Alice" };
-var person2 = { name: "Bob" };
+var animale1 = { tipo: "Cane", nome: "Fido" };
+var animale2 = { tipo: "Gatto", nome: "Micio" };
 
-greet.call(person1); // "Ciao, sono Alice"
-greet.apply(person2); // "Ciao, sono Bob"
+descrivi.call(animale1); // "Cane: Fido"
+descrivi.call(animale2); // "Gatto: Micio"
+```
 
-// .bind() crea hard binding permanente
-var boundGreet = greet.bind(person1);
-boundGreet(); // "Ciao, sono Alice"
+**call vs apply**: `call` accetta argomenti separati, `apply` accetta un array:
+
+```javascript
+function somma(a, b) {
+  console.log(this.nome + " calcola: " + (a + b));
+}
+
+var utente = { nome: "Mario" };
+
+somma.call(utente, 5, 3); // "Mario calcola: 8" (argomenti separati)
+somma.apply(utente, [5, 3]); // "Mario calcola: 8" (argomenti in array)
+```
+
+**bind**: crea una nuova funzione con `this` permanentemente fissato (hard binding):
+
+```javascript
+var salutaMario = persona.saluta.bind(persona);
+salutaMario(); // "Ciao, sono Mario" (this è sempre persona)
+
+setTimeout(persona.saluta, 1000); // "Ciao, sono Globale" (perde this)
+setTimeout(persona.saluta.bind(persona), 1000); // "Ciao, sono Mario" (this fissato)
 ```
 
 ### 4. New Binding
 
-Con `new` → `this` = **nuovo oggetto vuoto** creato.
+Con `new` → `this` = **nuovo oggetto vuoto** creato automaticamente.
 
 ```javascript
-function Person(name) {
-  this.name = name;
+function Persona(nome, eta) {
+  this.nome = nome;
+  this.eta = eta;
+  this.descrivi = function () {
+    console.log(this.nome + " ha " + this.eta + " anni");
+  };
 }
 
-var alice = new Person("Alice");
-console.log(alice.name); // "Alice"
+var p1 = new Persona("Mario", 30);
+var p2 = new Persona("Luigi", 25);
+
+p1.descrivi(); // "Mario ha 30 anni"
+p2.descrivi(); // "Luigi ha 25 anni"
+console.log(p1.nome); // "Mario" (this era il nuovo oggetto)
 ```
 
 Quando si usa `new`:
 
 1. Viene creato un nuovo oggetto vuoto
-2. `this` = nuovo oggetto
-3. La funzione popola `this`
-4. Il nuovo oggetto viene ritornato automaticamente
+2. `this` viene associato al nuovo oggetto
+3. La funzione costruttore popola `this`
+4. Il nuovo oggetto viene ritornato automaticamente (a meno che la funzione non ritorni esplicitamente un altro oggetto)
 
 ## Ordine di Precedenza
 
@@ -118,6 +203,7 @@ Per capire `this`, esamina il **call-site** (dove la funzione è chiamata):
 
 ## Collegamenti
 
+- [[this-binding-problems]] - Problemi comuni con this (callback, arrow functions, soluzioni)
 - [[funzioni]] - Le funzioni e il loro contesto di esecuzione
 - [[closure]] - This e closure insieme per dati privati
 - [[../oggetti/oggetti]] - This nei metodi degli oggetti

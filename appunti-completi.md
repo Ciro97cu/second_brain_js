@@ -3437,9 +3437,70 @@ Il contenuto all'interno del file del modulo viene trattato come se fosse racchi
 
 ### 3.11 L'identificatore this
 
-Un altro concetto spesso frainteso in JavaScript è la parola chiave `this`. Sebbene possa sembrare legata a paradigmi di programmazione orientata agli oggetti, in JavaScript il suo funzionamento è diverso.
+La keyword `this` è uno dei meccanismi più fraintesi in JavaScript. Si tratta di un identificatore speciale definito automaticamente nello scope di ogni funzione, ma ciò a cui si riferisce esattamente rappresenta fonte di confusione anche per sviluppatori esperti.
 
-Se una funzione contiene un riferimento a `this`, quel riferimento di solito punta a un oggetto. Tuttavia, l'oggetto a cui punta dipende da come la funzione è stata chiamata (call-site). È fondamentale capire che `this` non si riferisce alla funzione stessa, che è l'equivoco più comune.
+Il meccanismo di `this` in JavaScript non è particolarmente avanzato, ma gli sviluppatori spesso lo percepiscono come "complesso" o "confuso". Senza una chiara comprensione, `this` può apparire quasi magico nella sua imprevedibilità.
+
+#### Perché this?
+
+Se il meccanismo di `this` è così confuso, ci si potrebbe chiedere perché sia effettivamente utile. Vale la pena della sua complessità? Prima di esaminare il come funziona, è necessario comprendere il perché esiste.
+
+Si consideri un esempio che illustra la motivazione e l'utilità di `this`:
+
+```javascript
+function identify() {
+  return this.name.toUpperCase();
+}
+
+function speak() {
+  var greeting = "Hello, I'm " + identify.call(this);
+  console.log(greeting);
+}
+
+var me = {
+  name: "Kyle",
+};
+
+var you = {
+  name: "Reader",
+};
+
+identify.call(me); // KYLE
+identify.call(you); // READER
+
+speak.call(me); // Hello, I'm KYLE
+speak.call(you); // Hello, I'm READER
+```
+
+Questo codice permette alle funzioni `identify()` e `speak()` di essere riutilizzate con più oggetti di contesto (`me` e `you`), piuttosto che richiedere una versione separata della funzione per ogni oggetto.
+
+Invece di affidarsi a `this`, si potrebbe passare esplicitamente un oggetto di contesto a entrambe le funzioni:
+
+```javascript
+function identify(context) {
+  return context.name.toUpperCase();
+}
+
+function speak(context) {
+  var greeting = "Hello, I'm " + identify(context);
+  console.log(greeting);
+}
+
+identify(you); // READER
+speak(me); // Hello, I'm KYLE
+```
+
+Tuttavia, il meccanismo di `this` fornisce un modo più elegante per "passare implicitamente" un riferimento a un oggetto, portando a un design API più pulito e a un riutilizzo più semplice. Più complesso diventa il pattern di utilizzo, più chiaramente si vedrà che passare il contesto come parametro esplicito risulta spesso più disordinato rispetto all'uso di un contesto `this`. Quando si esplorano oggetti e prototipi, emergerà l'utilità di avere una collezione di funzioni in grado di referenziare automaticamente l'oggetto di contesto appropriato.
+
+#### Confusioni
+
+Prima di spiegare come `this` funziona realmente, è necessario dissipare alcuni equivoci su come NON funziona. Il nome "this" crea confusione quando gli sviluppatori cercano di pensarlo in modo troppo letterale. Esistono due significati spesso assunti, ma entrambi sono incorretti.
+
+Il principio fondamentale da comprendere è che quando una funzione contiene un riferimento a `this`, quel riferimento punta a un oggetto. Tuttavia, **l'oggetto a cui punta dipende esclusivamente da come la funzione viene chiamata** (call-site), non da dove è stata definita o scritta. Si tratta di un binding dinamico determinato al momento dell'invocazione.
+
+L'equivoco più comune consiste nel pensare che `this` si riferisca alla funzione stessa. Non è così. Il valore di `this` è determinato dal contesto di chiamata secondo regole specifiche che ora esamineremo.
+
+#### Le Quattro Regole di this
 
 ```javascript
 /*

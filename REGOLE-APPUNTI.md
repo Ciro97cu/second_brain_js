@@ -17,14 +17,7 @@ Ogni blocco deve iniziare con un titolo chiaro che identifichi l'argomento.
 
 - Esempio: "Scope Lessicale"
 
-### 2. Tipo di Topic
-
-Specificare se è:
-
-- **Nuovo Topic**: un concetto a sé stante
-- **Espansione**: un approfondimento pratico o una variante di un concetto esistente
-
-### 3. Terza Persona
+### 2. Terza Persona
 
 Scrivere **rigorosamente in terza persona**.
 
@@ -34,7 +27,7 @@ Scrivere **rigorosamente in terza persona**.
 - ❌ "Osserviamo che..."
 - ❌ "Eseguiamo..."
 
-### 4. Stile Discorsivo
+### 3. Stile Discorsivo
 
 Prediligere **paragrafi fluidi** e spiegazioni narrative.
 
@@ -42,14 +35,14 @@ Prediligere **paragrafi fluidi** e spiegazioni narrative.
 - Usare bullet points solo per enumerazioni tecniche necessarie
 - Preferire la narrazione continua
 
-### 5. Semplicità
+### 4. Semplicità
 
 Mantenere il linguaggio **semplice, chiaro e diretto**.
 
 - Evitare complessità non necessarie
 - Spiegare i concetti in modo accessibile
 
-### 6. Termini Tecnici
+### 5. Termini Tecnici
 
 **Mantenere in inglese** i termini chiave dell'ecosistema JavaScript:
 
@@ -64,7 +57,7 @@ Mantenere il linguaggio **semplice, chiaro e diretto**.
 - Callback
 - ecc.
 
-### 7. Commenti nel Codice
+### 6. Commenti nel Codice
 
 Utilizzare **commenti multilinea** `/* ... */` per le spiegazioni estese all'interno degli snippet di codice.
 
@@ -75,16 +68,25 @@ Utilizzare **commenti multilinea** `/* ... */` per le spiegazioni estese all'int
  */
 ```
 
-### 8. Esempi di Codice
+### 7. Esempi di Codice
 
 - L'utente fornirà gli esempi di codice
 - Valutare se è necessario ampliarli (generalmente non dovrebbe servire)
 - Includere sempre snippet pratici a supporto della teoria quando necessario
 
-### 9. Posizionamento
+### 8. Posizionamento
 
 Prestare **attenzione al corretto posizionamento** degli appunti in `appunti-completi.md`:
 
 - Rispettare la struttura esistente
 - Inserire nel capitolo/sezione appropriati
 - Mantenere la numerazione coerente
+
+### 9. Traduzione Diretta
+
+Se il concetto è breve e non vale la pena riassumerlo, **tradurlo direttamente** in italiano mantenendo tutti i dettagli.
+
+- ✅ Tradurre tutto il contenuto originale
+- ✅ Mantenere esempi e spiegazioni complete
+- ❌ NON sintetizzare o tagliare parti
+- ❌ NON lasciare contenuti in inglese

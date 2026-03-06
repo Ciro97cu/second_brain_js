@@ -358,6 +358,44 @@ Determinare `this`:
 
 **Eccezione**: `new` vince anche su `bind()`!
 
+## 📝 Riepilogo: Determinare `this`
+
+Per determinare il valore di `this` da un call-site, **fai queste domande in ordine** e fermati quando la prima regola si applica:
+
+### 1️⃣ La funzione è chiamata con `new` (new binding)?
+
+Se sì, `this` è il nuovo oggetto costruito.
+
+```javascript
+var bar = new foo();
+```
+
+### 2️⃣ La funzione è chiamata con `call` o `apply` (explicit binding), anche nascosto dentro un `bind` hard binding?
+
+Se sì, `this` è l'oggetto esplicitamente specificato.
+
+```javascript
+var bar = foo.call(obj2);
+```
+
+### 3️⃣ La funzione è chiamata con un contesto (implicit binding)?
+
+Altrimenti noto come owning o containing object. Se sì, `this` è quell'oggetto contenitore.
+
+```javascript
+var bar = obj1.foo();
+```
+
+### 4️⃣ Altrimenti, default `this` (default binding)
+
+Se in strict mode, usa `undefined`, altrimenti usa il global object.
+
+```javascript
+var bar = foo();
+```
+
+**Questo è tutto!** Queste sono tutte le regole necessarie per comprendere il binding di `this` per le normali chiamate di funzione. Beh... quasi. 😉
+
 ## ⚠️ Gotcha
 
 ### bind + new = Currying, Non Error

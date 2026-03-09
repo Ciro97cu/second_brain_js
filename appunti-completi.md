@@ -1149,6 +1149,117 @@ console.log(typeof simbolo); // "symbol"
 
 È importante notare che `typeof` agisce sul valore contenuto nella variabile in quel momento, non sulla variabile stessa.
 
+#### I Casi Particolari: null e undefined
+
+L'operatore `typeof` presenta alcuni comportamenti specifici che è fondamentale conoscere.
+
+##### Il Bug di typeof null
+
+Quando si esegue `typeof` su un valore `null`, il risultato è `"object"`. Questo è un **bug storico del linguaggio** che, per ragioni di retrocompatibilità con il codice esistente sul web, non è mai stato corretto. Ci si aspetterebbe che restituisse `"null"`.
+
+```javascript
+let valoreNullo = null;
+
+console.log(typeof valoreNullo); // "object" - BUG!
+
+/*
+ * Per verificare se un valore è null, si deve usare
+ * un confronto diretto, non typeof
+ */
+if (valoreNullo === null) {
+  console.log("Il valore è null");
+}
+
+/*
+ * typeof NON è affidabile per null
+ */
+if (typeof valoreNullo === "object") {
+  /*
+   * Potrebbe essere null OPPURE un oggetto reale!
+   * Serve un controllo aggiuntivo
+   */
+  if (valoreNullo === null) {
+    console.log("È null");
+  } else {
+    console.log("È un oggetto vero");
+  }
+}
+```
+
+Questo bug risale alle prime implementazioni di JavaScript e non può essere corretto senza rompere milioni di siti web esistenti che potrebbero dipendere da questo comportamento.
+
+##### Il Valore undefined
+
+Una variabile ha il valore `undefined` quando è stata **dichiarata ma non le è stato ancora assegnato un valore**. È anche possibile assegnare esplicitamente `undefined` a una variabile, ottenendo lo stesso stato.
+
+```javascript
+/*
+ * undefined automatico
+ */
+let nome;
+console.log(nome); // undefined
+console.log(typeof nome); // "undefined"
+
+/*
+ * undefined esplicito
+ */
+let eta = undefined;
+console.log(eta); // undefined
+console.log(typeof eta); // "undefined"
+
+/*
+ * Proprietà inesistente su oggetto
+ */
+let persona = { nome: "Mario" };
+console.log(persona.cognome); // undefined (proprietà non esiste)
+
+/*
+ * Ritorno di funzione senza return
+ */
+function nonRestituisceNulla() {
+  let x = 5;
+  // nessun return
+}
+
+let risultato = nonRestituisceNulla();
+console.log(risultato); // undefined
+```
+
+La differenza concettuale tra `null` e `undefined` è sottile ma importante:
+
+- **`undefined`** → Indica che una variabile esiste ma **non ha ancora ricevuto un valore**. È lo stato "iniziale" o "vuoto" assegnato automaticamente da JavaScript.
+
+- **`null`** → Indica **intenzionalmente l'assenza di un valore**. È un valore che il programmatore assegna esplicitamente per dire "qui non c'è nessun oggetto".
+
+```javascript
+/*
+ * Confronto null vs undefined
+ */
+
+let nomeUtente; // undefined - non ancora impostato
+let nomeAmministratore = null; // null - intenzionalmente vuoto
+
+console.log(nomeUtente); // undefined
+console.log(nomeAmministratore); // null
+
+/*
+ * Entrambi sono "falsy" in contesti booleani
+ */
+if (!nomeUtente) {
+  console.log("nomeUtente è falsy"); // ✅ eseguito
+}
+
+if (!nomeAmministratore) {
+  console.log("nomeAmministratore è falsy"); // ✅ eseguito
+}
+
+/*
+ * Ma sono valori distinti
+ */
+console.log(nomeUtente === nomeAmministratore); // false
+console.log(nomeUtente == nomeAmministratore); // true (coercizione!)
+```
+
 ### 3.2 Tipizzazione Dinamica (Dynamic Typing)
 
 **Tipo**: Nuovo Topic
@@ -1264,6 +1375,8 @@ let b = Number(a);
 console.log(a); // "42"
 console.log(b); // 42
 ```
+
+> **Approfondimento**: Per una panoramica completa dei metodi di conversione esplicita (operatore `+`, `parseInt()`, `parseFloat()`, `String()`, `.toString()`, ecc.), si veda [la sezione 3.5 "Conversione Esplicita dei Tipi"](#conversione-esplicita-dei-tipi-explicit-coercion).
 
 #### Coercizione Implicita (Implicit Coercion)
 
@@ -4653,13 +4766,13 @@ Per capire l'utilità delle arrow-functions, si consideri un problema classico: 
 
 ```javascript
 var obj = {
-    count: 0,
-    start: function() {
-        setTimeout(function() {
-            this.count++;
-            console.log(this.count);
-        }, 1000);
-    }
+  count: 0,
+  start: function () {
+    setTimeout(function () {
+      this.count++;
+      console.log(this.count);
+    }, 1000);
+  },
 };
 
 obj.start(); // NaN o errore - `this` è window/global, non `obj`!
@@ -4673,17 +4786,17 @@ Le arrow-functions risolvono questo problema "fotografando" il valore di `this` 
 
 ```javascript
 var obj = {
-    count: 0,
-    start: function() {
-        setTimeout(() => {
-            /*
-             * `this` qui è lo stesso `this` di start()
-             * Non importa chi chiama questa arrow-function
-             */
-            this.count++;
-            console.log(this.count);
-        }, 1000);
-    }
+  count: 0,
+  start: function () {
+    setTimeout(() => {
+      /*
+       * `this` qui è lo stesso `this` di start()
+       * Non importa chi chiama questa arrow-function
+       */
+      this.count++;
+      console.log(this.count);
+    }, 1000);
+  },
 };
 
 obj.start(); // 1 - Funziona! `this` è `obj`
@@ -4697,12 +4810,12 @@ Una caratteristica fondamentale è che il binding di un'arrow-function **non pu�
 
 ```javascript
 function creaContatore() {
-    /*
-     * Questa arrow-function cattura il `this` di creaContatore()
-     */
-    return () => {
-        console.log(this.valore);
-    };
+  /*
+   * Questa arrow-function cattura il `this` di creaContatore()
+   */
+  return () => {
+    console.log(this.valore);
+  };
 }
 
 var obj1 = { valore: 1 };
@@ -4724,15 +4837,15 @@ Prima delle arrow-functions, esisteva una tecnica comune per risolvere lo stesso
 
 ```javascript
 var obj = {
-    count: 0,
-    start: function() {
-        var self = this; // "Salva" il valore di `this`
-        
-        setTimeout(function() {
-            self.count++; // Usa la variabile, non `this`
-            console.log(self.count);
-        }, 1000);
-    }
+  count: 0,
+  start: function () {
+    var self = this; // "Salva" il valore di `this`
+
+    setTimeout(function () {
+      self.count++; // Usa la variabile, non `this`
+      console.log(self.count);
+    }, 1000);
+  },
 };
 
 obj.start(); // 1 - Funziona
@@ -4760,25 +4873,25 @@ Il vero problema nasce quando si **mescolano i due stili nella stessa funzione**
 
 ```javascript
 var controller = {
-    id: 42,
-    
-    init: function() {
-        /*
-         * Qui si usa `this` dinamico (implicit binding)
-         */
-        var self = this;
-        
-        document.addEventListener('click', function(evento) {
-            /*
-             * Ma qui si evita `this` con `self`
-             */
-            self.handleClick(evento);
-        });
-    },
-    
-    handleClick: function(evento) {
-        console.log('Controller ' + this.id);
-    }
+  id: 42,
+
+  init: function () {
+    /*
+     * Qui si usa `this` dinamico (implicit binding)
+     */
+    var self = this;
+
+    document.addEventListener("click", function (evento) {
+      /*
+       * Ma qui si evita `this` con `self`
+       */
+      self.handleClick(evento);
+    });
+  },
+
+  handleClick: function (evento) {
+    console.log("Controller " + this.id);
+  },
 };
 ```
 
@@ -5279,6 +5392,243 @@ for (var i = 0; i < 1000; i++) {
 }
 // Tutte le 1000 istanze condividono PersonaEfficiente.prototype.saluta
 ```
+
+### 3.13 Oggetti: Sintassi e Tipi
+
+Precedentemente si è esplorato come il binding di `this` punti a vari oggetti a seconda del call-site della funzione. Ma cosa sono esattamente gli oggetti, e perché è necessario puntare ad essi? Questa sezione approfondisce la natura degli oggetti in JavaScript, le loro forme sintattiche e il loro ruolo nel sistema di tipi del linguaggio.
+
+#### Sintassi degli Oggetti
+
+Gli oggetti in JavaScript possono essere creati utilizzando due forme sintattiche distinte: la **forma dichiarativa** (o letterale) e la **forma costruita** (constructed form).
+
+##### Forma Letterale
+
+La sintassi letterale è la più comune e diretta per creare oggetti:
+
+```javascript
+var myObj = {
+  key: value,
+  anotherKey: anotherValue,
+  // ... altre proprietà
+};
+```
+
+Questa forma permette di dichiarare un oggetto e tutte le sue proprietà in un'unica espressione. È concisa, leggibile e rappresenta il modo idiomatico di creare oggetti in JavaScript moderno.
+
+##### Forma Costruita
+
+La forma costruita utilizza la parola chiave `new` insieme al costruttore `Object`:
+
+```javascript
+var myObj = new Object();
+myObj.key = value;
+myObj.anotherKey = anotherValue;
+```
+
+In questa forma, si crea prima un oggetto vuoto, poi si aggiungono le proprietà una alla volta attraverso assegnazioni successive.
+
+##### Quale Forma Usare?
+
+Sebbene entrambe le forme producano esattamente lo stesso tipo di oggetto, la **forma letterale è quasi sempre preferibile**. I motivi sono principalmente di leggibilità e praticità:
+
+- **Concisione**: La forma letterale permette di vedere tutte le proprietà dell'oggetto in un colpo d'occhio
+- **Meno verbosa**: Non richiede righe separate per ogni proprietà
+- **Standard moderno**: È la convenzione seguita in tutto l'ecosistema JavaScript
+
+La forma costruita è estremamente poco comune nella pratica quotidiana. Si incontra principalmente in codice legacy o in contesti molto specifici dove la creazione dinamica di oggetti richiede una costruzione passo-passo.
+
+**Nota importante**: Questo stesso principio si applica alla maggior parte degli oggetti built-in (come `Array`, `Date`, `RegExp`, ecc.) - si preferisce sempre la forma letterale quando disponibile.
+
+```javascript
+/*
+ * Confronto pratico
+ */
+
+// ✅ Forma letterale - chiara e immediata
+var user = {
+  name: "Alice",
+  age: 28,
+  isActive: true,
+};
+
+// ❌ Forma costruita - verbosa e meno chiara
+var user = new Object();
+user.name = "Alice";
+user.age = 28;
+user.isActive = true;
+
+// Stesso risultato, ma la forma letterale è superiore
+```
+
+#### Il Sistema di Tipi in JavaScript
+
+Gli oggetti sono uno dei blocchi costruttivi fondamentali su cui è edificata gran parte di JavaScript. Fanno parte dei **sei tipi primari** (chiamati "language types" nella specifica ECMAScript) del linguaggio:
+
+1. **string**
+2. **number**
+3. **boolean**
+4. **null**
+5. **undefined**
+6. **object**
+
+##### Primitivi Non Sono Oggetti
+
+È fondamentale comprendere che i **tipi primitivi semplici** (string, boolean, number, null, undefined) **non sono oggetti**. Questa è una distinzione cruciale che spesso viene fraintesa.
+
+> **Nota sul bug di `typeof null`**: Per i dettagli su questo caso particolare e il comportamento anomalo dell'operatore `typeof` con `null`, si veda [la sezione dedicata in 3.1](#i-casi-particolari-null-e-undefined).
+
+##### Il Mito: "Tutto è un Oggetto in JavaScript"
+
+Una delle affermazioni più comuni e fuorvianti sul linguaggio è che **"tutto in JavaScript è un oggetto"**. Questa affermazione è chiaramente **falsa**.
+
+I valori primitivi (stringhe, numeri, booleani, null, undefined) sono tipi distinti dagli oggetti e hanno caratteristiche diverse:
+
+```javascript
+/*
+ * I primitivi NON sono oggetti
+ */
+
+var str = "hello";
+var num = 42;
+var bool = true;
+
+typeof str; // "string" - NOT "object"
+typeof num; // "number" - NOT "object"
+typeof bool; // "boolean" - NOT "object"
+```
+
+Tuttavia, questa confusione nasce dal fatto che JavaScript esegue automaticamente delle operazioni di "boxing" (inscatolamento) quando si cerca di accedere a proprietà o metodi su questi primitivi, dando l'illusione che siano oggetti.
+
+> **Approfondimento sul boxing**: Per i dettagli su come funziona il meccanismo di boxing automatico, si veda [la sezione 3.5 dedicata](#35-boxing-e-metodi-dei-primitivi).
+
+```javascript
+/*
+ * Esempio di boxing automatico
+ */
+
+var str = "hello";
+var len = str.length; // 5
+var upper = str.toUpperCase(); // "HELLO"
+
+/*
+ * "str" è un primitivo, ma può accedere a metodi
+ * grazie al boxing automatico temporaneo
+ */
+```
+
+#### Subtypes Complessi: Function e Array
+
+Sebbene i primitivi non siano oggetti, esistono alcuni **sottotipi speciali di oggetti**, che possono essere chiamati "primitivi complessi" per via delle loro caratteristiche peculiari.
+
+##### Functions: Oggetti Invocabili
+
+Le **function** sono un sottotipo di `object` (tecnicamente, sono "callable objects" - oggetti invocabili).
+
+In JavaScript, le funzioni sono considerate "first-class citizens" (cittadini di prima classe), il che significa che sono fondamentalmente oggetti normali con semantiche di comportamento invocabili aggiunte. Possono quindi essere trattate come qualsiasi altro oggetto normale:
+
+```javascript
+function foo() {
+  console.log("hello");
+}
+
+/*
+ * Le funzioni SONO oggetti - possono avere proprietà!
+ */
+foo.customProperty = "I'm a property on a function";
+console.log(foo.customProperty); // "I'm a property on a function"
+
+/*
+ * Possono essere assegnate a variabili
+ */
+var bar = foo;
+bar(); // "hello"
+
+/*
+ * Possono essere passate come argomenti
+ */
+function execute(fn) {
+  fn();
+}
+execute(foo); // "hello"
+
+/*
+ * Ma hanno anche capacità speciali: possono essere invocate
+ */
+typeof foo; // "function" - sottotipo speciale di object
+```
+
+Questa natura duale - essere oggetti ma con capacità di esecuzione - rende le funzioni incredibilmente versatili e centrali nel paradigma funzionale di JavaScript.
+
+##### Arrays: Oggetti con Struttura
+
+Gli **Array** sono anch'essi una forma di oggetti, ma con comportamenti extra. L'organizzazione del contenuto negli array è leggermente più strutturata rispetto agli oggetti generici:
+
+- Hanno una proprietà `length` automaticamente gestita
+- Usano indici numerici come chiavi
+- Ereditano metodi specifici da `Array.prototype` (come `.map()`, `.filter()`, `.forEach()`)
+
+```javascript
+var arr = [1, 2, 3];
+
+/*
+ * Gli array SONO oggetti
+ */
+typeof arr; // "object"
+
+/*
+ * Ma con comportamento speciale
+ */
+arr.length; // 3 - proprietà gestita automaticamente
+
+arr[0]; // 1 - accesso tramite indice numerico
+arr[1]; // 2
+
+/*
+ * Possono comunque avere proprietà come oggetti
+ */
+arr.customProp = "hello";
+console.log(arr.customProp); // "hello"
+
+/*
+ * Ma la proprietà custom non influenza length
+ */
+console.log(arr.length); // ancora 3
+```
+
+La differenza fondamentale è che gli array sono **ottimizzati per contenere sequenze ordinate** di valori accessibili tramite indice, mentre gli oggetti normali sono contenitori chiave-valore generici senza un ordinamento intrinseco garantito (sebbene i moderni engine JS mantengano un ordine di inserimento in molti casi).
+
+#### Implicazioni Pratiche
+
+Comprendere queste distinzioni ha implicazioni concrete:
+
+1. **Type checking accurato**: Non ci si può fidare completamente di `typeof` (es. `typeof null` è buggato)
+2. **Selezione dello strumento giusto**: Usare array per sequenze, oggetti per mappature chiave-valore, funzioni per logica riutilizzabile
+3. **Performance**: Array e oggetti hanno ottimizzazioni interne diverse
+4. **Metodi disponibili**: Ogni tipo/sottotipo ha la propria catena prototipale con metodi specifici
+
+```javascript
+/*
+ * Esempio: scegliere la struttura dati giusta
+ */
+
+// ✅ Array per lista ordinata
+var users = ["Alice", "Bob", "Charlie"];
+users.forEach((user) => console.log(user));
+
+// ✅ Oggetto per mappatura id → dati
+var userById = {
+  1: { name: "Alice", role: "admin" },
+  2: { name: "Bob", role: "user" },
+};
+var alice = userById[1];
+
+// ✅ Function per logica riutilizzabile
+function getUser(id) {
+  return userById[id];
+}
+```
+
+In sintesi, JavaScript ha un sistema di tipi relativamente semplice (6 tipi base), ma con sottili distinzioni che è importante comprendere per scrivere codice robusto e idiomatico. Gli oggetti sono potenti e flessibili, ma non sono l'unico tipo disponibile, e riconoscere quando usare primitivi, oggetti, array o funzioni è parte della maestria nel linguaggio.
 
 ---
 
@@ -5824,6 +6174,8 @@ console.log(syntax["for"]); // "loop"
 ### Hoisting delle Variabili
 
 L'hoisting (letteralmente "sollevamento") è un meccanismo di JavaScript che riguarda il modo in cui le dichiarazioni di variabili vengono processate dal motore del linguaggio. Durante la fase di compilazione, che precede l'esecuzione, è come se le dichiarazioni venissero concettualmente "sollevate" in cima al loro scope di appartenenza.
+
+> **Approfondimento teorico**: Per una spiegazione dettagliata del meccanismo di hoisting, incluso il ruolo del compilatore e il confronto tra hoisting di funzioni e variabili, si veda la [sezione dedicata più avanti in questo capitolo](#hoisting).
 
 Tuttavia, il comportamento dell'hoisting cambia radicalmente a seconda della parola chiave usata per la dichiarazione: var, let o const.
 

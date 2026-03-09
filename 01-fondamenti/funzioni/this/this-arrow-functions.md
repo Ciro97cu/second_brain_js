@@ -7,6 +7,9 @@ Le arrow functions (ES6+) hanno un comportamento completamente diverso rispetto 
 - **Lexical this**: Arrow functions NON hanno un proprio `this` - usano quello del contesto esterno
 - **Immutabile**: Non puoi cambiare il `this` di una arrow function con `call`, `apply` o `bind`
 - **Soluzione ai callback**: Risolvono il problema della perdita di contesto nei callback
+- **Pattern pre-ES6 equivalente**: `var self = this` fa la stessa cosa (cattura lessicale)
+- **Cambio di paradigma**: Non sono solo una feature, ma un shift da binding dinamico a scoping lessicale
+- **Due strade coerenti**: Scegliere tra stile lessicale (closures) o stile this (bind), non mescolare
 - **Trade-off**: Più semplici ma meno flessibili delle function tradizionali
 
 ## 💻 Binding Lessicale di this
@@ -258,15 +261,165 @@ function Timer() {
 
 Arrow functions rendono obsoleto il pattern `var self = this`.
 
-## 📊 Confronto Funzioni
+## 🤔 Il Dilemma: Lexical vs this-style
 
-| Feature           | Function               | Arrow Function        |
-| ----------------- | ---------------------- | --------------------- |
-| `this`            | Dinamico (4 regole)    | Lessicale (catturato) |
-| `arguments`       | Disponibile            | Non disponibile       |
-| `new`             | Può essere constructor | Non può               |
-| `call/apply/bind` | Modificano `this`      | Ignorati              |
-| Sintassi          | `function() {}`        | `() => {}`            |
+### Due Paradigmi, Non Un Sostituto
+
+Un aspetto importante da comprendere è che arrow functions e `self = this` non sono solo "soluzioni" al problema del binding di `this` - sono in realtà un **cambio di paradigma**: si sta abbandonando il meccanismo dinamico di `this` in favore dello scoping lessicale.
+
+```javascript
+var controller = {
+  id: 42,
+
+  init: function () {
+    var self = this; // Stile lessicale
+
+    document.addEventListener("click", function (evt) {
+      self.handleClick(evt); // Usa variabile, non this
+    });
+  },
+
+  handleClick: function (evt) {
+    console.log("Controller " + this.id); // Stile this
+  },
+};
+```
+
+Questo codice **mescola due approcci**: dichiara di usare oggetti con metodi e `this`, ma poi non si fida di `this` e usa `self`. È concettualmente confuso.
+
+### Due Strade Coerenti
+
+**Opzione 1: Solo Scoping Lessicale**
+
+Se si preferisce lo scoping lessicale, abbracciarlo completamente:
+
+```javascript
+function createController(id) {
+  // Closure con variabili catturate
+  var myId = id;
+
+  return {
+    init: function () {
+      document.addEventListener("click", (evt) => {
+        handleClick(evt);
+      });
+    },
+  };
+
+  function handleClick(evt) {
+    console.log("Controller " + myId); // Usa closure
+  }
+}
+
+var controller = createController(42);
+```
+
+**Opzione 2: Full this-style**
+
+Se si sceglie `this`, usarlo correttamente:
+
+```javascript
+var controller = {
+  id: 42,
+
+  init: function () {
+    // Usa bind per mantenere this
+    document.addEventListener("click", this.handleClick.bind(this));
+  },
+
+  handleClick: function (evt) {
+    console.log("Controller " + this.id); // this coerente
+  },
+};
+```
+
+O con arrow function come metodo (class field pattern, ES2022+):
+
+```javascript
+class Controller {
+  id = 42;
+
+  // Arrow come class field - cattura this dell'istanza
+  handleClick = (evt) => {
+    console.log("Controller " + this.id);
+  };
+
+  init() {
+    // Nessun bind necessario
+    document.addEventListener("click", this.handleClick);
+  }
+}
+```
+
+### Quando Mescolare è Problematico
+
+Il problema non è usare arrow functions o `this` - è **mescolarli inconsistentemente nella stessa funzione**:
+
+```javascript
+// ❌ Confuso - mescola gli stili
+var processor = {
+  data: [],
+
+  process: function () {
+    var self = this; // Lessicale
+
+    fetchData().then(function (result) {
+      self.data = result; // Lessicale
+      self.transform(); // this mascherato
+    });
+  },
+
+  transform: function () {
+    this.data = this.data.map((item) => item * this.multiplier); // this reale
+  },
+
+  multiplier: 2,
+};
+```
+
+È più chiaro scegliere uno stile e mantenerlo:
+
+```javascript
+// ✅ Chiaro - stile this con arrow functions per callback
+var processor = {
+  data: [],
+
+  process: function () {
+    fetchData().then((result) => {
+      // Arrow cattura this di process
+      this.data = result;
+      this.transform();
+    });
+  },
+
+  transform: function () {
+    this.data = this.data.map((item) => item * this.multiplier);
+  },
+
+  multiplier: 2,
+};
+```
+
+### Linee Guida per Scegliere
+
+**Usa arrow functions quando:**
+
+- Scrivi callback che devono accedere al `this` del contesto esterno
+- Lavori in una classe o oggetto che usa `this` e hai bisogno di preservarlo
+- Vuoi codice più conciso e leggibile per funzioni brevi
+
+**Usa function tradizionali quando:**
+
+- Definisci metodi di oggetti o prototipi
+- Hai bisogno di binding dinamico (diversi `this` in base al call-site)
+- Usi `arguments` object
+- Definisci constructor functions
+
+**NON mescolare quando:**
+
+- Usi `self = this` in alcune parti e arrow functions in altre (scegli uno)
+- Usi `this` per alcuni lookup e variabili catturate per altri simili
+- Passi da stile lexical a stile this senza ragione chiara
 
 ## 🔗 Collegamenti
 
@@ -299,4 +452,4 @@ Arrow functions rendono obsoleto il pattern `var self = this`.
 
 ---
 
-**Tags**: `#javascript` `#this` `#arrow-functions` `#es6` `#lexical-binding`
+**Tags**: `#javascript` `#this` `#arrow-functions` `#es6` `#lexical-binding` `#lexical-vs-dynamic` `#self-pattern` `#code-style`

@@ -4559,16 +4559,6 @@ bar(3); // a:2, b:3
 
 Non solo è funzionalmente **"più sicuro"**, ma c'è anche un sorta di beneficio stilistico in `ø`, nel senso che comunica semanticamente **"si vuole che this sia vuoto"** un po' più chiaramente di quanto potrebbe fare `null`. In ogni caso, è possibile chiamare il proprio oggetto DMZ come si preferisce.
 
-**📌 Riepilogo Eccezioni:**
-
-| Situazione                    | Comportamento                      | Soluzione Sicura            |
-| ----------------------------- | ---------------------------------- | --------------------------- |
-| `foo.call(null)`              | Ignora `null`, usa default binding | Usa DMZ object (`ø`)        |
-| `foo.apply(null, [args])`     | Ignora `null`, usa default binding | Usa `ø` invece di `null`    |
-| `foo.bind(null, preset)`      | Ignora `null`, usa default binding | Usa `ø` invece di `null`    |
-| Funzione 3rd-party usa `this` | Può mutare global object ⚠️        | Sempre usare DMZ object     |
-| ES6 spread: `foo(...[1,2])`   | Non richiede `this` ✅             | Preferisci quando possibile |
-
 #### Indirection (Riferimenti Indiretti)
 
 Un'altra situazione di cui è necessario essere consapevoli è la possibilità di creare (intenzionalmente o meno) **"riferimenti indiretti"** alle funzioni. In questi casi, quando il riferimento alla funzione viene invocato, si applica anche la regola del default binding.
@@ -4650,6 +4640,163 @@ setTimeout(obj2.foo, 10);
 ```
 
 La versione con soft-bound della funzione `foo()` può essere legata manualmente a `this` verso `obj2` o `obj3` come mostrato, ma ricade su `obj` se altrimenti si applicherebbe il default binding.
+
+#### Lexical this: Arrow Functions
+
+Le funzioni normali seguono le quattro regole di binding appena esaminate. Con ES6, però, arriva un tipo speciale di funzione che **ignora completamente queste regole**: le **arrow-functions** (funzioni freccia), riconoscibili dalla sintassi con l'operatore `=>`.
+
+La caratteristica distintiva delle arrow-functions è che **non hanno un proprio `this`**. Invece, "catturano" il valore di `this` dallo scope in cui sono definite, esattamente come farebbero con una variabile normale. Questo meccanismo è chiamato **lexical binding** (binding lessicale).
+
+##### Il Problema che Risolvono
+
+Per capire l'utilità delle arrow-functions, si consideri un problema classico: quando si passa un metodo come callback, il binding di `this` viene perso.
+
+```javascript
+var obj = {
+    count: 0,
+    start: function() {
+        setTimeout(function() {
+            this.count++;
+            console.log(this.count);
+        }, 1000);
+    }
+};
+
+obj.start(); // NaN o errore - `this` è window/global, non `obj`!
+```
+
+Il problema è che la funzione passata a `setTimeout` viene invocata con default binding, quindi `this` punta all'oggetto globale, non a `obj`.
+
+##### La Soluzione: Cattura Lessicale
+
+Le arrow-functions risolvono questo problema "fotografando" il valore di `this` al momento della loro definizione:
+
+```javascript
+var obj = {
+    count: 0,
+    start: function() {
+        setTimeout(() => {
+            /*
+             * `this` qui è lo stesso `this` di start()
+             * Non importa chi chiama questa arrow-function
+             */
+            this.count++;
+            console.log(this.count);
+        }, 1000);
+    }
+};
+
+obj.start(); // 1 - Funziona! `this` è `obj`
+```
+
+L'arrow-function "eredita" il `this` dalla funzione `start()`, dove `this` vale `obj` grazie all'implicit binding (`obj.start()`).
+
+##### Binding Immutabile
+
+Una caratteristica fondamentale è che il binding di un'arrow-function **non può essere modificato**, nemmeno usando `call`, `apply`, `bind` o `new`:
+
+```javascript
+function creaContatore() {
+    /*
+     * Questa arrow-function cattura il `this` di creaContatore()
+     */
+    return () => {
+        console.log(this.valore);
+    };
+}
+
+var obj1 = { valore: 1 };
+var obj2 = { valore: 2 };
+
+var contatore = creaContatore.call(obj1);
+
+/*
+ * Tentativo di cambiare `this` a obj2
+ */
+contatore.call(obj2); // 1 (non 2!)
+```
+
+L'arrow-function è "legata permanentemente" a `obj1` perché `creaContatore` è stata invocata con `obj1` come `this`. Successivi tentativi di modificare `this` vengono ignorati.
+
+##### Pattern Pre-ES6: self = this
+
+Prima delle arrow-functions, esisteva una tecnica comune per risolvere lo stesso problema:
+
+```javascript
+var obj = {
+    count: 0,
+    start: function() {
+        var self = this; // "Salva" il valore di `this`
+        
+        setTimeout(function() {
+            self.count++; // Usa la variabile, non `this`
+            console.log(self.count);
+        }, 1000);
+    }
+};
+
+obj.start(); // 1 - Funziona
+```
+
+Si salvava il valore di `this` in una variabile (`self`, `that`, `_this`), che veniva poi utilizzata nella funzione annidata. Questo funziona perché le variabili seguono le regole dello scope lessicale, non quelle dinamiche di `this`.
+
+Le arrow-functions fanno **esattamente la stessa cosa**, ma in modo più elegante e senza bisogno di variabili ausiliarie. Il meccanismo sottostante è identico: si bypassa il sistema dinamico di `this` a favore dello scoping lessicale.
+
+##### Il Dilemma: Abbracciare o Evitare `this`?
+
+Qui sorge una questione filosofica importante. Sia `self = this` che le arrow-functions sono tecniche per **aggirare** il meccanismo di `this`, non per comprenderlo e usarlo correttamente.
+
+Se si scrive codice che dovrebbe sfruttare il binding dinamico di `this` (come metodi di oggetti, prototipi, ecc.), ma poi si usa costantemente `self = this` o arrow-functions per "correggere" il binding, si sta probabilmente facendo confusione tra due paradigmi diversi.
+
+Kyle Simpson (autore di "You Don't Know JS") suggerisce due approcci coerenti:
+
+1. **Abbracciare lo stile lessicale**: Se si preferisce lo scoping lessicale, si usino arrow-functions ovunque possibile e si eviti di scrivere codice che dipende dal binding dinamico di `this`. Si opti per chiusure (closures) e variabili catturate.
+
+2. **Abbracciare lo stile `this`**: Se si sceglie di usare il sistema di `this`, lo si usi correttamente. Si impari a usare `bind()` quando necessario, si comprendano le regole di binding e si evitino "scorciatoie" come `self = this` o arrow-functions nei contesti dove `this` dovrebbe essere dinamico.
+
+##### Quando Mescolare è Problematico
+
+Il vero problema nasce quando si **mescolano i due stili nella stessa funzione** o nello stesso tipo di operazione. Per esempio:
+
+```javascript
+var controller = {
+    id: 42,
+    
+    init: function() {
+        /*
+         * Qui si usa `this` dinamico (implicit binding)
+         */
+        var self = this;
+        
+        document.addEventListener('click', function(evento) {
+            /*
+             * Ma qui si evita `this` con `self`
+             */
+            self.handleClick(evento);
+        });
+    },
+    
+    handleClick: function(evento) {
+        console.log('Controller ' + this.id);
+    }
+};
+```
+
+Questo codice funziona, ma è concettualmente confuso: si dichiara che `controller` è un oggetto con metodi che usano `this`, ma poi non si ha fiducia nel sistema e si usa `self`. Sarebbe più coerente usare un arrow-function per il listener (stile lessicale) o usare `.bind(this)` (stile `this` completo).
+
+##### Linee Guida Pratiche
+
+In definitiva, le arrow-functions sono uno strumento potente, ma vanno usate con consapevolezza:
+
+- **Usare arrow-functions per callback** dove non serve un `this` dinamico (timers, array methods, event listeners quando serve catturare il contesto esterno)
+
+- **NON usare arrow-functions come metodi di oggetti o prototipi**, perché non avrebbero il `this` corretto riferito all'oggetto
+
+- **Scegliere uno stile** e mantenerlo consistente all'interno dello stesso modulo/componente
+
+- **Se si usa `this` come design pattern**, comprenderlo a fondo e usare `bind()` quando serve, senza "scappare" con arrow-functions
+
+Le arrow-functions non rendono obsoleto il sistema di `this`; semplicemente offrono un'alternativa basata su scoping lessicale. La chiave è sapere quando usare quale approccio.
 
 ### 3.12 Prototipi (Prototypes)
 

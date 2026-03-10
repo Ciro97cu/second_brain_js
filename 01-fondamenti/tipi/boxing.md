@@ -63,6 +63,153 @@ console.log(str1 === "testo"); // true
 console.log(str2 === "testo"); // false (object vs string)
 ```
 
+## Built-in Objects: Funzioni Costruttore
+
+JavaScript fornisce **oggetti built-in** con nomi che sembrano corrispondere ai tipi primitivi: `String`, `Number`, `Boolean`, `Object`, `Function`, `Array`, `Date`, `RegExp`, `Error`.
+
+I nomi maiuscoli possono far pensare a **tipi** o **classi** (come `String` in Java), ma in realtà sono **funzioni** che possono essere usate come **costruttori** con l'operatore `new`.
+
+```javascript
+/* Primitivo vs Wrapper Object */
+var strPrimitive = "I am a string";
+typeof strPrimitive; // "string"
+strPrimitive instanceof String; // false
+
+var strObject = new String("I am a string");
+typeof strObject; // "object"
+strObject instanceof String; // true
+
+/*
+ * Ispezionando il sottotipo interno:
+ */
+Object.prototype.toString.call(strObject); // "[object String]"
+/*
+ * Conferma che strObject è un oggetto
+ * creato dal costruttore String
+ */
+```
+
+### Primitivi Sono Immutabili
+
+Il valore primitivo `"I am a string"` non è un oggetto: è un **valore letterale primitivo e immutabile**.
+
+Per eseguire operazioni come controllare lunghezza o accedere a caratteri, in teoria serve un oggetto `String`. Ma JavaScript risolve questo con **boxing automatico**.
+
+### La Coercizione Automatica Risolve Tutto
+
+Quando si accede a proprietà/metodi su primitivi, il motore applica automaticamente **boxing**:
+
+```javascript
+var strPrimitive = "I am a string";
+
+/*
+ * Anche se è primitivo, si può accedere a metodi
+ */
+console.log(strPrimitive.length); // 13
+console.log(strPrimitive.charAt(3)); // "m"
+
+/*
+ * Il motore esegue automaticamente:
+ * 1. Crea temporaneamente new String(strPrimitive)
+ * 2. Accede alla proprietà/metodo
+ * 3. Scarta l'oggetto wrapper
+ */
+```
+
+Stesso meccanismo per `Number` e `Boolean`:
+
+```javascript
+var num = 42.359;
+num.toFixed(2); // "42.36"
+
+var bool = true;
+bool.toString(); // "true"
+```
+
+### Preferire Sempre la Forma Letterale
+
+La comunità JavaScript raccomanda **fortemente** di usare sempre **forma letterale primitiva** piuttosto che wrapper espliciti:
+
+```javascript
+/* ✅ PREFERITO: Forma letterale primitiva */
+var str = "hello";
+var num = 42;
+var bool = true;
+
+/* ❌ EVITARE: Wrapper espliciti (inutili) */
+var str = new String("hello");
+var num = new Number(42);
+var bool = new Boolean(true);
+```
+
+I wrapper espliciti sono **inutili** (boxing automatico funziona) e causano **comportamenti confusi**:
+
+```javascript
+var primitivo = "hello";
+var wrapper = new String("hello");
+
+primitivo == wrapper; // true (coercizione)
+primitivo === wrapper; // false! (tipi diversi)
+
+/* Wrapper booleano sempre truthy */
+var falseWrapper = new Boolean(false);
+
+if (falseWrapper) {
+  console.log("Eseguito!"); // ⚠️ Anche se contiene false!
+}
+/*
+ * L'OGGETTO è truthy, non il valore contenuto
+ */
+```
+
+### Casi Speciali: null, undefined, Date, Error
+
+**null e undefined** non hanno wrapper: esistono solo come primitivi.
+
+```javascript
+var n = null;
+var u = undefined;
+
+// ❌ Accesso a proprietà genera TypeError
+// n.toString();        // TypeError
+// u.length;            // TypeError
+```
+
+**Date** richiede **sempre** il costruttore (no forma letterale):
+
+```javascript
+var now = new Date(); // ✅ Unico modo
+var birthday = new Date("1990-05-15");
+```
+
+**Array, RegExp, Function**: preferire sempre forma letterale quando disponibile.
+
+```javascript
+/* ✅ PREFERITO: Forma letterale */
+var arr = [1, 2, 3];
+var regex = /ab+c/;
+var func = function () {};
+
+/* ❌ EVITARE: Forma costruita (solo casi speciali) */
+var arr = new Array(1, 2, 3);
+var regex = new RegExp("ab+c"); // Utile per pattern dinamici
+var func = new Function("a", "b", "return a + b"); // Sconsigliato
+```
+
+**Error** viene solitamente creato automaticamente quando vengono sollevate eccezioni:
+
+```javascript
+/* Creazione automatica */
+try {
+  nonExistentFunction();
+} catch (e) {
+  console.log(e.message); // Error object automatico
+}
+
+/* Creazione esplicita (rara) */
+throw new Error("Qualcosa è andato storto");
+```
+
 ## Conversione Esplicita a Number
 
 **Operatore Unario +** - Modo moderno e conciso:
@@ -132,6 +279,10 @@ true.toString(); // "true"
 ## Collegamenti
 
 - [[valori-tipi]] - Tipi primitivi vs Object
+- [[tipi-e-sottotipi]] - Sistema dei tipi e sottotipi di object
 - [[coercizione]] - Coercizione esplicita e implicita
-- [[../oggetti/oggetti]] - Differenza primitivi/oggetti
 - [[typeof]] - Verificare tipo dei valori
+- [[../oggetti/oggetti]] - Differenza primitivi/oggetti e riferimenti
+- [[../oggetti/object-literal-vs-constructed]] - Forma letterale vs costruita per oggetti
+
+#boxing #wrappers #primitivi #built-in-objects #coercizione-automatica #string #number #boolean

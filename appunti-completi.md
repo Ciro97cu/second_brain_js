@@ -5630,6 +5630,182 @@ function getUser(id) {
 
 In sintesi, JavaScript ha un sistema di tipi relativamente semplice (6 tipi base), ma con sottili distinzioni che è importante comprendere per scrivere codice robusto e idiomatico. Gli oggetti sono potenti e flessibili, ma non sono l'unico tipo disponibile, e riconoscere quando usare primitivi, oggetti, array o funzioni è parte della maestria nel linguaggio.
 
+#### Built-in Objects e la Coercizione Automatica
+
+Oltre agli oggetti creati tramite sintassi letterale, JavaScript fornisce una serie di **oggetti built-in** (incorporati) che sembrano corrispondere ai tipi primitivi: `String`, `Number`, `Boolean`, `Object`, `Function`, `Array`, `Date`, `RegExp`, ed `Error`. I loro nomi maiuscoli possono far pensare a tipi veri e propri o a classi (come la classe `String` in Java), ma la realtà è diversa.
+
+In JavaScript, questi built-in sono **funzioni**. Ciascuno di questi costruttori può essere invocato con l'operatore `new` per creare un nuovo oggetto del sottotipo corrispondente. Questo genera a volte confusione sulla relazione tra i valori primitivi semplici (come la stringa `"hello"`) e i loro corrispondenti oggetti wrapper (come `new String("hello")`).
+
+##### Primitivi vs. Object Wrappers
+
+Si consideri questo esempio che mette in luce la differenza tra un primitivo stringa e un oggetto `String`:
+
+```javascript
+var strPrimitive = "I am a string";
+typeof strPrimitive; // "string"
+strPrimitive instanceof String; // false
+
+var strObject = new String("I am a string");
+typeof strObject; // "object"
+strObject instanceof String; // true
+
+/*
+ * Ispezionando il sottotipo interno si può confermare
+ * che strObject è effettivamente creato dal costruttore String
+ */
+Object.prototype.toString.call(strObject); // "[object String]"
+```
+
+Il valore primitivo `"I am a string"` non è un oggetto: è un valore letterale primitivo e immutabile. Per eseguire operazioni su di esso (come controllare la sua lunghezza o accedere ai singoli caratteri), in teoria sarebbe necessario un oggetto `String`. Tuttavia, JavaScript risolve questo problema in modo elegante attraverso la **coercizione automatica**.
+
+##### La Coercizione Automatica e il Boxing
+
+Quando si tenta di accedere a una proprietà o un metodo su un valore primitivo, il motore JavaScript applica automaticamente il **boxing**: avvolge temporaneamente il primitivo in un oggetto wrapper, esegue l'operazione richiesta, e poi scarta l'oggetto temporaneo. Questo significa che non è quasi mai necessario creare esplicitamente gli oggetti wrapper con `new String()`, `new Number()`, o `new Boolean()`.
+
+> **Approfondimento**: Il meccanismo del boxing è spiegato in dettaglio nella [sezione 3.5](#35-boxing-e-metodi-dei-primitivi).
+
+La comunità JavaScript raccomanda fortemente di **preferire sempre la forma letterale primitiva** piuttosto che quella costruita con oggetti wrapper. Questo perché la forma letterale è più semplice, diretta, e performante.
+
+```javascript
+var strPrimitive = "I am a string";
+
+/*
+ * Anche se strPrimitive è un primitivo,
+ * si può accedere a proprietà e metodi
+ */
+console.log(strPrimitive.length); // 13
+console.log(strPrimitive.charAt(3)); // "m"
+
+/*
+ * Il motore esegue automaticamente la coercizione:
+ * crea temporaneamente un oggetto String,
+ * accede alla proprietà/metodo,
+ * e poi scarta l'oggetto
+ */
+```
+
+##### Coercizione per Number e Boolean
+
+Lo stesso tipo di coercizione automatica si applica ai numeri e ai booleani. Quando si invocano metodi su un numero letterale come `42` o su un booleano come `true`, JavaScript li avvolge temporaneamente nei rispettivi oggetti wrapper (`Number` e `Boolean`) per consentire l'accesso ai metodi:
+
+```javascript
+var num = 42.359;
+num.toFixed(2); // "42.36"
+
+var bool = true;
+bool.toString(); // "true"
+```
+
+##### Casi Speciali: null, undefined, Date ed Error
+
+Non tutti i tipi seguono questo schema:
+
+- **null e undefined** non hanno alcuna forma wrapper oggetto. Esistono solo come valori primitivi. Tentare di accedere a proprietà su `null` o `undefined` genera un errore.
+
+- **Date**, al contrario, può essere creato **solo** tramite la forma costruita (`new Date()`), poiché non esiste una sintassi letterale equivalente.
+
+- **Objects, Arrays, Functions, RegExps** sono sempre oggetti, indipendentemente dal fatto che si usi la forma letterale o costruita. La forma letterale è generalmente preferita per la sua semplicità. La forma costruita può offrire opzioni aggiuntive in alcuni casi, ma raramente è necessaria.
+
+- **Error** viene solitamente creato automaticamente quando vengono sollevate eccezioni. È possibile crearlo manualmente con `new Error(..)`, ma è raramente necessario farlo esplicitamente.
+
+```javascript
+/*
+ * Esempi di casi speciali
+ */
+
+// Date richiede sempre new
+var now = new Date();
+
+// Array: preferire forma letterale
+var arr = [1, 2, 3]; // ✅ Raccomandato
+var arrCostruito = new Array(1, 2, 3); // ❌ Sconsigliato
+
+// RegExp: forma letterale preferita per pattern statici
+var regex = /ab+c/; // ✅ Raccomandato
+var regexCostruito = new RegExp("ab+c"); // Utile solo per pattern dinamici
+
+// Error viene solitamente generato automaticamente
+try {
+  throw new Error("Qualcosa è andato storto");
+} catch (e) {
+  console.log(e.message);
+}
+```
+
+#### Accesso alle Proprietà degli Oggetti
+
+Le proprietà di un oggetto sono i valori memorizzati in "posizioni nominate" (named locations). È importante notare che, sebbene si parli di "contenuti" dell'oggetto, questa è solo un'immagine concettuale approssimativa. Internamente, il motore memorizza i valori in modi dipendenti dall'implementazione e potrebbe non memorizzarli affatto "dentro" l'oggetto. Ciò che viene effettivamente memorizzato nell'oggetto sono i **nomi delle proprietà**, che fungono da puntatori (o più precisamente, riferimenti) verso dove i valori sono realmente memorizzati.
+
+##### Dot Notation e Bracket Notation
+
+Per accedere al valore di una proprietà, si possono usare due sintassi: l'**operatore punto** (`.`) o l'**operatore parentesi quadre** (`[]`).
+
+```javascript
+var myObject = {
+  a: 2,
+};
+
+myObject.a; // 2
+myObject["a"]; // 2
+```
+
+Entrambi gli approcci accedono alla stessa posizione e restituiscono lo stesso valore. La sintassi con il punto è comunemente chiamata **"property access"** (accesso alle proprietà), mentre quella con le parentesi quadre è chiamata **"key access"** (accesso tramite chiave). In realtà, i termini possono essere usati in modo intercambiabile, ma "property access" è il più comune.
+
+La differenza principale tra le due sintassi è che l'operatore `.` richiede un nome di proprietà compatibile con le regole degli **Identifier** (identificatori JavaScript), mentre la sintassi `[".."]` può accettare praticamente qualsiasi stringa UTF-8/Unicode come nome di proprietà.
+
+Ad esempio, per fare riferimento a una proprietà chiamata `"Super-Fun!"`, è necessario usare la sintassi con parentesi quadre:
+
+```javascript
+var obj = {
+  "Super-Fun!": "valore speciale",
+};
+
+obj["Super-Fun!"]; // "valore speciale"
+// obj.Super-Fun!; // ❌ Syntax Error! Non è un Identifier valido
+```
+
+Inoltre, la sintassi con parentesi quadre permette di costruire **dinamicamente** il nome della proprietà usando una variabile o un'espressione:
+
+```javascript
+var myObject = {
+  a: 2,
+};
+
+var idx;
+
+if (wantA) {
+  idx = "a";
+}
+
+// La proprietà da accedere viene determinata a runtime
+console.log(myObject[idx]); // 2
+```
+
+Questo rende la bracket notation estremamente utile per scenari in cui il nome della proprietà non è noto in anticipo, ma viene determinato dinamicamente durante l'esecuzione del programma.
+
+##### I Nomi delle Proprietà Sono Sempre Stringhe
+
+Un aspetto fondamentale da comprendere è che, negli oggetti, **i nomi delle proprietà sono sempre stringhe**. Se si usa un valore diverso da una stringa (ad esempio un numero o un booleano), esso viene automaticamente **convertito in stringa**. Questo vale anche per i numeri, che sono comunemente usati come indici negli array.
+
+```javascript
+var myObject = {};
+
+myObject[true] = "foo";
+myObject[3] = "bar";
+myObject[myObject] = "baz";
+
+/*
+ * Accesso: le chiavi sono state convertite in stringhe
+ */
+myObject["true"]; // "foo"
+myObject["3"]; // "bar"
+myObject["[object Object]"]; // "baz"
+```
+
+Quando si usa un oggetto come chiave, esso viene convertito nella sua rappresentazione stringa tramite il metodo `toString()`, che di default produce `"[object Object]"`.
+
+È importante non confondere l'uso di numeri come chiavi negli oggetti normali con il loro uso come **indici** negli array. Gli array hanno un comportamento speciale che gestisce gli indici numerici in modo ottimizzato, mentre negli oggetti generici il numero viene semplicemente trattato come una stringa.
+
 ---
 
 ## 4. Variabili

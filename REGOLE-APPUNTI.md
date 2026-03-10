@@ -19,13 +19,22 @@ Ogni blocco deve iniziare con un titolo chiaro che identifichi l'argomento.
 
 ### 2. Terza Persona
 
-Scrivere **rigorosamente in terza persona**.
+Scrivere **rigorosamente in terza persona** in TUTTI i casi, incluse le traduzioni dirette.
 
 - ✅ "Si osserva che..."
 - ✅ "L'Engine esegue..."
 - ✅ "Questo permette di..."
+- ✅ "È possibile utilizzare..."
 - ❌ "Osserviamo che..."
 - ❌ "Eseguiamo..."
+- ❌ "Possiamo utilizzare..."
+- ❌ "Puoi usare..." o "You can use..."
+
+**IMPORTANTE**: Non tradurre mai letteralmente la seconda persona dall'inglese. Convertire sempre:
+
+- "you can" → "si può" / "è possibile"
+- "we need to" → "è necessario" / "si deve"
+- "let's consider" → "si consideri" / "considerando"
 
 ### 3. Stile Discorsivo
 
@@ -84,9 +93,38 @@ Prestare **attenzione al corretto posizionamento** degli appunti in `appunti-com
 
 ### 9. Traduzione Diretta
 
-Se il concetto è breve e non vale la pena riassumerlo, **tradurlo direttamente** in italiano mantenendo tutti i dettagli.
+Se il concetto è breve e non vale la pena riassumerlo, **tradurlo direttamente** in italiano mantenendo tutti i dettagli. (è sempre preferibile riassumere in termini più semplici il concetto)
 
 - ✅ Tradurre tutto il contenuto originale
 - ✅ Mantenere esempi e spiegazioni complete
+- ✅ **SEMPRE in terza persona** anche nella traduzione diretta
+- ✅ Convertire lo stile: "you can" → "si può", "we need" → "è necessario"
 - ❌ NON sintetizzare o tagliare parti
 - ❌ NON lasciare contenuti in inglese
+- ❌ NON mantenere seconda persona ("puoi", "possiamo")
+
+### 10. Gestione Duplicazioni
+
+Se un concetto è già stato spiegato in una sezione precedente degli appunti, **NON ripeterlo**. Invece:
+
+- ✅ Inserire un link di riferimento alla sezione dove è già spiegato
+- ✅ Usare la sintassi Markdown: `[testo descrittivo](#anchor-della-sezione)`
+- ✅ Fornire un breve contesto prima del link
+
+**Formato consigliato**:
+
+```markdown
+> **Nota**: Per i dettagli su [concetto], si veda [la sezione dedicata](#nome-sezione).
+```
+
+o
+
+```markdown
+> **Approfondimento**: Il meccanismo di [concetto] è spiegato in dettaglio in [sezione X.Y](#nome-sezione).
+```
+
+**Esempio pratico**:
+
+```markdown
+> **Nota**: Per i dettagli sul bug di typeof null, si veda [la sezione 3.1 "I Casi Particolari: null e undefined"](#i-casi-particolari-null-e-undefined).
+```

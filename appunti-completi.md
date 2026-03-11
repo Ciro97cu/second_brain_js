@@ -5929,6 +5929,77 @@ myArray.length; // La lunghezza ricalcola il nuovo estremo e si espande a 4!
 myArray[3]; // "baz"
 ```
 
+#### Duplicazione degli Oggetti
+
+Una delle funzionalità più richieste dagli sviluppatori che iniziano a utilizzare JavaScript è capire come duplicare un oggetto. A prima vista ci si aspetterebbe l'esistenza di un metodo nativo come `copy()`, ma la questione si rivela più complessa: non è del tutto ovvio quale debba essere l'algoritmo predefinito per la duplicazione.
+
+Si consideri il seguente oggetto:
+
+```javascript
+function anotherFunction() {
+  /*..*/
+}
+
+var anotherObject = {
+  c: true,
+};
+
+var anotherArray = [];
+
+var myObject = {
+  a: 2,
+  b: anotherObject, // riferimento, non una copia!
+  c: anotherArray, // altro riferimento!
+  d: anotherFunction,
+};
+
+anotherArray.push(anotherObject, myObject);
+```
+
+Il dilemma sorge nel determinare l'esatta rappresentazione della copia di `myObject`. Innanzitutto, bisogna stabilire se si debba applicare una **shallow copy** (copia superficiale) o una **deep copy** (copia profonda).
+
+Una _shallow copy_ produrrebbe un nuovo oggetto che contiene una copia diretta del valore primitivo `2` per la proprietà `a`, ma per le proprietà `b`, `c` e `d` utilizzerebbe semplicemente dei riferimenti alle stesse locazioni di memoria dell'oggetto originale.
+
+Al contrario, una _deep copy_ non si limiterebbe a copiare `myObject`, bensì duplicherebbe anche `anotherObject` e `anotherArray`. A questo punto, tuttavia, sorge un problema: dal momento che `anotherArray` contiene a sua volta riferimenti verso `anotherObject` e `myObject`, anch'essi dovrebbero venire duplicati. Questo meccanismo scatena un problema di duplicazione circolare infinita dovuta al _circular reference_ presente nella struttura. Riguardo a tali riferimenti circolari, non è univoco se il comportamento di un ipotetico duplicatore debba sollevare un errore completo, terminare l'attraversamento in anticipo o effettuare una diversa gestione intermedia.
+
+Inoltre, non è chiaro a livello concettuale cosa comporti "duplicare" una funzione. Esistono dei workaround, per esempio estrarre la serializzazione del codice sorgente di una funzione tramite `toString()`, ma si tratta di metodi scarsamente affidabili e dipendenti dai motori di esecuzione.
+
+Per risolvere questa moltitudine di dubbi, le diverse librerie dei framework JavaScript hanno preso decisioni proprie ed elaborato diverse interpretazioni. Per lungo tempo, non c'è stata una risposta universalmente condivisa.
+
+Un sottoinsieme di implementazioni risolve l'ostacolo sfruttando gli oggetti cosiddetti **JSON-safe** (ovvero quelli banalmente serializzabili in una stringa JSON e in seguito riconvertiti in un oggetto a valori e struttura integra):
+
+```javascript
+/*
+ * Duplicazione rapida tramite serializzazione JSON.
+ * Applicabile esclusivamente a oggetti JSON-safe.
+ */
+var newObj = JSON.parse(JSON.stringify(someObj));
+```
+
+Questo approccio si rivela efficace, ma impone il palese limite che la struttura sia 100% _JSON-safe_, condizione che in scenari più complessi diventa rapidamente insufficiente.
+
+Considerati i problemi di una deep copy, una _shallow copy_ risulta molto più prevedibile ed espone a problematiche di lungo corso decisamente inferiori. Pertanto, ES6 ha definito standardizzato `Object.assign(..)` per adempiere in via predefinita a tale scopo.
+
+`Object.assign(..)` richiede un _target object_ come primo parametro, seguito da uno o più _source objects_. Esso itera su tutte le proprietà possedute (_owned keys_ che sono direttamente presenti nell'oggetto sorgente) e anche enumerabili (_enumerable_), copiandole sull'oggetto bersaglio. L'operazione avviene tramite una normale assegnazione (in stile `=`). Il metodo provvede infine a restituire in sintesi il _target_.
+
+```javascript
+/*
+ * Duplicazione di tipo shallow-copy tramite Object.assign
+ */
+var newObj = Object.assign({}, myObject);
+
+newObj.a; // 2
+
+/*
+ * Le referenze verso le istanze complesse originali sono rimaste immutate
+ */
+newObj.b === anotherObject; // true
+newObj.c === anotherArray; // true
+newObj.d === anotherFunction; // true
+```
+
+> **Nota**: Nel capitolo successivo che analizza a fondo i "property descriptors", verrà illustrato anche `Object.defineProperty(..)`. È utile specificare da subito che la copia operata da `Object.assign(..)` realizza delle pure assegnazioni convenzionali (`=`), e perciò qualsiasi caratteristica avanzata (come per esempio l'attributo `writable`) posta sulle proprietà dell'oggetto sorgente non verrà affatto preservata.
+
 ---
 
 ## 4. Variabili

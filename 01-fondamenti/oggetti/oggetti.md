@@ -84,3 +84,4 @@ console.log(obj1.x); // 20 (originale non modificato)
 - [[computed-property-names]] - Definizione dinamica del nome di una proprietà in formato letterale
 - [[property-vs-method]] - Saper distinguere se una proprietà è un metodo
 - [[object-literal-vs-constructed]] - Modalità di stesura dell'object-literal format
+- [[duplicazione-oggetti]] - Strategie e differenze tra shallow copy e deep copy

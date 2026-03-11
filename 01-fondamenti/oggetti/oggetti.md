@@ -80,3 +80,7 @@ console.log(obj1.x); // 20 (originale non modificato)
 - [[tipi/coercizione]] - Conversione da/verso oggetti
 - [[array/array]] - Array sono oggetti speciali per collezioni ordinate
 - [[funzioni/funzioni]] - Le funzioni sono oggetti speciali
+- [[property-access]] - Regole sull'accesso alle proprietà (dot e bracket notation)
+- [[computed-property-names]] - Definizione dinamica del nome di una proprietà in formato letterale
+- [[property-vs-method]] - Saper distinguere se una proprietà è un metodo
+- [[object-literal-vs-constructed]] - Modalità di stesura dell'object-literal format

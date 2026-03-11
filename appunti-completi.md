@@ -5806,6 +5806,129 @@ Quando si usa un oggetto come chiave, esso viene convertito nella sua rappresent
 
 È importante non confondere l'uso di numeri come chiavi negli oggetti normali con il loro uso come **indici** negli array. Gli array hanno un comportamento speciale che gestisce gli indici numerici in modo ottimizzato, mentre negli oggetti generici il numero viene semplicemente trattato come una stringa.
 
+#### Nomi di Proprietà Computati (Computed Property Names)
+
+L'accesso alle proprietà tramite parentesi quadre (`myObject[..]`) si rivela utile quando si ha la necessità di usare un'espressione computata come nome della chiave. Tuttavia, questa sintassi non è di aiuto quando si dichiarano oggetti direttamente tramite la sintassi _object-literal_.
+
+Per risolvere questo limite, ES6 ha introdotto i **computed property names**. Questa funzionalità permette di specificare un'espressione racchiusa tra parentesi quadre `[ ]` direttamente nella posizione del nome della chiave (key-name) durante la dichiarazione di un oggetto literal:
+
+```javascript
+var prefix = "foo";
+
+/*
+ * Dichiarazione di un oggetto literal usando
+ * nomi di proprietà computati
+ */
+var myObject = {
+  [prefix + "bar"]: "hello",
+  [prefix + "baz"]: "world",
+};
+
+myObject["foobar"]; // "hello"
+myObject["foobaz"]; // "world"
+```
+
+L'utilizzo più comune per i nomi di proprietà computati riguarderà probabilmente i **Symbols** (introdotti in ES6). In breve, un _Symbol_ è un tipo di dato primitivo che ha un valore opaco e non intuibile (tecnicamente una stringa). Poiché operare con il valore reale di un _Symbol_ è fortemente sconsigliato (visto che teoricamente potrebbe differire tra engine JS separati), si utilizza solitamente il nome associato ad esso (es. `Symbol.Something`):
+
+```javascript
+/*
+ * Utilizzo di un Symbol come chiave
+ * tramite nome di proprietà computata
+ */
+var myObject = {
+  [Symbol.Something]: "hello world",
+};
+```
+
+#### Proprietà vs Metodi (Property Versus Method)
+
+È frequente che gli sviluppatori facciano una distinzione linguistica quando accedono a una proprietà di un oggetto se il valore restituito risulta essere una funzione. Poiché è forte la tentazione di considerare la funzione come appartenente all'oggetto, e poiché in altri linguaggi le funzioni che appartengono agli oggetti (nello specifico, alle "classi") sono chiamate "metodi", è comune sentire parlare di **"method access"** in contrapposizione a "property access".
+
+Tuttavia, dal punto di vista tecnico in JavaScript **le funzioni non "appartengono" mai agli oggetti**. Affermare che una funzione è un "metodo" solo perché si è acceduto ad essa tramite il riferimento di un oggetto rappresenta una forzatura semantica.
+
+È vero che alcune funzioni contengono il riferimento `this` al loro interno e che a volte questo si riferisce all'oggetto dal quale avviene la chiamata (call-site). Ma questo utilizzo non rende la funzione un "metodo" in senso stretto. Il `this` è associato **dinamicamente a runtime** e, di conseguenza, la sua relazione con l'oggetto è nella migliore delle ipotesi indiretta.
+
+Ogni singola volta che si accede a una proprietà su un oggetto, si sta effettuando un _property access_, indipendentemente dal tipo di valore che si ottiene in ritorno. Ottenere una funzione da questo accesso non la fa diventare magicamente un "metodo".
+
+```javascript
+function foo() {
+  console.log("foo");
+}
+
+var someFoo = foo; // riferimento a `foo` come variabile
+
+var myObject = {
+  someFoo: foo,
+};
+
+foo; // function foo(){..}
+someFoo; // function foo(){..}
+myObject.someFoo; // function foo(){..}
+```
+
+Nell'esempio sopra, `someFoo` e `myObject.someFoo` non sono altro che **due riferimenti separati alla stessa identica funzione**. Nessuno dei due suggerisce che la funzione sia speciale o "posseduta" da alcun oggetto. Se `foo()` fosse stata definita con un `this` interno, il binding implicito associato a `myObject.someFoo` sarebbe l'unica differenza osservabile tra i due riferimenti (per approfondimenti su questo meccanismo, si veda la sezione [3.11 L'identificatore this](#lidentificatore-this)).
+
+Anche nel caso in cui si dichiari un'espressione di funzione (function expression) direttamente all'interno della dichiarazione di un object literal, la funzione non appartiene maggiormente all'oggetto. Si tratta ancora una volta di riferimenti multipli verso il medesimo oggetto funzione:
+
+```javascript
+/*
+ * La funzione dichiarata all'interno dell'oggetto
+ * è solo un riferimento, non una vera appartenenza
+ */
+var myObject = {
+  foo: function () {
+    console.log("foo");
+  },
+};
+
+var someFoo = myObject.foo;
+
+someFoo; // function foo(){..}
+myObject.foo; // function foo(){..}
+```
+
+In sintesi, la conclusione più prudente è che in JavaScript le parole **“funzione”** e **“metodo”** sono considerabili **intercambiabili**.
+
+> **Nota**: In modo interessante, la flessibilità tra funzioni e metodi viene leggermente alterata solo in ES6 che introduce il riferimento `super`, tipicamente impiegato con le classi. Il `super` risolve le sue dipendenze in modo statico e non dinamico, spingendo a identificare queste specifiche funzioni associate a istanze _super_ come dei "metodi" in modo più coerente rispetto a prima.
+
+#### Gli Array nell'Ecosistema degli Oggetti
+
+Anche gli array utilizzano la forma di accesso tramite parentesi quadre (`[ ]`) descritta in precedenza. Tuttavia, pur non imponendo restrizioni sul tipo di valori immagazzinabili, adottano un'organizzazione maggiormente strutturata. Nello specifico, presuppongono un'indicizzazione numerica, il che significa che i valori vengono posizionati su indici interi positivi, come `0` o `42`.
+
+Poiché internamente gli array sono oggetti, è possibile aggiungere loro delle normali proprietà denominate (named properties), nonostante siano predisposti per indici numerici. Si nota che l'aggiunta di una proprietà con nome, a prescindere dal fatto che venga introdotta tramite l'operatore punto (`.`) o parentesi quadre (`[ ]`), **non altera il valore riportato dalla proprietà `length`** dell'array.
+
+```javascript
+/*
+ * Aggiunta di una proprietà testuale (non numerica)
+ * La lunghezza nativa dell'array non ne verrà scalfita
+ */
+var myArray = ["foo", 42, "bar"];
+
+myArray.baz = "baz";
+
+myArray.length; // 3
+myArray.baz; // "baz"
+```
+
+> **Nota**: Sebbene tecnicamente si possa utilizzare un array alla stregua di un oggetto per contenere coppie chiave/valore ed astenersi dall'usare gli indici, questa pratica è fortemente sconsigliata. Gli array posseggono logiche interne e ottimizzazioni studiate per interfacciarsi agli indici numerici. Per i dettagli sulle best practice e il paragone strutturale con gli oggetti, si consiglia la lettura della sezione [3.7 Array](#array).
+
+È necessario prestare tuttavia attenzione quando si tenta di aggiungere una proprietà a un array usando una stringa che **appare in tutto e per tutto convertibile in un numero logico e rientrante negli estremi dell'indice** (es. la stringa `"3"`). In tale eventualità, essa non verrà salvata banalmente come proprietà testuale generica, bensì verrà elaborata come un reale indice numerico aggiornando la truttura e alterandone la lunghezza.
+
+```javascript
+/*
+ * Aggiunta di una chiave stringa che è valutabile e valida come indice numerico
+ */
+var myArray = ["foo", 42, "bar"];
+
+/*
+ * La chiave stringa "3" viene mappata all'indice 3
+ */
+myArray["3"] = "baz";
+
+myArray.length; // La lunghezza ricalcola il nuovo estremo e si espande a 4!
+myArray[3]; // "baz"
+```
+
 ---
 
 ## 4. Variabili

@@ -10,13 +10,14 @@ Questo Second Brain è composto da **due tipologie di contenuti**:
 
 ### 1. 📄 Appunti Completi (`appunti-completi.md`)
 
-**Scopo**: Contenere i testi originali completi di studio, senza sintesi né limiti di lunghezza.
+**Scopo**: Contenere i testi originali di studio rielaborati e sintetizzati senza perdite di profondità tecnica, senza stringenti limiti di lunghezza.
 
 **Caratteristiche**:
 
-- ✅ Contenuto ORIGINALE e COMPLETO
-- ✅ NESSUN limite di righe per sezione
+- ✅ Contenuto SINTETIZZATO MA COMPLETO tecnicamente
+- ✅ NESSUN limite di righe per sezione (espandi quanto serve per chiarezza)
 - ✅ Includere esempi a codice laddove il testo lo prevede
+- ✅ Nessuna verbosità inutile o traduzioni prolisse dei manuali
 - ✅ **NON contiene link** verso i file atomici
 - ✅ Serve da fonte di verità (source of truth)
 - ✅ È il punto di riferimento completo per ogni argomento
@@ -121,8 +122,8 @@ Il titolo stesso è un link cliccabile agli appunti completi.
 
 1. Apri `appunti-completi.md`
 2. Trova la sezione appropriata (es. `## 3. Tipi e Dati`)
-3. Aggiungi il contenuto COMPLETO e ORIGINALE
-4. NON sintetizzare, aggiungi esempi a codice laddove il testo lo permette
+3. Aggiungi il contenuto RIELABORATO SINTETICAMENTE ma completo tecnicamente
+4. Elimina verbosità pur mantenendo viva la teoria, aggiungi esempi a codice laddove il testo lo permette
 5. NON aggiungere link a file atomici
 
 ```markdown
@@ -262,7 +263,7 @@ second_brain_js/
 
 ### Per Appunti Completi
 
-- [ ] Contenuto originale e completo
+- [ ] Contenuto rielaborato, senza enfasi prolisse
 - [ ] Nessun limite di righe applicato
 - [ ] Tutti gli esempi inclusi
 - [ ] NO link `[[01-fondamenti/...]]`

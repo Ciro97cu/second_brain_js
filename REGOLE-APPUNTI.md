@@ -91,17 +91,19 @@ Prestare **attenzione al corretto posizionamento** degli appunti in `appunti-com
 - Inserire nel capitolo/sezione appropriati
 - Mantenere la numerazione coerente
 
-### 9. Traduzione Diretta
+### 9. Sintesi e Rielaborazione (Priorità Assoluta)
 
-Se il concetto è breve e non vale la pena riassumerlo, **tradurlo direttamente** in italiano mantenendo tutti i dettagli. (è sempre preferibile riassumere in termini più semplici il concetto)
+Dare **sempre la precedenza alla sintesi e alla rielaborazione** del testo. Evitare traduzioni letterali prolisse. L'obiettivo è estrarre il nocciolo tecnico del concetto e spiegarlo in termini semplici e diretti.
 
-- ✅ Tradurre tutto il contenuto originale
-- ✅ Mantenere esempi e spiegazioni complete
-- ✅ **SEMPRE in terza persona** anche nella traduzione diretta
-- ✅ Convertire lo stile: "you can" → "si può", "we need" → "è necessario"
-- ❌ NON sintetizzare o tagliare parti
-- ❌ NON lasciare contenuti in inglese
-- ❌ NON mantenere seconda persona ("puoi", "possiamo")
+> **Eccezione (Casi Limite)**: Laddove un concetto è già brevissimo di per sé, e un'ulteriore sintesi rischierebbe solo di perderne il significato o peggiorarne l'efficacia, è consentito effettuare una traduzione diretta (sempre rispettando la regola della terza persona). **Questa deve rimanere una strictly eccezione e mai la prassi di default.**
+
+- ✅ Elaborare il testo originale e concettualizzarlo
+- ✅ Mantenere tutti i dettagli tecnici essenziali e gli esempi di codice, ma rimuovere verbosità e aria fritta
+- ✅ Trasformare paragrafi discorsivi lunghi in spiegazioni concise ed efficaci
+- ✅ Convertire lo stile in forma impersonale ("si può", "è necessario", "si consideri")
+- ❌ NON fare traduzioni letterali 1:1 o mantenere l'enfasi narrativa manualistica dell'autore originale (salvo l'eccezione descritta sopra)
+- ❌ NON mantenere la prolissità se il concetto è spiegabile in meno parole
+- ❌ NON lasciare contenuti in inglese (salvo limitatissimi termini tecnici)
 
 ### 10. Gestione Duplicazioni
 

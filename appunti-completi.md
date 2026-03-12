@@ -8,8 +8,6 @@ _Ultimo aggiornamento: 13 Febbraio 2026_
 
 ### 1.1 Che cos'è Javascript
 
-**Tipo**: Nuovo Topic
-
 JavaScript (JS) è un linguaggio di programmazione versatile, comunemente usato per creare interattività nelle pagine web. Permette di manipolare dinamicamente i contenuti, animare elementi, gestire eventi (come il click di un pulsante) e comunicare con un server per aggiornare parti della pagina senza doverla ricaricare completamente.
 
 Sebbene sia spesso descritto come un linguaggio interpretato (interpreted), la sua esecuzione è più complessa. I moderni motori JavaScript (JavaScript engines) — come V8 (in Chrome) o SpiderMonkey (in Firefox) — non si limitano a interpretare il codice riga per riga. Eseguono invece una compilazione Just-In-Time (JIT), traducendo il codice sorgente (source code) in codice macchina ottimizzato poco prima dell'esecuzione, garantendo così prestazioni molto più elevate.
@@ -63,8 +61,6 @@ fetch("https://api.example.com/dati")
 ---
 
 ### 1.2 ECMAScript
-
-**Tipo**: Nuovo Topic
 
 ECMAScript è una specifica, uno standard tecnico, che definisce le regole, le funzionalità e il comportamento che un linguaggio di scripting deve avere. Non è un linguaggio di programmazione, ma la "ricetta" su cui si basano diversi linguaggi.
 
@@ -164,8 +160,6 @@ console.log("Esecuzione nel browser");
 ---
 
 ### 1.3 Dove Inserire il Codice JavaScript in HTML
-
-**Tipo**: Nuovo Topic
 
 Per far interagire JavaScript con una pagina web, è necessario includere il codice nel documento HTML. Questo si fa tramite il tag `<script>`, che può essere posizionato in punti diversi del file. La posizione e gli attributi usati (async, defer) hanno un impatto significativo sul caricamento della pagina e sulle performance.
 
@@ -306,8 +300,6 @@ bottone.addEventListener("click", function () {
 
 ### 1.4 Esecuzione
 
-**Tipo**: Nuovo Topic
-
 Per poter eseguire (to execute o run) le istruzioni, un programma deve essere tradotto in un formato che il computer possa comprendere. Questo compito è svolto da programmi speciali chiamati interpreti (interpreters) o compilatori (compilers).
 
 - **L'interpretazione** (interpreting) consiste nel tradurre ed eseguire il codice sorgente (source code) riga per riga, ogni volta che il programma viene avviato.
@@ -362,8 +354,6 @@ console.log(sommaRipetuta(3000));
 ## 2. Fondamenti
 
 ### 2.1 Programma
-
-**Tipo**: Nuovo Topic
 
 Un programma, o codice, è un insieme di istruzioni che dicono al computer cosa fare.
 
@@ -441,8 +431,6 @@ function calcolaArea(larghezza, altezza) {
 
 ### 2.3 Statement (Istruzione)
 
-**Tipo**: Nuovo Topic
-
 Un'istruzione è un comando che esegue un compito specifico. Un programma è composto da una serie di istruzioni.
 
 ```javascript
@@ -487,8 +475,6 @@ for (let i = 0; i < 3; i++) {
 ---
 
 ### 2.4 Expression (Espressione)
-
-**Tipo**: Nuovo Topic
 
 Le istruzioni sono composte da una o più espressioni. Un'espressione è un qualsiasi pezzo di codice che produce un valore, come un riferimento a una variabile o una combinazione di valori e operatori.
 
@@ -545,8 +531,6 @@ let risultato = (x + 5) * 2 - 3;
 ```
 
 ### 2.5 Blocchi di Codice (Code Blocks)
-
-**Tipo**: Nuovo Topic
 
 Un blocco (block) è un gruppo di una o più istruzioni racchiuse tra parentesi graffe `{ ... }`. La sua funzione è quella di raggruppare istruzioni che appartengono logicamente insieme, creando un'unità di codice che può essere trattata come un singolo elemento.
 
@@ -691,8 +675,6 @@ let oggetto = {
 ---
 
 ### 2.6 Istruzioni Condizionali (Conditionals)
-
-**Tipo**: Nuovo Topic
 
 Le **istruzioni condizionali** permettono a un programma di prendere decisioni, eseguendo blocchi di codice diversi in base al verificarsi o meno di una determinata condizione. Sono fondamentali per creare programmi dinamici che si adattano a situazioni diverse.
 
@@ -1261,8 +1243,6 @@ console.log(nomeUtente == nomeAmministratore); // true (coercizione!)
 ```
 
 ### 3.2 Tipizzazione Dinamica (Dynamic Typing)
-
-**Tipo**: Nuovo Topic
 
 JavaScript è un linguaggio a tipizzazione dinamica. Questo significa che una variabile non è legata a un tipo di dato specifico. La stessa variabile può contenere un number in un momento, e una string in un momento successivo. Questa flessibilità permette di usare una singola variabile per rappresentare un valore che cambia forma nel corso del programma.
 
@@ -4582,7 +4562,7 @@ In questo esempio, `bind` presetta il primo parametro (`"p1"`), e quando si chia
    ```
 
 4. **Altrimenti, default `this` (default binding).**  
-   Se in strict mode, usa `undefined`, altrimenti usa il global object.
+   Se in strict mode, si usa `undefined`, altrimenti si usa il global object.
    ```javascript
    var bar = foo();
    ```
@@ -7206,8 +7186,6 @@ console.log(varBlock); // ✅ "var in block" (function scoped)
 
 ### 4.4 Scope (Ambito)
 
-**Tipo**: Nuovo Topic
-
 Uno dei paradigmi fondamentali di quasi tutti i linguaggi di programmazione è la capacità di memorizzare valori in variabili, per poi recuperarli o modificarli in un secondo momento. Questa capacità di gestire i valori nelle variabili è ciò che conferisce a un programma uno stato (state). Senza questo concetto, un programma potrebbe eseguire solo compiti molto limitati e poco interessanti.
 
 L'introduzione delle variabili in un programma solleva però delle domande cruciali: dove "vivono" queste variabili? In altre parole, dove vengono memorizzate? E, soprattutto, come fa il programma a trovarle quando ne ha bisogno?
@@ -8241,11 +8219,11 @@ console.log(a); // ✅ "livello globale"
 
 #### La Metafora dell'Edificio
 
-Per visualizzare meglio il processo di risoluzione dello scope annidato, possiamo usare la metafora di un edificio a più piani.
+Per visualizzare meglio il processo di risoluzione dello scope annidato, si può usare la metafora di un edificio a più piani.
 
 ![Scope](assets/scope.png)
 
-Immaginiamo che questo edificio rappresenti l'insieme delle regole dello scope del nostro programma:
+Si immagini che questo edificio rappresenti l'insieme delle regole dello scope del nostro programma:
 
 - Il **primo piano** (il piano terra) rappresenta lo scope corrente in cui ci troviamo in un dato momento dell'esecuzione.
 - L'**ultimo piano** dell'edificio rappresenta lo scope globale.
@@ -10939,8 +10917,6 @@ La TDZ esiste per prevenire errori logici e rendere il codice più prevedibile, 
 ---
 
 ## 5. Operatori
-
-**Tipo**: Nuovo Topic
 
 Gli operatori (operators) sono simboli speciali che eseguono azioni su variabili e valori. Permettono di effettuare calcoli, assegnare valori, confrontare dati e combinare condizioni logiche.
 

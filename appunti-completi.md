@@ -6000,6 +6000,170 @@ newObj.d === anotherFunction; // true
 
 > **Nota**: Nel capitolo successivo che analizza a fondo i "property descriptors", verrà illustrato anche `Object.defineProperty(..)`. È utile specificare da subito che la copia operata da `Object.assign(..)` realizza delle pure assegnazioni convenzionali (`=`), e perciò qualsiasi caratteristica avanzata (come per esempio l'attributo `writable`) posta sulle proprietà dell'oggetto sorgente non verrà affatto preservata.
 
+#### Descrittori delle Proprietà (Property Descriptors)
+
+Prima di ES5, il linguaggio JavaScript non offriva alcun metodo diretto per ispezionare o distinguere le caratteristiche delle proprietà di un oggetto, come per esempio stabilire se una proprietà fosse di sola lettura o meno.
+A partire da ES5, tuttavia, tutte le proprietà sono descritte in termini di un **property descriptor** (descrittore della proprietà).
+
+Si consideri il seguente codice:
+
+```javascript
+/*
+ * Ispezione del Descrittore di Proprietà (Property Descriptor)
+ */
+var myObject = {
+  a: 2,
+};
+
+Object.getOwnPropertyDescriptor(myObject, "a");
+// {
+//    value: 2,
+//    writable: true,
+//    enumerable: true,
+//    configurable: true
+// }
+```
+
+Si può osservare che il _property descriptor_ (chiamato "data descriptor" in quanto contiene semplicemente un valore dato) per una normale proprietà `a` è composto da più elementi oltre al suo valore `2`. Esso include altre tre caratteristiche: `writable`, `enumerable` e `configurable`.
+
+Oltre a ispezionare le caratteristiche predefinite dei descrittori quando si crea una proprietà normale, è possibile utilizzare il metodo `Object.defineProperty(..)` per aggiungere una nuova proprietà o per modificarne una esistente (ammesso che sia `configurable`), definendone esplicitamente le caratteristiche.
+
+Ad esempio:
+
+```javascript
+/*
+ * Creazione manuale tramite Object.defineProperty(..)
+ */
+var myObject = {};
+
+Object.defineProperty(myObject, "a", {
+  value: 2,
+  writable: true,
+  configurable: true,
+  enumerable: true,
+});
+
+myObject.a; // 2
+```
+
+Utilizzando `defineProperty(..)`, è stata aggiunta la proprietà `a` all'oggetto `myObject` in modo esplicito e manuale. Tuttavia, generalmente non si ricorre a questo approccio manuale a meno che non si desideri deviare una delle caratteristiche del descrittore dal suo comportamento standard.
+
+##### Writable
+
+La possibilità di modificare il valore di una proprietà è controllata dalla caratteristica `writable`.
+
+Si consideri:
+
+```javascript
+/*
+ * Modifica disabilitata tramite writable: false
+ */
+var myObject = {};
+
+Object.defineProperty(myObject, "a", {
+  value: 2,
+  writable: false, // non writable!
+  configurable: true,
+  enumerable: true,
+});
+
+myObject.a = 3;
+myObject.a; // 2
+```
+
+Come si può notare, la modifica del valore fallisce silenziosamente. Se si tenta di eseguire la stessa operazione in _strict mode_, viene generato un errore:
+
+```javascript
+"use strict";
+var myObject = {};
+
+Object.defineProperty(myObject, "a", {
+  value: 2,
+  writable: false, // non writable!
+  configurable: true,
+  enumerable: true,
+});
+
+myObject.a = 3; // TypeError
+```
+
+L'errore `TypeError` indica che non è permesso modificare una proprietà che non è `writable`. Si noterà in seguito, quando verranno trattati i getter/setter, che impostare `writable: false` equivale concettualmente a definire un setter "no-op" (ovvero che non svolge un'operazione attiva). Più precisamente, per essere strettamente conforme a `writable: false`, un setter no-op dovrebbe sollevare un `TypeError` una volta invocato.
+
+##### Configurable
+
+Fintanto che una proprietà è modificabile a livello di configurazione, è possibile alterare la definizione del suo descrittore ricorrendo allo stesso metodo `defineProperty(..)`:
+
+```javascript
+/*
+ * Configurazione proprietaria e i suoi limiti irreversibili
+ */
+var myObject = {
+  a: 2,
+};
+
+myObject.a = 3;
+myObject.a; // 3
+
+Object.defineProperty(myObject, "a", {
+  value: 4,
+  writable: true,
+  configurable: false, // non configurable!
+  enumerable: true,
+});
+
+myObject.a; // 4
+myObject.a = 5;
+myObject.a; // 5
+
+Object.defineProperty(myObject, "a", {
+  value: 6,
+  writable: true,
+  configurable: true,
+  enumerable: true,
+}); // TypeError
+```
+
+La chiamata finale a `defineProperty(..)` provoca un `TypeError`, ignorando l'assenza o presenza dello _strict mode_, in quanto si sta tentando di modificare il descrittore di una proprietà che non è `configurable`. Occorre prestare notevole attenzione: l'impostazione di `configurable` su `false` è un'operazione irreversibile e unidirezionale.
+
+> **Nota**: Esiste un'eccezione sottile a cui prestare attenzione: anche se la proprietà è già impostata su `configurable: false`, l'attributo `writable` può sempre essere modificato da `true` a `false` senza causare errori, ma non è possibile il processo inverso (da `false` a `true`) se la proprietà è già definita come non configurabile.
+
+Un altro effetto della dichiarazione `configurable: false` è l'inibizione dell'operatore `delete` nella rimozione di una proprietà esistente:
+
+```javascript
+/*
+ * Effetto di configurable sull'operatore delete
+ */
+var myObject = {
+  a: 2,
+};
+
+myObject.a; // 2
+delete myObject.a;
+myObject.a; // undefined
+
+Object.defineProperty(myObject, "a", {
+  value: 2,
+  writable: true,
+  configurable: false,
+  enumerable: true,
+});
+
+myObject.a; // 2
+delete myObject.a;
+myObject.a; // 2
+```
+
+L'ultima istruzione `delete` fallisce in modo silenzioso perché la proprietà `a` è stata resa inconfigurabile.
+L'operatore `delete` serve esclusivamente per rimuovere le proprietà direttamente dall'oggetto interessato (qualora esse siano rimuovibili). Se una determinata proprietà dell'oggetto rappresenta l'ultimo riferimento rimanente a un altro oggetto o funzione, la sua eliminazione mediante `delete` rimuoverà tale riferimento, permettendo al meccanismo di _garbage-collection_ di recuperarne la memoria associata. Tuttavia, non è formalmente corretto considerare `delete` come uno strumento per liberare memoria allocata, come invece avviene in altri linguaggi (es. C o C++). Esso non esegue nient'altro che un'operazione di rimozione delle proprietà su oggetti.
+
+##### Enumerable
+
+L'ultima caratteristica presa in esame dei descrittori (le altre due riguardano i getter/setter, discussi in altre sezioni) è `enumerable`.
+
+Come suggerisce il nome stesso, questa caratteristica determina se una proprietà farà la sua comparsa in determinate operazioni di enumerazione delle proprietà di un oggetto, come ad esempio nei cicli `for..in`. Impostando `enumerable` a `false`, la proprietà viene omessa da tali enumerazioni pur rimanendo completamente accessibile in modo diretto ai richiami. Impostandola a `true`, invece, la proprietà viene esplicitamente inclusa nelle enumerazioni.
+
+Tutte le normali proprietà dichiarate dispongono per default di un valore preimpostato ad `enumerable: true`, configurazione che risponde alla maggioranza dei casi d'uso. Nel caso una specifica proprietà dovesse permanere nascosta all'enumerazione, risulta necessario impostarne esplicitamente il parametro a `enumerable: false`.
+
 ---
 
 ## 4. Variabili

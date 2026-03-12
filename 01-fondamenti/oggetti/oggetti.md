@@ -85,3 +85,4 @@ console.log(obj1.x); // 20 (originale non modificato)
 - [[property-vs-method]] - Saper distinguere se una proprietà è un metodo
 - [[object-literal-vs-constructed]] - Modalità di stesura dell'object-literal format
 - [[duplicazione-oggetti]] - Strategie e differenze tra shallow copy e deep copy
+- [[property-descriptors]] - I descrittori e gli attributi configurabili delle proprietà (writable, configurable, enumerable)

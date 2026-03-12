@@ -44,12 +44,17 @@ Prediligere **paragrafi fluidi** e spiegazioni narrative.
 - Usare bullet points solo per enumerazioni tecniche necessarie
 - Preferire la narrazione continua
 
-### 4. Semplicità
+### 4. Semplicità Estrema e Praticità
 
-Mantenere il linguaggio **semplice, chiaro e diretto**.
+Mantenere il linguaggio **il più semplice, chiaro e colloquiale possibile** (pur restando tecnicamente corretti).
+Non stiamo scrivendo un romanzo o una tesi universitaria, ma degli appunti pratici.
 
-- Evitare complessità non necessarie
-- Spiegare i concetti in modo accessibile
+> **Eccezione**: Se un termine leggermente più "alto" o specifico risulta essere l'unico modo perfetto e inequivocabile per descrivere un concetto (dove parole troppo comuni creerebbero confusione o farebbero perdere precisione tecnica), è ovviamente consentita l'eccezione lessicale.
+
+- ✅ Usare parole dirette e di uso comune di default ("creare", "bloccare", "nascondere")
+- ✅ Spiegare i concetti come se li si stesse raccontando a un collega a voce (mantenendo la 3ª persona)
+- ❌ **Evitare** l'abuso di termini barocchi o puramente accademici se esiste un'alternativa semplice altrettanto valida (es. evitare "forgiare" se basta "creare", evitare "inibire" se basta "bloccare")
+- ❌ Evitare strutture di frase troppo lunghe, complesse o contorte
 
 ### 5. Termini Tecnici
 

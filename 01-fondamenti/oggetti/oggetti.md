@@ -86,3 +86,4 @@ console.log(obj1.x); // 20 (originale non modificato)
 - [[object-literal-vs-constructed]] - Modalità di stesura dell'object-literal format
 - [[duplicazione-oggetti]] - Strategie e differenze tra shallow copy e deep copy
 - [[property-descriptors]] - I descrittori e gli attributi configurabili delle proprietà (writable, configurable, enumerable)
+- [[immutability]] - Livelli di immutabilità superficiale (preventExtensions, seal, freeze)

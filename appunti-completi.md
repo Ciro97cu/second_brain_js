@@ -6164,6 +6164,81 @@ Come suggerisce il nome stesso, questa caratteristica determina se una propriet�
 
 Tutte le normali proprietà dichiarate dispongono per default di un valore preimpostato ad `enumerable: true`, configurazione che risponde alla maggioranza dei casi d'uso. Nel caso una specifica proprietà dovesse permanere nascosta all'enumerazione, risulta necessario impostarne esplicitamente il parametro a `enumerable: false`.
 
+#### Immutabilità degli Oggetti (Immutability)
+
+L'immutabilità si riferisce al concetto che un oggetto, una volta creato, non può essere modificato. Invece di modificare l'oggetto originale, viene creato un nuovo oggetto con le modifiche desiderate. Questo approccio è ampiamente utilizzato nella programmazione funzionale per garantire la prevedibilità e l'affidabilità delle applicazioni.
+
+A livello tecnico e strutturale, talvolta è necessario assicurarsi che determinate proprietà o interi oggetti non possano essere modificati forzatamente. A partire da ES5, JavaScript fornisce diversi livelli gerarchici per imporre questa immutabilità direttamente sul motore.
+
+È cruciale sottolineare che tutti i metodi nativi introducono esclusivamente una **shallow immutability** (immunità superficiale). Essi agiscono unicamente sull'oggetto diretto e sulle caratteristiche delle sue proprietà immediate. Qualora l'oggetto protetto detenga riferimenti verso altri oggetti o array, il contenuto di questi ultimi rimarrà comunque mutabile.
+
+```javascript
+/*
+ * Shallow Immutability: i riferimenti interni rimangono vulnerabili
+ */
+// Ipotizzando myImmutableObject come già protetto/congelato
+myImmutableObject.foo; // [1, 2, 3]
+myImmutableObject.foo.push(4); // L'array interno è ancora liberamente alterabile
+myImmutableObject.foo; // [1, 2, 3, 4]
+```
+
+Per ottenere un congelamento profondo, sarebbe necessario iterare strutturalmente ed estendere manualmente tali protezioni anche alle proprietà figlie.
+Tuttavia, in JavaScript limitare interamente la mutabilità non è un design pattern predominante: un abuso del _sealing_ o del _freezing_ di massa solitamente suggerisce l'opportunità di ripensare complessivamente la struttura della propria app per renderla più tollerante ai cambiamenti di stato, piuttosto che ingabbiarla.
+
+Esistono 4 approcci principali verso l'immutabilità di un oggetto, dal più mirato al blocco totale.
+
+##### 1. Costanti di Oggetto
+
+Combinando `writable: false` con `configurable: false` all'interno di un `defineProperty`, è possibile forgiare la singola proprietà di un oggetto in modo che essa si comporti essenzialmente come una costante inviolabile (non riassegnabile, non ridefinibile e non cancellabile).
+
+```javascript
+/*
+ * Creazione di una proprietà-costante
+ */
+var myObject = {};
+
+Object.defineProperty(myObject, "FAVORITE_NUMBER", {
+  value: 42,
+  writable: false,
+  configurable: false,
+});
+```
+
+##### 2. Impedire Estensioni
+
+Il metodo `Object.preventExtensions(..)` inibisce rigorosamente l'aggiunta di _nuove_ proprietà ad un oggetto, lasciando però del tutto inalterate le proprietà pre-esistenti.
+
+```javascript
+/*
+ * Blocco di nuove estensioni
+ */
+var myObject = {
+  a: 2,
+};
+
+Object.preventExtensions(myObject);
+
+myObject.b = 3; // Fallimento in modalità normale
+myObject.b; // undefined
+```
+
+In modalità non-strict, l'assegnazione anomala fallisce silenziosamente. In `strict mode`, genera un immediato `TypeError`.
+
+##### 3. "Sigillare" l'Oggetto (Seal)
+
+`Object.seal(..)` innalza il livello di guardia invocando implicitamente un `preventExtensions` su un oggetto, ma, contemporaneamente, fissa in automatico a `configurable: false` la totalità dei descrittori delle sue proprietà già in essere.
+
+Le conseguenze dirette sono il divieto assoluto di aggiungere proprietà esterne e, altresì, l’impossibilità di eliminare tramite `delete` o di riconfigurare le peculiarità delle proprietà innate.
+In questo stadio la struttura è fissa, sebbene i valori preesistenti rimangano tuttora modificabili.
+
+##### 4. "Congelare" l'Oggetto (Freeze)
+
+Il livello apicale di restrizione nativa è il _congelamento_. `Object.freeze(..)` prende un oggetto e applica ad esso la medesima traccia di un `Object.seal(..)`, per poi iterare tra esso marcando tutte le proprietà d'accesso con attributo descrittore `writable: false`.
+
+Si ottiene pertanto un oggetto corazzato e statico in modo totale al livello base (nessuna neo proprietà, cancellazione, ridefinizione ed ora, nemmeno modifica di volore).
+
+Come chiarito inizialmente, un'immutabilità assoluta e profonda che travalichi la _shallow copy_ si otterrebbe logicamente applicando un `freeze(..)` iniziale e susseguente ricorsione logica di richiamo verso ogni oggetto ad albero contenuto; un'operazione da considerare con molta attenzione per la sua tendenza a freezare indiscriminatamente diramazioni potenzialmente condivise con altre parti dell'applicazione non contemplate.
+
 ---
 
 ## 4. Variabili

@@ -6286,6 +6286,80 @@ Se la proprietà **esiste** già, l'algoritmo fa 3 controlli in ordine:
 
 Se invece la proprietà **non esiste**, il discorso si complica molto e l'operazione coinvolge meccanismi legati al `[[Prototype]]`, che verranno visti nel dettaglio in seguito.
 
+#### Getter e Setter (Metodi di Accesso)
+
+I _getter_ e _setter_ (o metodi di accesso) sono funzioni speciali che si comportano a tutti gli effetti come normali proprietà di un oggetto al momento dell'utilizzo. Servono a intercettare e personalizzare il momento esatto in cui un valore viene letto (attraverso un getter) o modificato (attraverso un setter). Architetturalmente, offrono un modo per incapsulare e nascondere la logica interna, permettendo ad esempio di validare o trasformare un dato prima di salvarlo, o di calcolarlo dinamicamente al momento della richiesta, mantenendo però l'interfaccia esterna dell'oggetto semplice e pulita da usare.
+
+A livello tecnico, il motore JavaScript prevede che le operazioni standard `[[Get]]` e `[[Put]]` possano essere scavalcate (sovrascritte) per le singole proprietà, delegando il lavoro proprio a questi metodi personalizzati.
+
+Quando si definisce una proprietà in modo che abbia un getter, un setter o entrambi, la proprietà cambia letteralmente "natura":
+
+- Smette di essere un normale contenitore di dati (_Data Descriptor_).
+- Diventa una proprietà di accesso (_Accessor Descriptor_).
+
+In questo nuovo stato, i classici attributi del descrittore come `value` (il valore contenuto) e `writable` (la possibilità di scriverci) perdono totalmente di significato e vengono **ignorati** dal sistema. Al loro posto, JavaScript prenderà in considerazione solo le funzioni `get` e `set` (oltre ai soliti `configurable` ed `enumerable`).
+
+Ci sono due modi per creare un getter/setter: direttamente nella definizione (object-literal) o tramite `Object.defineProperty`.
+
+```javascript
+/*
+ * Configurare solo un getter per una proprietà
+ */
+
+// Metodo 1: Sintassi letterale
+var myObject = {
+  // definiamo un getter per "a"
+  get a() {
+    return 2;
+  },
+};
+
+// Metodo 2: Tramite Object.defineProperty
+Object.defineProperty(myObject, "b", {
+  get: function () {
+    return this.a * 2;
+  },
+  enumerable: true,
+});
+
+console.log(myObject.a); // 2
+console.log(myObject.b); // 4
+```
+
+Come si nota dall'esempio precedente, si è creata una proprietà che di fatto non "contiene" un valore in sé. Ogni volta che la si legge, scatta di nascosto la funzione getter, e ciò che la funzione blocca o calcola col `return` diventa il risultato finale.
+
+**Il problema dei Getter orfani**
+Nell'esempio qui sopra è stato definito solo il getter per `a`, senza alcun setter. Se si provasse a cambiare il valore assegnandone uno nuovo, l'operazione non darebbe alcun errore ma fallirebbe silenziosamente.
+
+```javascript
+myObject.a = 3; // Nessun errore segnalato, ma il comando viene cestinato
+console.log(myObject.a); // 2 (Il getter continua a rispondere "2")
+```
+
+Per rendere la cosa sensata, la best practice impone di **dichiarare quasi sempre sia il getter che il setter**, lavorando in coppia per evitare comportamenti imprevisti. Ecco come collaborano per sovrascrivere interamente sia la fase di lettura che quella di scrittura:
+
+```javascript
+/*
+ * Utilizzo congiunto di Getter e Setter
+ */
+var myObject = {
+  // Intercetta la lettura
+  get a() {
+    return this._a_;
+  },
+
+  // Intercetta la scrittura
+  set a(valore) {
+    this._a_ = valore * 2; // Raddoppia tutto ciò che si tenta di inserire
+  },
+};
+
+myObject.a = 2; // Innesca il setter (valore * 2 e lo salva in _a_)
+console.log(myObject.a); // 4 (Innesca il getter che lo va a leggere)
+```
+
+In quest'ultimo esempio pratico, il valore effettivo viene tenuto al sicuro in un'altra proprietà chiamata `_a_`. È fondamentale capire che usare il trattino basso (`_`) è **solo una convenzione** usata e capita tra programmatori per dirti "ehi, non toccare questa proprietà, è per uso interno". Dietro le quinte non ha alcun potere magico: è una normalissima proprietà che fa da magazzino per i dati in transito dai metodi di accesso.
+
 ---
 
 ## 4. Variabili

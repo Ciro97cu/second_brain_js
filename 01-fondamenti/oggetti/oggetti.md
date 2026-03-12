@@ -89,3 +89,5 @@ console.log(obj1.x); // 20 (originale non modificato)
 - [[immutability]] - Livelli di immutabilità superficiale (preventExtensions, seal, freeze)
 
 - [[get-put]] - I meccanismi algoritmici interni al motore dietro l'accesso e l'assegnazione dei valori
+
+- [[getters-setters]] - Metodi di accesso speciali per intercettare la lettura e la scrittura dei valori nell'oggetto

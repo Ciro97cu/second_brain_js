@@ -87,3 +87,5 @@ console.log(obj1.x); // 20 (originale non modificato)
 - [[duplicazione-oggetti]] - Strategie e differenze tra shallow copy e deep copy
 - [[property-descriptors]] - I descrittori e gli attributi configurabili delle proprietà (writable, configurable, enumerable)
 - [[immutability]] - Livelli di immutabilità superficiale (preventExtensions, seal, freeze)
+
+- [[get-put]] - I meccanismi algoritmici interni al motore dietro l'accesso e l'assegnazione dei valori

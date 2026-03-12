@@ -6239,6 +6239,53 @@ Si ottiene pertanto un oggetto corazzato e statico in modo totale al livello bas
 
 Come chiarito inizialmente, un'immutabilità assoluta e profonda che travalichi la _shallow copy_ si otterrebbe logicamente applicando un `freeze(..)` iniziale e susseguente ricorsione logica di richiamo verso ogni oggetto ad albero contenuto; un'operazione da considerare con molta attenzione per la sua tendenza a freezare indiscriminatamente diramazioni potenzialmente condivise con altre parti dell'applicazione non contemplate.
 
+#### Operazioni Interne: [[Get]] e [[Put]]
+
+In JavaScript, l'accesso e l'assegnamento ai valori di un oggetto non si limitano a una banale lettura o scrittura nella memoria. Sotto il cofano, il motore delega queste azioni a due specifiche operazioni interne al linguaggio: `[[Get]]` e `[[Put]]`.
+
+**Che cos'è l'operazione [[Get]]?**
+L'operazione interna `[[Get]]` è un meccanismo che si attiva automaticamente ogni volta che si cerca di leggere il valore di una proprietà da un oggetto (ad esempio scrivendo `myObject.a`).
+
+Quando scatta, `[[Get]]` per prima cosa cerca la proprietà direttamente dentro l'oggetto. Se la trova, restituisce il valore. Se non la trova, non si ferma, ma continua a cercare risalendo la catena del `[[Prototype]]` (che verrà approfondito nelle sezioni successive).
+
+La caratteristica più importante di `[[Get]]` è che "perdona" gli errori. Se alla fine della sua ricerca non trova assolutamente nulla, non blocca il programma: semplicemente si arrende e restituisce come ripiego il valore `undefined`.
+
+Questo comportamento è molto diverso dalle normali variabili: se si cerca di leggere una variabile che non esiste, il _Lexical Scope_ non sa come risolvere il problema e fa letteralmente schiantare il programma lanciando un errore `ReferenceError`. Con le proprietà degli oggetti, invece, non ci sono quasi mai errori di default, solo un innocuo `undefined`.
+
+```javascript
+/*
+ * Comportamento di [[Get]] rispetto al Lexical Scope
+ */
+
+var myObject = {
+  a: 2,
+};
+
+// [[Get]] ispeziona myObject, trova "a" e restituisce il valore
+console.log(myObject.a); // 2
+
+// [[Get]] non trova "b" e restituisce il fallback di default
+console.log(myObject.b); // undefined
+
+// Errore classico: il Lexical Scope non trova una normale variabile
+// console.log(unaVariabileMaiCreata); // ReferenceError!
+```
+
+> **Nota**: Questo comportamento tollerante può creare ambiguità. Se il risultato è `undefined` (es. `console.log(myObj.a) === undefined`), non si può capire a colpo d'occhio se la proprietà non esiste affatto, o se esiste ma le è stato assegnato volontariamente il valore `undefined`. Ci sono tecniche specifiche per capire l'effettiva "esistenza" di una proprietà (spiegate nei prossimi paragrafi).
+
+**Che cos'è l'operazione [[Put]]?**
+Proprio come esiste `[[Get]]` per leggere, esiste la sua controparte per scrivere: `[[Put]]`. Questa operazione interna si innesca quando si tenta di creare o modificare una proprietà (ad esempio `myObject.a = 5`). Il suo compito non è solo "salvare" il dato, ma fare da vigile e controllare se l'assegnamento è permesso.
+
+Il modo in cui agisce il `[[Put]]` dipende in primis da una semplice domanda: la proprietà esiste già nell'oggetto?
+
+Se la proprietà **esiste** già, l'algoritmo fa 3 controlli in ordine:
+
+1. **La proprietà ha un setter?** (Accessor Descriptor). Se sì, chiama il setter e gli lascia gestire la modifica al posto suo.
+2. **La proprietà è protetta da scrittura?** (Data descriptor con `writable: false`). Se sì, blocca tutto. In _Strict Mode_ lancia un errore `TypeError`, altrimenti fa fallire l'assegnazione in totale silenzio.
+3. **Se nessuno di questi ostacoli è presente**, finalmente imposta il nuovo valore.
+
+Se invece la proprietà **non esiste**, il discorso si complica molto e l'operazione coinvolge meccanismi legati al `[[Prototype]]`, che verranno visti nel dettaglio in seguito.
+
 ---
 
 ## 4. Variabili

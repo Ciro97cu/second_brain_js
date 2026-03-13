@@ -1,6 +1,6 @@
 # [[../../appunti-completi#13-conversione-di-tipo|Conversione di Tipo Esplicita per Primitivi]]
 
-L'esigenza di far transitare un dato primitivo tra i tipi base in maniera controllata ed espressamente definita in JavaScript prende il nome tipico di conversione esplicita o *type casting*.
+L'esigenza di far transitare un dato primitivo tra i tipi base in maniera controllata ed espressamente definita in JavaScript prende il nome tipico di conversione esplicita o _type casting_.
 
 ## Conversione Esplicita a Number
 

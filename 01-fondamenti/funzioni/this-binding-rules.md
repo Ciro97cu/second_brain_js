@@ -4,7 +4,7 @@ L'analisi dell'oggetto puntato dalla variabile speciale `this` procede in base a
 
 ## 1. Default Binding
 
-Quando una funzione viene invocata **direttamente** senza decorazioni di sintassi, referenziazioni a oggetto o costrutti particolari, la regola di default subentra. Nel browser il target è l'ambiente globale (`window` o equivalente locale in altri environment). 
+Quando una funzione viene invocata **direttamente** senza decorazioni di sintassi, referenziazioni a oggetto o costrutti particolari, la regola di default subentra. Nel browser il target è l'ambiente globale (`window` o equivalente locale in altri environment).
 
 ```javascript
 function mostraNome() {
@@ -63,7 +63,7 @@ setTimeout(persona.saluta.bind(persona), 1000); // Fissato permanentemente
 
 Applicando l'operatore `new` di fronte alla chiamata di funzione, il sistema modifica l'essenza dell'inizializzazione della function:
 
-1. Crea spontaneamente un *plain-object* nuovo e vergine in memoria.
+1. Crea spontaneamente un _plain-object_ nuovo e vergine in memoria.
 2. Invia tale entità collegata temporaneamente alla funzione.
 3. Lo assegna all'identificatore globale del `this` interno.
 4. Ritorna tale nuovo contenitore (se non è programmato altrimenti).

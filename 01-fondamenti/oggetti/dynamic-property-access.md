@@ -76,5 +76,6 @@ console.log(getSetting("theme")); // "dark"
 Così come la bracket notation consente l'accesso dinamico in lettura/scrittura, la sintassi ES6 dei _computed property names_ (es. `{[nomeDinamico]: valore}`) offre una capacità simile durante le fasi di dichiarazione di un oggetto letterale.
 
 ## Collegamenti
+
 - [[dot-vs-bracket-notation]] - Sintassi base tra dot e bracket notation.
 - [[computed-property-names]] - Costruzione di chiavi in fase di inizializzazione.

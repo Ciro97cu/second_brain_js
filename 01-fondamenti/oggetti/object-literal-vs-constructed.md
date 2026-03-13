@@ -13,17 +13,17 @@ Il **risultato identico**: Entrambe producono lo stesso tipo di oggetto, conserv
 
 ## Linee Guida Pratiche
 
-| Scenario                                        | Forma Raccomandata | Motivo                                   |
-| ----------------------------------------------- | ------------------ | ---------------------------------------- |
-| Oggetto con struttura nota                      | **Letterale**      | Leggibilità immediata                    |
-| Conversione oggetti in testuale                 | **Letterale**      | Compatibilità con API JSON               |
-| Creazione con proprietà calcolate               | **Letterale**      | Supporto inline per chiavi dinamiche     |
-| Configurazione, opzioni e attributi             | **Letterale**      | Best-practice di settore                 |
-| Costruzione condizionale molto complessa        | Costruita          | Chiarezza logica in casi limitati        |
-| Spiegazione incrementale dello stato object     | Costruita          | Evidenziazione tecnica progressiva       |
+| Scenario                                    | Forma Raccomandata | Motivo                               |
+| ------------------------------------------- | ------------------ | ------------------------------------ |
+| Oggetto con struttura nota                  | **Letterale**      | Leggibilità immediata                |
+| Conversione oggetti in testuale             | **Letterale**      | Compatibilità con API JSON           |
+| Creazione con proprietà calcolate           | **Letterale**      | Supporto inline per chiavi dinamiche |
+| Configurazione, opzioni e attributi         | **Letterale**      | Best-practice di settore             |
+| Costruzione condizionale molto complessa    | Costruita          | Chiarezza logica in casi limitati    |
+| Spiegazione incrementale dello stato object | Costruita          | Evidenziazione tecnica progressiva   |
 
 La best practice impone lo standard letterale:
- Quasi nessuno sviluppatore utilizza il costruttore principale puro nel codice moderno. La forma letterale supporta sintassi ES6+ (come proprietà calcolate e spread operator). Si attesta l'assenza di limitazioni prestazionali della sintassi a parentesi contro la concatenazione classica nei moderni JavaScript execution engines, spingendo la standardizzazione verso la forma letterale (`{}`).
+Quasi nessuno sviluppatore utilizza il costruttore principale puro nel codice moderno. La forma letterale supporta sintassi ES6+ (come proprietà calcolate e spread operator). Si attesta l'assenza di limitazioni prestazionali della sintassi a parentesi contro la concatenazione classica nei moderni JavaScript execution engines, spingendo la standardizzazione verso la forma letterale (`{}`).
 
 ## Collegamenti alle Specifiche
 

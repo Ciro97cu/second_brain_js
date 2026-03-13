@@ -10,7 +10,7 @@ Si invoca l'applicazione continuativa ad ogni esito di diramazione dell'impiego 
 switch (ruoloAssegnato) {
   case "dirigente":
     assegnaPrivilegiAmm();
-    // fall through intenzionalmente non impedito
+  // fall through intenzionalmente non impedito
   case "visitatore":
     assegnaPrivilegiRistrettiBase();
     break;
@@ -27,7 +27,9 @@ switch (flussoCatturato) {
     depositaNelServerLog();
     break;
   default:
-    console.warn("Segnalata una perturbazione del tracciamento di smistamento non ascritta.");
+    console.warn(
+      "Segnalata una perturbazione del tracciamento di smistamento non ascritta.",
+    );
 }
 ```
 
@@ -51,4 +53,5 @@ switch (statusOperativo) {
     break;
 }
 ```
+
 Attuare procedure isolate che de-congestionano lo stato cognitivo globale garantisce una lettura assai più appagabile che si disvela orientata allo smistamento e mai allo svoluppo.

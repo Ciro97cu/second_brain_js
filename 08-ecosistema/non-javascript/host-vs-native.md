@@ -2,7 +2,7 @@
 
 ## 🎯 Concetto
 
-È fondamentale distinguere tra gli oggetti definiti dalla specifica ECMAScript (Native Objects) e quelli forniti dall'ambiente in cui JavaScript viene eseguito (Host Objects). 
+È fondamentale distinguere tra gli oggetti definiti dalla specifica ECMAScript (Native Objects) e quelli forniti dall'ambiente in cui JavaScript viene eseguito (Host Objects).
 
 - **Native Objects**: Parte intrinseca del linguaggio puro. Esistono in qualsiasi ambiente JavaScript con implementazioni standard concordate a priori. Esempi: `Array`, `Object`, `Date`, `RegExp`.
 - **Host Objects**: Dipendono interamente dall'ambiente (Browser, Node.js). Non sono garantiti ovunque e seguono regole proprie al di fuori di ECMAScript. Esempi: `window`, `document`, `process` (Node.js).

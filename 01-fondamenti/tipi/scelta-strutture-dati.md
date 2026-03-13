@@ -11,7 +11,7 @@ Evidenziando i problemi dell'operatore generico `typeof` quando si distinguono a
 let arr = [1, 2, 3];
 console.log(Array.isArray(arr)); // true (Modo corretto e diretto)
 
-// instanceof si applica a eventuali sottotipi 
+// instanceof si applica a eventuali sottotipi
 console.log(arr instanceof Array); // true
 
 // typeof null causa bug retrocompatibili
@@ -25,7 +25,7 @@ if (nullo === null) {
 
 Secondo standard consolidati, si consiglia l'adozione di un'entità differente per finalità precise:
 
-- **Array**: Esclusivamente per **collezioni ordinate**. La natura numerica ed automatizzata degli indici consente l'uso dei metodi iterativi (es. `.map()`, `.filter()`). 
+- **Array**: Esclusivamente per **collezioni ordinate**. La natura numerica ed automatizzata degli indici consente l'uso dei metodi iterativi (es. `.map()`, `.filter()`).
 - **Oggetto Letterale (Object)**: Principalmente per le **chiavi arbitrarie** che necessitano di mappatura descrittiva con comportamento associativo (es. configurazioni server).
 
 ```javascript
@@ -35,7 +35,7 @@ let punteggi = [95, 87, 92];
 // Object: Mappatura chiave-valore eterogenea
 let configurazione = {
   host: "localhost",
-  port: 3000
+  port: 3000,
 };
 ```
 

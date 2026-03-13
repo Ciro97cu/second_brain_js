@@ -15,13 +15,13 @@ let utente = "Mario"; // Risoluzione di fine riga
 
 Risulta consentito l'uso di commenti su righe multiple accodando ulteriori annotazioni a singola riga per strutturare paragrafi testuali.
 
-## Commento Multiriga (/* ... */)
+## Commento Multiriga (/_ ... _/)
 
-Ogni gruppo testuale posizionato tra l'apertura `/*` e la rispettiva chiusura `*/` viene configurato come blocco continuo di commento prescindendo dalle interruzioni e a capo. 
+Ogni gruppo testuale posizionato tra l'apertura `/*` e la rispettiva chiusura `*/` viene configurato come blocco continuo di commento prescindendo dalle interruzioni e a capo.
 
 ```javascript
 /*
- * L'algoritmo seguente è focalizzato 
+ * L'algoritmo seguente è focalizzato
  * sull'elaborazione batch dei documenti
  * archiviati localmente
  */

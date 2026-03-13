@@ -49,6 +49,7 @@ console.log(typeof str2); // "object" (!)
 ## Casi Speciali
 
 Mentre la forma letterale è preferibile in quasi tutti i casi, ci sono delle notevoli eccezioni:
+
 - `Date` richiede sempre il costruttore, poiché non esiste una forma letterale.
 - `Error` viene solitamente creato automaticamente nei blocchi catch e si consiglia il costruttore tramite `throw new Error("msg")`.
 - `Array`, `RegExp`, `Function`: usare la rispettiva versione letterale anziché usare `new` quando disponibile.

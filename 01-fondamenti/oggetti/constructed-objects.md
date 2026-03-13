@@ -31,7 +31,7 @@ configCostruita.port = 3000;
 configCostruita.timeout = 5000;
 ```
 
-A differenza di una dichiarazione immediata, questo pattern sfavorisce la lettura contestuale. Rintracciare le singole operazioni nel codice richiede la scansione di diverse chiamate e l'uso prolungato della *dot-notation* o *bracket-notation* su singole variabili, frammentando le definizioni dell'oggetto.
+A differenza di una dichiarazione immediata, questo pattern sfavorisce la lettura contestuale. Rintracciare le singole operazioni nel codice richiede la scansione di diverse chiamate e l'uso prolungato della _dot-notation_ o _bracket-notation_ su singole variabili, frammentando le definizioni dell'oggetto.
 
 ## Quando Usare la Forma Costruita?
 
@@ -46,7 +46,7 @@ Si può decidere quali proprietà applicare a un oggetto durante il runtime basa
 ```javascript
 function creaConfigurazione(ambiente) {
   let config = new Object(); // Base vuota
-  
+
   // Logica complessa separata in blocchi
   if (ambiente === "produzione") {
     config.host = "api.example.com";
@@ -58,7 +58,7 @@ function creaConfigurazione(ambiente) {
     config.host = "localhost";
     config.ssl = false;
   }
-  
+
   return config;
 }
 ```
@@ -73,7 +73,7 @@ Il frazionamento forzato della dichiarazione viene scelto in contesti in cui ris
 let profilo = new Object();
 console.log("1. Profilo vuoto:", profilo); // {}
 profilo.username = "utente_01";
-console.log("2. Con username:", profilo);  // { username: "..." }
+console.log("2. Con username:", profilo); // { username: "..." }
 ```
 
 In definitiva, nella programmazione moderna l'utilizzo esplicito della forma a costruttore standard `new Object()` è quasi assente e considerata un'istruzione deprecabile per l'instanziazione base di routine.
@@ -82,4 +82,4 @@ In definitiva, nella programmazione moderna l'utilizzo esplicito della forma a c
 
 - [[object-literal-vs-constructed]] - Confronto e linee guida per la creazione
 - [[object-literals]] - Utilizzo di forma letterale
-- [[oggetti]] - Funzionamento base degli oggetti in JS 
+- [[oggetti]] - Funzionamento base degli oggetti in JS

@@ -26,7 +26,9 @@ L'invecchiamento dei commenti espone l'impianto generale a criticità sostanzial
 ```javascript
 // Commento non mantenuto da evitare!
 // Viene eseguita sempre connessione su Porta 9000
-const avviaServizio = (dynHost, webPort = 443) => { /* ... */ }
+const avviaServizio = (dynHost, webPort = 443) => {
+  /* ... */
+};
 ```
 
 In sintesi, la struttura del codice ben redatta funge essa stessa da prima traccia di documentazione per limitare i commenti solo ai punti oscuri o inusuali.

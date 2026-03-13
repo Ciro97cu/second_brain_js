@@ -6,7 +6,7 @@ La coercizione esplicita migliora la leggibilità del codice, comunicando in mod
 
 ## Funzione Globale Boolean()
 
-L'approccio più dichiarativo per forzare un valore a booleano è l'utilizzo della funzione costruttrice nativa `Boolean()` (chiamata senza l'operatore `new`). 
+L'approccio più dichiarativo per forzare un valore a booleano è l'utilizzo della funzione costruttrice nativa `Boolean()` (chiamata senza l'operatore `new`).
 
 Questa funzione riceve un qualsiasi argomento e restituisce `true` per valori truthy e `false` per valori falsy.
 
@@ -15,16 +15,16 @@ Questa funzione riceve un qualsiasi argomento e restituisce `true` per valori tr
  * Uso di Boolean() per coercizione esplicita
  */
 
-const stringaValida = Boolean("ciao");  // true
-const stringaVuota = Boolean("");       // false
-const numeroZero = Boolean(0);          // false
-const numeroValido = Boolean(42);       // true
-const oggettoVuoto = Boolean({});       // true
+const stringaValida = Boolean("ciao"); // true
+const stringaVuota = Boolean(""); // false
+const numeroZero = Boolean(0); // false
+const numeroValido = Boolean(42); // true
+const oggettoVuoto = Boolean({}); // true
 ```
 
 ## La Doppia Negazione (!!)
 
-Un idoma estremamente comune e conciso in JavaScript sfrutta l'operatore unario di negazione logica (`!`). Il simbolo esegue una conversione implicita a booleano, ma ne inverte contestualmente il valore di verità. 
+Un idoma estremamente comune e conciso in JavaScript sfrutta l'operatore unario di negazione logica (`!`). Il simbolo esegue una conversione implicita a booleano, ma ne inverte contestualmente il valore di verità.
 
 Applicando una **seconda negazione**, il valore viene riportato alla sua polarità originale, ottenendo di fatto una coercizione esplicita e sicura.
 
@@ -37,10 +37,10 @@ Applicando una **seconda negazione**, il valore viene riportato alla sua polarit
 // 1. !"ciao" → !true → false
 // 2. !false → true
 
-const isValido = !!"testo";   // true
-const isAssente = !!"";       // false
-const isZero = !!0;           // false
-const isPopolato = !![1, 2];  // true
+const isValido = !!"testo"; // true
+const isAssente = !!""; // false
+const isZero = !!0; // false
+const isPopolato = !![1, 2]; // true
 ```
 
 Nonostante la sintassi con `Boolean()` sia considerata da alcuni più chiara contestualmente, la notazione `!!` è adottata largamente nell'ecosistema, specialmente alla restituzione dei valori da funzioni predicato o quando si manipola lo stato in framework come React.
@@ -48,7 +48,7 @@ Nonostante la sintassi con `Boolean()` sia considerata da alcuni più chiara con
 ```javascript
 function hasItems(cart) {
   // Restituisce un booleano puro, non un numero
-  return !!cart.length; 
+  return !!cart.length;
 }
 ```
 

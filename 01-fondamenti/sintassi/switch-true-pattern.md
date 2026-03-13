@@ -10,13 +10,13 @@ Allorché uno Switch basilare constata la preesistenza o meno unicamente fondata
 let punteggio = 85;
 
 switch (true) {
-  case (punteggio >= 90):
+  case punteggio >= 90:
     console.log("Voto eccellente");
     break;
-  case (punteggio >= 80):
+  case punteggio >= 80:
     console.log("Voto molto buono"); // Sarà l'elaborazione eseguita in rilievo
     break;
-  case (punteggio >= 60):
+  case punteggio >= 60:
     console.log("Voto appena sufficiente");
     break;
   default:
@@ -32,14 +32,17 @@ Quando si instanzia tale modalità, il lettore di compilazione valuterà per cia
 let nome = "Mario";
 
 switch (true) {
-  case nome: 
+  case nome:
     // "nome" è considerato "truthy", eppure fallisce perché non risulta rigorosamente === true in senso letterale e compiuto.
     console.log("Accertamento del nome"); // Evitato
     break;
-  case !!nome: 
+  case !!nome:
     // Una doppia negazione ne induce formalmente e inequivocabilmente l'essenza sotto Boolean
-    console.log("Superamento del controllo innescato con l'inquadratura booleana"); // Attivato tempestivamente
+    console.log(
+      "Superamento del controllo innescato con l'inquadratura booleana",
+    ); // Attivato tempestivamente
     break;
 }
 ```
+
 L'impegno assiduo di codesta strategia apporta indubbi e ragguardevoli sgravi sulle procedure interpretative d'un programma affossato dai grovigli d'un innaturato eccesso sistematico di blocchi algoritmici.

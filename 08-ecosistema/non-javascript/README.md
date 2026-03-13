@@ -18,14 +18,17 @@ Quando si scrive codice in ambienti reali, gran parte delle funzionalità intera
 ## 🔗 Collegamenti
 
 **Prerequisiti**:
+
 - [[../../01-fondamenti/scope/README.md|Scope e Variabili Globali]]
 - [[../../01-fondamenti/oggetti/README.md|Oggetti]]
 
 **Concetti Correlati**:
+
 - [[../polyfilling.md|Polyfilling]]
 - [[../transpiling.md|Transpiling]]
 
 **Approfondimenti**:
+
 - Web APIs complete list (MDN)
 - Node.js built-in modules
 - Service Workers e Web Workers

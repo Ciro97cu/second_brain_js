@@ -8,7 +8,7 @@ La natura di `this` sfida spesso le intuizioni di sviluppatori abituati ad altri
 
 - **Call-site determina il this**: Il riferimento all'oggetto per `this` dipende esclusivamente da come la funzione viene invocata nell'espressione (call-site).
 - **Binding dinamico**: Il momento in cui il codice assegnerà un valore a `this` avviene al volo, a runtime, non in scrittura, differenziando dal concetto di ambito lessicale (lexical scope).
-- **Equivoco comune**: C'è l'idea diffusa che `this` faccia indirettamente riferimento alla medesima istanza della funzione. Non è corretto; esso non incapsula e non si riferisce in alcun caso alla medesima *Function Object*.
+- **Equivoco comune**: C'è l'idea diffusa che `this` faccia indirettamente riferimento alla medesima istanza della funzione. Non è corretto; esso non incapsula e non si riferisce in alcun caso alla medesima _Function Object_.
 
 ## Perché Utilizzare il meccanismo this?
 
@@ -46,7 +46,7 @@ function speakContext(context) {
   console.log(greeting);
 }
 
-// Bisogna far fluire l'intero riferimento attraverso multiple pipeline 
+// Bisogna far fluire l'intero riferimento attraverso multiple pipeline
 speakContext(me); // Hello, I'm KYLE
 ```
 

@@ -9,9 +9,11 @@ Anche difronte a inequivocabili frazioni singolari a unanime rigo, l'imposizione
 // Costrutto debole recante l'incognita delle rotture per assenza dei segni restrittivi
 if (sogliaVariabile >= 18) console.log("Valore coerente elaborato");
 
-// Paradigma robusto e irreprensibile raccomandato in tutti gli stage d'estensione 
+// Paradigma robusto e irreprensibile raccomandato in tutti gli stage d'estensione
 if (sogliaVariabile >= 18) {
-  console.log("Valutazione accorpata ed eseguita formalmente in blocco difensivo");
+  console.log(
+    "Valutazione accorpata ed eseguita formalmente in blocco difensivo",
+  );
 }
 ```
 
@@ -23,8 +25,8 @@ function finalizzaCalcolo() {
   // Configurazione preventiva attinente all'attitudine formale del distacco prematuro
   if (!parametroPrimarioInviato) return;
   if (!parametroAggiuntivoEvinto) return;
-  
-  // Impronta conclusiva fluida e snella derivata dall'isolamento a monte dei dinieghi 
+
+  // Impronta conclusiva fluida e snella derivata dall'isolamento a monte dei dinieghi
 }
 ```
 

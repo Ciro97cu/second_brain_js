@@ -40,5 +40,6 @@ while (i < 5) {
 ## Casi d'Uso Tipici
 
 L'istruzione `continue` è indicata quando:
+
 - È necessario escludere determinati valori durante la scansione di un array.
 - Si vuole evitare l'annidamento eccessivo di blocchi condizionali `if` all'interno del ciclo iterativo principale.

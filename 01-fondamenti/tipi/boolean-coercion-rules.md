@@ -27,13 +27,15 @@ La coercizione booleana avviene automaticamente in specifici contesti sintattici
 
 // Contesto if
 let nomeUtente = "Mario";
-if (nomeUtente) { // La stringa "Mario" è truthy
+if (nomeUtente) {
+  // La stringa "Mario" è truthy
   console.log("Variabile valorizzata");
 }
 
 // Contesto cicli
 let array = [1, 2, 3];
-while (array.length) { // array.length > 0 è truthy, 0 è falsy
+while (array.length) {
+  // array.length > 0 è truthy, 0 è falsy
   array.pop();
 }
 

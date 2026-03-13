@@ -10,7 +10,7 @@ let persona = {
   eta: 30,
   saluta: function () {
     console.log(`Ciao, sono ${this.nome}`);
-  }
+  },
 };
 ```
 
@@ -27,7 +27,7 @@ La forma letterale mostra immediatamente la struttura gerarchica dell'intero ogg
 let config = {
   host: "localhost",
   port: 3000,
-  timeout: 5000
+  timeout: 5000,
 };
 ```
 
@@ -42,7 +42,7 @@ let datiUtente = { id: 123, username: "mario_rossi", attivo: true };
 
 // Parsing e conversione ritornano o accettano strutture letterali
 let json = JSON.stringify(datiUtente);
-let parsed = JSON.parse(json); 
+let parsed = JSON.parse(json);
 ```
 
 ### 3. Supporto a Proprietà Calcolate (Computed Properties)
@@ -53,8 +53,8 @@ La forma letterale implementa l'assegnazione nativa di chiavi dinamiche direttam
 let campo = "categoria";
 let prodotto = {
   nome: "Laptop",
-  [campo]: "Elettronica",      // Inserisce 'categoria'
-  [campo + "ID"]: "ELEC-001"   // Inserisce 'categoriaID'
+  [campo]: "Elettronica", // Inserisce 'categoria'
+  [campo + "ID"]: "ELEC-001", // Inserisce 'categoriaID'
 };
 ```
 
@@ -64,6 +64,6 @@ Nei motori JavaScript moderni, l'inizializzazione letterale beneficia di ottimiz
 
 ## Collegamenti
 
-- [[object-literal-vs-constructed]] - Confronto complessivo 
+- [[object-literal-vs-constructed]] - Confronto complessivo
 - [[constructed-objects]] - La creazione tramite forma costruita
 - [[oggetti]] - Maniplazione di base delle proprietà

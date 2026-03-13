@@ -9,24 +9,24 @@ function counter() {
   let count = 0; // Variabile privata
 
   return {
-    increment: function() {
+    increment: function () {
       count++;
       return count;
     },
-    decrement: function() {
+    decrement: function () {
       count--;
       return count;
     },
-    getValue: function() {
+    getValue: function () {
       return count;
-    }
+    },
   };
 }
 
 let myCounter = counter();
 console.log(myCounter.increment()); // 1
 console.log(myCounter.increment()); // 2
-console.log(myCounter.getValue());  // 2
+console.log(myCounter.getValue()); // 2
 
 // ❌ Non si può accedere direttamente a count
 console.log(myCounter.count); // undefined
@@ -43,28 +43,28 @@ function createBankAccount(initialBalance) {
   let balance = initialBalance; // Variabile privata
 
   return {
-    deposit: function(amount) {
+    deposit: function (amount) {
       if (amount > 0) {
         balance += amount;
         return balance;
       }
       throw new Error("Amount must be positive");
     },
-    withdraw: function(amount) {
+    withdraw: function (amount) {
       if (amount > balance) {
         throw new Error("Insufficient funds");
       }
       balance -= amount;
       return balance;
     },
-    getBalance: function() {
+    getBalance: function () {
       return balance;
-    }
+    },
   };
 }
 
 const account = createBankAccount(1000);
-console.log(account.deposit(500));  // 1500
+console.log(account.deposit(500)); // 1500
 console.log(account.withdraw(200)); // 1300
 
 // ❌ Tentativo di manipolazione diretta fallisce

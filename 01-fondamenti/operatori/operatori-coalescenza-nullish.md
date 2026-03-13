@@ -36,9 +36,9 @@ La coalescenza nullish risulta particolarmente indicata per la configurazione di
 ```javascript
 function configuraOpzioni(opzioni) {
   // Se timeout è stato impostato a 0, il valore viene rispettato
-  let timeout = opzioni.timeout ?? 3000; 
+  let timeout = opzioni.timeout ?? 3000;
   let tentativi = opzioni.tentativi ?? 3;
-  
+
   return { timeout, tentativi };
 }
 

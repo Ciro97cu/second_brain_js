@@ -11,9 +11,9 @@ Le due istruzioni differiscono per l'entità del salto che impongono all'interpr
 
 ## Confronto Diretto
 
-| Istruzione | Comportamento Reale                                |
-| ---------- | -------------------------------------------------- |
-| `break`    | Esce definitivamente dal costrutto ciclico         |
+| Istruzione | Comportamento Reale                                           |
+| ---------- | ------------------------------------------------------------- |
+| `break`    | Esce definitivamente dal costrutto ciclico                    |
 | `continue` | Abbandona il ciclo in corso, riprendendo dal passo successivo |
 
 ```javascript

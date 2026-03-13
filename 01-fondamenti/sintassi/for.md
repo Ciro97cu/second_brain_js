@@ -62,7 +62,7 @@ for (let i = 0; i < colori.length; i++) {
 
 ## Ottimizzazioni
 
-Quando si itera su un array molto lungo, calcolare `array.length` ad ogni ciclo può ridurre le prestazioni in alcuni vecchi motori JavaScript, ma oggi e' quasi sempre ottimizzato. 
+Quando si itera su un array molto lungo, calcolare `array.length` ad ogni ciclo può ridurre le prestazioni in alcuni vecchi motori JavaScript, ma oggi e' quasi sempre ottimizzato.
 
 ```javascript
 // Approccio caching della lunghezza (efficienza teorica superiore)

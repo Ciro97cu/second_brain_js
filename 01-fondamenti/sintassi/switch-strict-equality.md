@@ -42,5 +42,5 @@ switch (a + b) {
 
 ## Il Caso di Default
 
-La clausola designata con etichetta `default` assume una dimensione protettiva. Viene infatti elaborata unicamente in ultima analisi quando alcun esito combacia. 
+La clausola designata con etichetta `default` assume una dimensione protettiva. Viene infatti elaborata unicamente in ultima analisi quando alcun esito combacia.
 Non possedendo alcun obbligo di formattazione la si ritiene un requisito del tutto opzionale; pur ciononostante se ne raccomanda enormemente un uso mirato e massivo per far fronte in maniera robusta ed incensurabile all'emergenza logica derivante dei dati errati. Convenzionalmente sosta come ultima istruzione a base dello `switch`.

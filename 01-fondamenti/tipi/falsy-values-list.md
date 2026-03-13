@@ -13,14 +13,14 @@ Il linguaggio definisce esattamente 7 valori che restituiscono `false`:
  * I soli valori falsy in JavaScript
  */
 
-false;     // Il valore booleano false
-0;         // Il numero zero
--0;        // Lo zero negativo (IEEE 754)
-0n;        // Il BigInt zero
-"";        // La stringa vuota (valida con '', "", o ``)
-null;      // L'assenza intenzionale di valore
+false; // Il valore booleano false
+0; // Il numero zero
+-0; // Lo zero negativo (IEEE 754)
+0n; // Il BigInt zero
+(""); // La stringa vuota (valida con '', "", o ``)
+null; // L'assenza intenzionale di valore
 undefined; // Il valore non definito o variabile non inizializzata
-NaN;       // Not a Number (risultato matematico invalido)
+NaN; // Not a Number (risultato matematico invalido)
 ```
 
 **Ogni singolo valore che non rientra esattamente in questo elenco è automaticamente considerato truthy.**

@@ -24,7 +24,7 @@ console.log(w1 === w2); // false (riferimenti ad oggetti diversi)
 
 ## L'Insidia dei Booleani Wrapper
 
-L'uso di `new Boolean()` è un tipico anti-pattern che introduce una trappola logica pericolosa. Qualsiasi oggetto in JavaScript, a prescindere dal suo stato o valore temporaneo, è implicitamente valutato come *truthy* se forzato in un controllo booleano coercitivo.
+L'uso di `new Boolean()` è un tipico anti-pattern che introduce una trappola logica pericolosa. Qualsiasi oggetto in JavaScript, a prescindere dal suo stato o valore temporaneo, è implicitamente valutato come _truthy_ se forzato in un controllo booleano coercitivo.
 
 ```javascript
 /* Il valore booleano false viene avvolto in un oggetto */
@@ -41,7 +41,7 @@ Poiché `falseWrapper` è istanziato da un costruttore (e quindi è di tipo "obj
 
 L'utilizzo intenzionale e forzato delle forme costruttrici al posto dei letterali è considerato ridondante e prolisso. Il motore JavaScript esegue egregiamente il boxing temporaneo in background al momento del bisogno in modo trasparente e maggiormente performante, rimosso il fardello legato alla manuale e successiva pulizia in memoria per allocazioni ripetitive.
 
-A meno di specifici scenari in cui occorra sovrascrivere o aumentare i prototipi di base in maniera isolata, una base robusta richiede l'osservanza stringente all'esclusivo uso dei valori immutabili preposti. 
+A meno di specifici scenari in cui occorra sovrascrivere o aumentare i prototipi di base in maniera isolata, una base robusta richiede l'osservanza stringente all'esclusivo uso dei valori immutabili preposti.
 
 ## Collegamenti
 

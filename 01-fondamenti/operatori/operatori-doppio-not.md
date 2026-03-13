@@ -23,14 +23,14 @@ La conversione tramite `!!` riflette accuratamente in quali circostanze JavaScri
 ```javascript
 // Valori Truthy (diventano true)
 console.log(!!"Hello"); // true
-console.log(!!42);      // true
-console.log(!![]);      // true (array vuoto)
-console.log(!!{});      // true (oggetto vuoto)
+console.log(!!42); // true
+console.log(!![]); // true (array vuoto)
+console.log(!!{}); // true (oggetto vuoto)
 
 // Valori Falsy (diventano false)
-console.log(!!0);         // false
-console.log(!!"");        // false
-console.log(!!null);      // false
+console.log(!!0); // false
+console.log(!!""); // false
+console.log(!!null); // false
 console.log(!!undefined); // false
 ```
 
@@ -44,9 +44,9 @@ function verificaPresenzaDati(input) {
 }
 
 let userData = { email: "mail@test.it" };
-let isValid = !!userData.email; 
+let isValid = !!userData.email;
 ```
 
-Nelle valutazioni condizionali esplicite (come le istruzioni `if` o le iterazioni `while`), l'operazione di casting booleano e il motore JavaScript operano automaticamente sulle condizioni; l'uso del doppio NOT risulta pertanto logicamente ridondante ed evitabile. 
+Nelle valutazioni condizionali esplicite (come le istruzioni `if` o le iterazioni `while`), l'operazione di casting booleano e il motore JavaScript operano automaticamente sulle condizioni; l'uso del doppio NOT risulta pertanto logicamente ridondante ed evitabile.
 
 L'alternativa equivalente, talvolta preferita per chiarezza esplicita, consiste nell'uso della funzione nativa `Boolean(valore)`.

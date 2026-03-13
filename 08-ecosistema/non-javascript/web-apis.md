@@ -16,7 +16,7 @@ elemento.addEventListener("click", function () {
   console.log("Evento intercettato!");
 });
 
-window.scrollTo(0, 100); 
+window.scrollTo(0, 100);
 
 // setTimeout e setInterval appartengono alle API del browser, non a JS nativo
 setTimeout(() => console.log("Esecuzione ritardata"), 1000);
@@ -49,7 +49,7 @@ sessionStorage.setItem("temporaneo", "dato");
 
 ## ⚠️ Gotcha
 
-- **Blocco dell'esecuzione**: Le chiamate di interfaccia base come `alert()`, `prompt()` e `confirm()` bloccano il thread principale asincrono, interrompendo l'esecuzione di qualsiasi altro script ed impedendo all'utente di selezionare interazioni della UI finchè non gestite. 
+- **Blocco dell'esecuzione**: Le chiamate di interfaccia base come `alert()`, `prompt()` e `confirm()` bloccano il thread principale asincrono, interrompendo l'esecuzione di qualsiasi altro script ed impedendo all'utente di selezionare interazioni della UI finchè non gestite.
 - **Limiti di Storage**: Storage API, specialmente `localStorage` che viaggia in totale sincronicità, rallentano le performance durante la lettura di grossi volumi testuali persistenti. Non utilizzarlo per estesi dati applicativi, ma solo per preferenze semplici o piccoli token.
 - **Ritorno asincrono**: Nessuna Web API in grado di contattare la rete è sincrona. Tutte ritornano `Promises` basate sulla disponibilità della risposta.
 

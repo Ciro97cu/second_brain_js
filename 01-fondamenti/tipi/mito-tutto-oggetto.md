@@ -37,7 +37,7 @@ let testo = "hello";
 console.log(testo.toUpperCase()); // "HELLO"
 ```
 
-Questo comportamento è spiegato dal meccanismo di "boxing" automatico (approfondito in [[boxing]]). Quando si accede a un metodo su un primitivo, il motore JavaScript lo avvolge temporaneamente in un oggetto corrispondente (es. `String`), chiama il metodo e poi scarta l'oggetto temporaneo. 
+Questo comportamento è spiegato dal meccanismo di "boxing" automatico (approfondito in [[boxing]]). Quando si accede a un metodo su un primitivo, il motore JavaScript lo avvolge temporaneamente in un oggetto corrispondente (es. `String`), chiama il metodo e poi scarta l'oggetto temporaneo.
 
 ### Implicazioni Pratiche
 
@@ -47,11 +47,11 @@ Questo comportamento è spiegato dal meccanismo di "boxing" automatico (approfon
 ```javascript
 // Primitivi: immutabili
 let x = "ciao";
-x.toUpperCase(); 
+x.toUpperCase();
 console.log(x); // "ciao" (invariato)
 
 // Oggetti: mutabili
 let arr = [1, 2, 3];
-arr.push(4); 
+arr.push(4);
 console.log(arr); // [1, 2, 3, 4]
 ```

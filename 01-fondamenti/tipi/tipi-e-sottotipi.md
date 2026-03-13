@@ -14,6 +14,7 @@ Di seguito si trovano i concetti fondanti sulle caratteristiche interne del tipo
 - [[passaggio-valore-vs-riferimento]] - I principi operativi di mutabilità, allocazione mnemonica in fase di inizializzazione e i differenti passaggi come argomenti in procedure locali.
 
 ## Risorse Correlate e Approfondimenti
+
 - [[typeof]] - Panoramica integrale sull'operatore di verifica sintattica del tipo.
 - [[boxing]] - Analisi della reazione in background del motore JS davanti ad accessi ad una proprietà situata su tipi primitivi.
 - [[valori-tipi]] - Classificazione sommaria estesa di tutti i valori identificabili nel linguaggio di programmazione.

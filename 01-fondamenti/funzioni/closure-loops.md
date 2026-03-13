@@ -18,7 +18,7 @@ for (var i = 1; i <= 5; i++) {
 
 Eseguendo questo codice, il risultato è sorprendente: viene stampato il numero **6 per cinque volte**.
 
-Il motivo risiede nel fatto che la callback `timer` viene eseguita solo dopo che il ciclo ha terminato la sua intera esecuzione. Quando i timer scattano, accedono al valore corrente di `i`, che è diventato 6 (la condizione che fa terminare il ciclo). 
+Il motivo risiede nel fatto che la callback `timer` viene eseguita solo dopo che il ciclo ha terminato la sua intera esecuzione. Quando i timer scattano, accedono al valore corrente di `i`, che è diventato 6 (la condizione che fa terminare il ciclo).
 
 A causa dell'uso di `var`, tutte e cinque le funzioni condividono lo stesso ambito globale o di funzione e, di conseguenza, riferiscono la medesima variabile `i`.
 
@@ -28,7 +28,7 @@ Per risolvere il problema prima dell'avvento di ES6, era necessario creare uno S
 
 ```javascript
 for (var i = 1; i <= 5; i++) {
-  (function(j) {
+  (function (j) {
     setTimeout(function timer() {
       console.log(j); // Usa la variabile locale j
     }, j * 1000);

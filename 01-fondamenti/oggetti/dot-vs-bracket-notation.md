@@ -23,6 +23,7 @@ Entrambe le notazioni accedono alla stessa posizione in memoria e restituiscono 
 La dot notation è preferibile quando possibile, poiché risulta più concisa e leggibile. Tuttavia, richiede che il nome della proprietà sia un **Identifier** JavaScript valido.
 
 Un identifier valido:
+
 - Inizia con una lettera, `_` o `$`.
 - Contiene solo lettere, numeri, `_` o `$`.
 - Non contiene spazi, trattini o caratteri speciali.
@@ -70,5 +71,6 @@ obj["😊"];
 Si raccomanda di usare la dot notation come impostazione predefinita quando il nome della proprietà è fisso, noto a priori e compatibile con le regole degli identifier. La bracket notation diventa necessaria per nomi con caratteri speciali o quando l'accesso deve essere risolto in modo dinamico.
 
 ## Collegamenti
+
 - [[property-access]] - Riepilogo e indice dell'accesso alle proprietà.
 - [[dynamic-property-access]] - Utilizzo di espressioni e variabili con bracket notation.

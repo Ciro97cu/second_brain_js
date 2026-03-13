@@ -15,7 +15,7 @@ function makeAdder(x) {
 let plusOne = makeAdder(1); // Closure che ricorda x = 1
 let plusTen = makeAdder(10); // Closure che ricorda x = 10
 
-console.log(plusOne(3));  // 4  (1 + 3)
+console.log(plusOne(3)); // 4  (1 + 3)
 console.log(plusTen(13)); // 23 (10 + 13)
 ```
 
@@ -27,7 +27,7 @@ Le factory function sono estremamente utili per creare utility riutilizzabili co
 
 ```javascript
 function makeFormatter(prefix, suffix) {
-  return function(str) {
+  return function (str) {
     return prefix + str + suffix;
   };
 }
@@ -35,7 +35,7 @@ function makeFormatter(prefix, suffix) {
 const makeTag = makeFormatter("<p>", "</p>");
 const makeBold = makeFormatter("<b>", "</b>");
 
-console.log(makeTag("Hello"));  // <p>Hello</p>
+console.log(makeTag("Hello")); // <p>Hello</p>
 console.log(makeBold("World")); // <b>World</b>
 ```
 

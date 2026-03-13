@@ -27,7 +27,9 @@ if (festivoConclamato || pausaSchedulata) {
 let iterInInerzia = false;
 
 if (!iterInInerzia) {
-  console.log("La misurazione comprova uno status continuo d'evoluzione attesa");
+  console.log(
+    "La misurazione comprova uno status continuo d'evoluzione attesa",
+  );
 }
 ```
 

@@ -29,7 +29,7 @@ if (quantitaGenerata > 50) {
   console.log("Superato limite cinquanta percento"); // Selezionato, azzerando i controlli inferiori
 } else if (quantitaGenerata > 75) {
   console.log("Superato limite tre quarti"); // Totalmente saltato nel flusso esecutivo, nonostante l'assioma sia retto
-} 
+}
 ```
 
 Il blocco gestito tramite la macroistruzione `else` diviene il ramo di ripiego; qualora accadesse che all'interno della struttura **nessuna combinazione valga come confermata**, subentrerà la porzione delegata all'alternativa generica finale, conducendo a compimento i processi in via esclusiva e in sicurezza operativa per scongiurare vuoti applicativi.

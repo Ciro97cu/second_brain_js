@@ -6,7 +6,7 @@ Quando ci si riferisce ai valori residenti all'interno delle proprietà di un og
 
 Tecnicamente, non è consigliabile pensare in JavaScript a un oggetto come un agglomerato denso atto a chiudere o inglobare materiale "dentro" le proprie parentesi, qualora i valori in essere spazino dal primitivo al complesso: l'oggetto è una rudimentale e flessibile tabella associativa.
 
-Pertanto, le entità mantengono e raggruppano essenzialmente i **nomi delle loro proprietà**, corredati ognuno a **delle referenze**, o puntatori. Ciascun riferimento punta alle reali allocazioni allocate nella memoria preposta (Heap). 
+Pertanto, le entità mantengono e raggruppano essenzialmente i **nomi delle loro proprietà**, corredati ognuno a **delle referenze**, o puntatori. Ciascun riferimento punta alle reali allocazioni allocate nella memoria preposta (Heap).
 
 ```javascript
 var myObject = {
@@ -32,7 +32,7 @@ var obj1 = { x: 10 };
 var obj2 = obj1; // Entrambi mirano alla stessa destinazione in memoria
 
 /* Mutare una rotta la rende visibile ad ambedue le sponde */
-obj2.x = 20;     
+obj2.x = 20;
 console.log(obj1.x); // 20
 ```
 

@@ -2,9 +2,9 @@
 
 Il concetto di valorizzazione truthy e falsy in JavaScript regola in che modo i valori non booleani vengono interpretati in tutti i contesti che si aspettano l'uso della logica condizionale.
 
-La **coercizione booleana** è una tecnica integrante del linguaggio, in grado di convertire, implicitamente ed esplicitamente, praticamente ogni istanza d'oggetto in un puro `true` o `false`. 
+La **coercizione booleana** è una tecnica integrante del linguaggio, in grado di convertire, implicitamente ed esplicitamente, praticamente ogni istanza d'oggetto in un puro `true` o `false`.
 
-Si ramificano svariate logiche di valutazione e specifici impieghi di queste dinamiche. 
+Si ramificano svariate logiche di valutazione e specifici impieghi di queste dinamiche.
 
 Per esplorarne appieno il funzionamento, i valori sono ripartiti nei seguenti argomenti specifici:
 

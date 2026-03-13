@@ -1,6 +1,6 @@
 # [[../../appunti-completi#Valori Truthy|Lista dei Valori Truthy]]
 
-Un valore **truthy** è qualsiasi entità in JavaScript che, sottoposta a coercizione booleana implicita, restituisce il valore `true`. 
+Un valore **truthy** è qualsiasi entità in JavaScript che, sottoposta a coercizione booleana implicita, restituisce il valore `true`.
 
 Dato che i valori falsy costituiscono una lista definita e limitata, la regola per identificare i valori truthy è semplice: **tutto ciò che non è falsy è truthy**.
 

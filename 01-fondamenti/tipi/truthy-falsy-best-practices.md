@@ -15,7 +15,7 @@ function processaUtente(nome, config) {
   if (!nome) {
     nome = "Ospite";
   }
-  
+
   if (config) {
     // Esegue logica sapendo che config esiste (non è falsy)
   }
@@ -24,7 +24,7 @@ function processaUtente(nome, config) {
 
 ## Attenzione a Zero e False
 
-L'errore più comune relativo alla coercizione booleana occorre quando un valore `0` (numero originario) oppure un booleano `false` costituiscono stati **validi** a livello di business logic della determinata applicazione. 
+L'errore più comune relativo alla coercizione booleana occorre quando un valore `0` (numero originario) oppure un booleano `false` costituiscono stati **validi** a livello di business logic della determinata applicazione.
 
 Un banale controllo falsy tramite negazione inibirà del tutto tali valori validi.
 
@@ -35,7 +35,7 @@ Un banale controllo falsy tramite negazione inibirà del tutto tali valori valid
 function calcolaSconto(percentuale) {
   if (!percentuale) {
     // BUG: intercetta null, ma previene anche la possibilità di uno sconto al 0%
-    percentuale = 10; 
+    percentuale = 10;
   }
   return percentuale;
 }
@@ -61,16 +61,16 @@ let sconto = inputSconto ?? 10;
 
 ## Costringere Tipi in Uscita
 
-Quando si redigono funzioni per restituire lo stato di una verifica (le cosiddette funzioni "*Predicate*"), va preferita l'emissione tassativa del tipo boolean. L'operatore logico negato impedisce ritorni ambigui per il consumatore.
+Quando si redigono funzioni per restituire lo stato di una verifica (le cosiddette funzioni "_Predicate_"), va preferita l'emissione tassativa del tipo boolean. L'operatore logico negato impedisce ritorni ambigui per il consumatore.
 
 ```javascript
 // Sconsigliato (restituisce numero stringhe, non boolean)
 function isDisabled(elemento) {
-  return elemento.className.indexOf('disabled');
+  return elemento.className.indexOf("disabled");
 }
 
 // Raccomandato (restituisce strictly boolean via doppia negazione)
 function isFocusable(elemento) {
-  return !!elemento.getAttribute('tabindex');
+  return !!elemento.getAttribute("tabindex");
 }
 ```

@@ -29,6 +29,7 @@ if ("geolocation" in navigator) {
 ### Ambienti JavaScript a confronto
 
 Diverse destinazioni d'uso possiedono set di Host Objects differenti:
+
 - **Browser**: Dispone tipicamente di `window`, `document`, manipolazioni di DOM, `localStorage` / Storage API, `fetch`.
 - **Node.js**: Dispone di `global`, `process`, accesso diretto al file system via moduli nativi (`fs`), networking a basso livello (`http`).
 - **Web Workers / Service Workers**: Dispongono di un contesto isolato chiamato `self`, uso di Cache API e IndexedDB, ma **assoluto divieto e impossibilità di accesso al DOM**.

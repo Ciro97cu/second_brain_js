@@ -11,6 +11,7 @@ condizione ? espressioneSeVero : espressioneSeFalso;
 ```
 
 Il funzionamento prevede la valutazione della `condizione`:
+
 - Se risulta "truthy", viene eseguita e restituita `espressioneSeVero`
 - Se risulta "falsy", viene eseguita e restituita `espressioneSeFalso`
 

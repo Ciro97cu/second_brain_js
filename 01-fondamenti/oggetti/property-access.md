@@ -1,6 +1,6 @@
 # [[../../appunti-completi#accesso-alle-proprietà-degli-oggetti|Accesso alle Proprietà (Property Access)]]
 
-JavaScript gestisce l'accesso e l'assegnazione dei valori degli oggetti (o alle variabili al loro interno definite) attraverso un efficace set minimale di regole per le proprietà e i loro costrutti lessicali. 
+JavaScript gestisce l'accesso e l'assegnazione dei valori degli oggetti (o alle variabili al loro interno definite) attraverso un efficace set minimale di regole per le proprietà e i loro costrutti lessicali.
 
 Il tema è stato riorganizzato atomicamente nei seguenti concetti primari:
 
@@ -18,7 +18,7 @@ Le **best practices** consolidano la gestione del codice nel seguente approccio 
 /* Panoramica Integrata delle Sintassi */
 var config = {
   host: "localhost",
-  "api-key": "abc123"
+  "api-key": "abc123",
 };
 
 /* Dot notation per nomi puliti */

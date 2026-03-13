@@ -4,7 +4,7 @@ JavaScript offre, oltre ai valori primitivi, un unico tipo complesso: `object`. 
 
 ## Function: Callable Objects (First-Class Citizens)
 
-Le funzioni sono oggetti. Più precisamente, si tratta di un sottotipo specializzato di `object` in grado di essere invocato ("callable"). 
+Le funzioni sono oggetti. Più precisamente, si tratta di un sottotipo specializzato di `object` in grado di essere invocato ("callable").
 
 ```javascript
 function saluta(nome) {
@@ -20,7 +20,7 @@ console.log(saluta.length); // 1 (numero di argomenti attesi)
 console.log(saluta.name); // "saluta"
 ```
 
-Le funzioni sono considerate "first-class citizens": possono essere assegnate a variabili, passate come argomenti o restituite da altre funzioni. 
+Le funzioni sono considerate "first-class citizens": possono essere assegnate a variabili, passate come argomenti o restituite da altre funzioni.
 
 ## Array: Oggetti ad Indice Numerico
 

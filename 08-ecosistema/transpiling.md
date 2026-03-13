@@ -15,7 +15,7 @@ Il transpiling è il processo logico di conversione del codice JavaScript modern
 
 ```javascript
 // ES6 (Codice sorgente moderno)
-const doppi = [1, 2, 3].map(n => n * 2);
+const doppi = [1, 2, 3].map((n) => n * 2);
 function saluta(nome = "Ospite") {
   console.log(`Ciao, ${nome}`);
 }
@@ -25,7 +25,9 @@ var doppi = [1, 2, 3].map(function (n) {
   return n * 2;
 });
 function saluta(nome) {
-  if (nome === undefined) { nome = "Ospite"; }
+  if (nome === undefined) {
+    nome = "Ospite";
+  }
   console.log("Ciao, " + nome);
 }
 ```
@@ -35,7 +37,9 @@ function saluta(nome) {
 ```javascript
 // ES6
 class Animale {
-  constructor(nome) { this.nome = nome; }
+  constructor(nome) {
+    this.nome = nome;
+  }
 }
 const { nome } = new Animale("Cane");
 

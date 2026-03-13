@@ -1,6 +1,6 @@
 # [[../../../appunti-completi#311-lidentificatore-this|DMZ Object Pattern per this]]
 
-Quando si usano `call`, `apply` o `bind` passando `null` o `undefined` come valore per `this`, per design questi vengono ignorati e si applica il **default binding**. Questo per ignoranza o superficialità può inquinare l'oggetto globale. 
+Quando si usano `call`, `apply` o `bind` passando `null` o `undefined` come valore per `this`, per design questi vengono ignorati e si applica il **default binding**. Questo per ignoranza o superficialità può inquinare l'oggetto globale.
 
 Per ovviare, specialmente con codici 3rd-party ignoti, si usa un **DMZ (Demilitarized Zone) Object**.
 
@@ -35,14 +35,16 @@ bar(3); // a:2, b:3 ✅
 Con l'arrivo dello **spread operator**, il bisogno di `apply` per passare array come parametri separati viene meno:
 
 ```javascript
-function foo(a, b, c) { return a + b + c; }
+function foo(a, b, c) {
+  return a + b + c;
+}
 var args = [1, 2, 3];
 
 // ES6: Spread evita di dichiarare un this predefinito
 foo(...args); // No this placeholder necessario!
 ```
 
-**⚠️ Nota**: Non esiste equivalente ES6 generico per lo scoping del *currying* con un equivalente sintetico nativo che faccia il binding parziale, quindi per questo scenario serve ancora il placeholder DMZ per i bind incompleti.
+**⚠️ Nota**: Non esiste equivalente ES6 generico per lo scoping del _currying_ con un equivalente sintetico nativo che faccia il binding parziale, quindi per questo scenario serve ancora il placeholder DMZ per i bind incompleti.
 
 ---
 

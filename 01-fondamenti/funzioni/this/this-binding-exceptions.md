@@ -22,7 +22,9 @@ foo.apply(undefined); // 2 (default binding!)
 È comune usare `null` quando non ti interessa il binding di `this` ma hai bisogno di un placeholder per lo strato di parametri extra, come nello spreading array:
 
 ```javascript
-function sum(a, b) { return a + b; }
+function sum(a, b) {
+  return a + b;
+}
 sum.apply(null, [2, 3]); // 5
 ```
 

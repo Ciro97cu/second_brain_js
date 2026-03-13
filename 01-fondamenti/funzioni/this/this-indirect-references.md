@@ -23,7 +23,7 @@ o.foo(); // 3 (implicit binding regolare)
 
 ## Perché Succede?
 
-L'espressione nel caso soprastante `p.foo = o.foo` valuta come suo output di ritorno finale la function reference ad esso riferito, originaria come `foo` in anonimato. 
+L'espressione nel caso soprastante `p.foo = o.foo` valuta come suo output di ritorno finale la function reference ad esso riferito, originaria come `foo` in anonimato.
 
 Aggiungendo l'operatore parentesi `()` per invocarla si forza il calcolo alla base dell'oggetto, ed il vero callsite per interpretare il `this` diventerà l'esecuzione globale della funzione, non `p.foo()` né `o.foo()`.
 

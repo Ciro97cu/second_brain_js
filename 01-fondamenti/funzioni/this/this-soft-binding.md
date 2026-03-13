@@ -13,19 +13,19 @@ if (!Function.prototype.softBind) {
   Function.prototype.softBind = function (obj) {
     var fn = this;
     var curried = [].slice.call(arguments, 1);
-    
+
     var bound = function () {
       // Controlla this al call-time
       // Se è globale/undefined (è un default binding scappato dal controllo) ecc... usa 'obj' protetto preimpostato
       // Se invece 'this' è stato volontariamente configurato dal chimate manuale in seguito... rispettalo.
-      var isDefault = (!this || this === (window || global));
-      
+      var isDefault = !this || this === (window || global);
+
       return fn.apply(
         isDefault ? obj : this,
-        curried.concat.apply(curried, arguments)
+        curried.concat.apply(curried, arguments),
       );
     };
-    
+
     bound.prototype = Object.create(fn.prototype);
     return bound;
   };
@@ -37,7 +37,9 @@ if (!Function.prototype.softBind) {
 Il soft binding offre sicurezza ma massima flessibilità futura:
 
 ```javascript
-function foo() { console.log(this.name); }
+function foo() {
+  console.log(this.name);
+}
 
 var obj = { name: "obj" };
 var obj2 = { name: "obj2" };
@@ -48,9 +50,9 @@ var fooOBJ = foo.softBind(obj);
 // Scatenerebbe default binding → usa obj come fallback di cuscinetto salva-vita
 fooOBJ(); // name: obj
 
-// Implicit binding → override manuale permesso! Questo differisce dal blind originario 
+// Implicit binding → override manuale permesso! Questo differisce dal blind originario
 obj2.foo = fooOBJ;
-obj2.foo(); // name: obj2 
+obj2.foo(); // name: obj2
 
 // Explicit binding
 fooOBJ.call(obj3); // name: obj3

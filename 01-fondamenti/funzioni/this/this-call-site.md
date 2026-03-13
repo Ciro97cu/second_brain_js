@@ -44,9 +44,11 @@ baz(); // <-- call-site per `baz`
 ## 🔗 Collegamenti
 
 **Prerequisiti**:
+
 - [[this-concept]] - Concetto base di this
 
 **Approfondimenti**:
+
 - [[this-binding-default]] - Regole di binding in base al call-site
 
 ---

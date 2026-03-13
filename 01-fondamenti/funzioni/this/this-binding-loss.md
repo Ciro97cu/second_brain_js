@@ -9,7 +9,9 @@ Quando passi un metodo come callback, estrai il riferimento alla funzione dal su
 ```javascript
 var obj = {
   value: 42,
-  getValue: function () { console.log(this.value); }
+  getValue: function () {
+    console.log(this.value);
+  },
 };
 
 obj.getValue(); // 42 (implicit binding)
@@ -61,7 +63,7 @@ var obj = {
     setTimeout(function () {
       console.log(self.value); // 42 (usa closure)
     }, 100);
-  }
+  },
 };
 ```
 

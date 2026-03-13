@@ -24,7 +24,9 @@ obj.getValue();
 // ✅ CORRETTO
 var obj = {
   value: 42,
-  getValue() { return this.value; }, // Shorthand
+  getValue() {
+    return this.value;
+  }, // Shorthand
 };
 ```
 
@@ -33,7 +35,9 @@ var obj = {
 Imporre una concatenazione forzosa della pipeline su bind per re-instradare su un secondo istante della traccia di stato non muta la natura del bind originario primitivo:
 
 ```javascript
-function foo() { console.log(this.a); }
+function foo() {
+  console.log(this.a);
+}
 
 var boundContext1 = foo.bind({ a: 1 });
 var boundContext2 = boundContext1.bind({ a: 2 }); // SECONDO BIND (viene totalmente ignorato silente)
@@ -47,12 +51,12 @@ L'innesto di un `bind(this)` che punta a stati per generare handlers negli scope
 
 ```javascript
 // ❌ Sbagliato
-items.forEach(item => {
+items.forEach((item) => {
   render(<Button onClick={() => this.handleClick(item)} />); // Nuovo puntatore ad ogni micro-render
 });
 
 // ✅ Corretto (per framework moderni OOP non basati su component functional approach)
-var handlersSalvati = items.map(item => this.handleClick.bind(this, item));
+var handlersSalvati = items.map((item) => this.handleClick.bind(this, item));
 // Consuma e usa references identiche di bound precalcolati
 ```
 

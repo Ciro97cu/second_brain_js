@@ -1,185 +1,22 @@
-# [[../../appunti-completi#funzioni-come-scope|Funzioni come Scope]]
+# [[../../appunti-completi#funzioni-come-scope|Funzioni come Scope: Indice]]
 
-## 🎯 Concetto
+Il principio generale secondo il quale avvolgere o racchiudere dei blocchi di logica all'interno di una funzione permette di creare uno scope isolato, proteggendo variabili e dichiarazioni dall'ambiente esterno globale e prevenendo collisioni.
+Questa struttura raccoglie l'approfondimento di tutte le dinamiche, sintassi e pattern legati alle funzioni impiegate come delimitatori di scope.
 
-Avvolgere codice in una funzione lo "nasconde" creando uno scope privato. Tuttavia, **dichiarare** una funzione inquina lo scope esterno. Le **espressioni di funzione** (function expressions) risolvono questo problema: il nome della funzione non è registrato nello scope esterno, ma rimane accessibile solo internamente.
+## 📑 Argomenti e Sotto-concetti
 
-**Pattern Chiave**: `(function foo() { /* ... */ })()` - Nome privato, esecuzione immediata (IIFE).
+- **[[function-scope-concept|Concetto Generale e Sintassi]]**
+  Differenze tra dichiarazioni e function expressions. Approfondimento sulla mitigazione dell'inquinamento globale tramite blocchi isolati.
 
-## 💻 Dichiarazione vs Espressione
+- **[[function-scope-naming-recursion|Gestione dei Nomi e Ricursione Interna]]**
+  Uso limitato degli identificatori di funzione nelle espressioni e vantaggi per garantire sicurezza nell'esecuzione di richiami ricorsivi autonomi.
 
-### Dichiarazione (Inquina Scope)
+- **[[function-scope-iife-patterns|Pattern IIFE, Isolamento e Initialization]]**
+  Strategie, benefici e casi d'uso concreti per l'uso immediato (Immediately Invoked Function Expressions) rivolto alle configurazioni complesse o incapsulamento rigoroso.
 
-```javascript
-// ❌ 'foo' diventa globale
-function foo() {
-  var a = 3;
-  console.log(a);
-}
+## 📚 Concetti Legati e Documentazione
 
-foo(); // Chiamata esplicita
-console.log(typeof foo); // "function" ← INQUINAMENTO
-```
-
-### Espressione (Scope Pulito)
-
-```javascript
-// ✅ 'foo' NON è globale
-(function foo() {
-  var a = 3;
-  console.log(a); // 3
-})(); // Esecuzione immediata
-
-// console.log(typeof foo); // ReferenceError ← NESSUN INQUINAMENTO
-```
-
-## 🔑 Regola Chiave
-
-**Se `function` è la PRIMA parola** → Dichiarazione (nome nello scope esterno)  
-**Altrimenti** (es. tra parentesi) → Espressione (nome privato)
-
-```javascript
-// DICHIARAZIONE
-function bar() {
-  /* ... */
-}
-
-// ESPRESSIONI
-(function baz() {
-  /* ... */
-});
-var fn = function qux() {
-  /* ... */
-};
-```
-
-## 💡 Nome della Funzione: Dove Va?
-
-### Dichiarazione
-
-```javascript
-function nomeDichiarazione() {
-  /* ... */
-}
-console.log(nomeDichiarazione.name); // Accessibile fuori
-```
-
-### Espressione
-
-```javascript
-var varEsterna = function nomeEspressione() {
-  // 'nomeEspressione' accessibile SOLO qui
-  console.log(nomeEspressione.name);
-};
-
-console.log(varEsterna.name); // "nomeEspressione" (proprietà)
-// console.log(nomeEspressione); // ReferenceError (NON nello scope!)
-```
-
-## 🔄 Ricorsione con Nome Privato
-
-```javascript
-var fattoriale = function fatto(n) {
-  if (n <= 1) return 1;
-  return n * fatto(n - 1); // Usa 'fatto' internamente
-};
-
-fattoriale(5); // 120
-// fatto(5); // ReferenceError
-
-// Anche se riassegno, la ricorsione funziona
-var temp = fattoriale;
-fattoriale = null;
-temp(5); // 120 - usa 'fatto' interno!
-```
-
-## 🎯 Pattern IIFE (Immediately Invoked Function Expression)
-
-```javascript
-var a = 2;
-
-(function IIFE() {
-  var a = 3;
-  var b = 4;
-
-  function helper() {
-    return a + b;
-  }
-
-  console.log(helper()); // 7
-})(); // Parentesi finali = esecuzione immediata
-
-console.log(a); // 2 (NON inquinato)
-// console.log(b); // ReferenceError (privato)
-// console.log(IIFE); // ReferenceError (nome privato)
-```
-
-## 💼 Caso d'Uso Reale
-
-### Inizializzazione Complessa
-
-```javascript
-var config = (function () {
-  // Variabili PRIVATE
-  var env = "production";
-  var apiKeys = { dev: "dev123", prod: "prod456" };
-
-  function getKey() {
-    return apiKeys[env];
-  }
-
-  // Ritorna solo configurazione finale
-  return {
-    apiUrl: "https://api.com/api",
-    apiKey: getKey(),
-    timeout: 5000,
-  };
-})();
-
-// Solo 'config' è esposto
-config.apiUrl; // Accessibile
-// env; // ReferenceError (privato)
-```
-
-## ⚖️ Confronto: Dichiarazione vs Espressione
-
-| Aspetto                      | Dichiarazione | Espressione |
-| ---------------------------- | ------------- | ----------- |
-| Nome nello scope esterno     | ✅ Sì         | ❌ No       |
-| Esecuzione automatica        | ❌ No         | ✅ Con IIFE |
-| Inquinamento scope           | ⚠️ Sì         | ✅ No       |
-| Ricorsione interna           | ✅ Sì         | ✅ Sì       |
-| Debugging (nome nello stack) | ✅ Sì         | ✅ Sì       |
-
-## ⚠️ Problemi Risolti
-
-1. **Inquinamento Scope**: Nome funzione non accessibile esternamente
-2. **Chiamata Esplicita**: Con IIFE, esecuzione automatica
-3. **Privacy**: Dettagli implementativi nascosti
-4. **Collisioni**: Nome non registrato nello scope esterno
-
-## ✅ Vantaggi
-
-- **Zero Inquinamento**: Nessun nome nello scope esterno
-- **Esecuzione Immediata**: Pattern IIFE
-- **Privacy Reale**: Variabili e helper veramente privati
-- **Ricorsione Sicura**: Nome interno per chiamate ricorsive
-- **Debugging**: Nome visibile nello stack trace
-
-## 🔗 Concetti Correlati
-
-- [[hiding-in-scope|Hiding in Scope]] - Principio generale
-- [[lexical-scope-base|Scope Lessicale]] - Meccanismo sottostante
-- [[scope-namespaces|Namespace Globali]] - Pattern alternativo
-- [[module-management|Module Management]] - Evoluzione moderna
-- [[../../appunti-completi#funzioni-come-scope|Funzioni come Scope Completo]]
-
-## 📚 Risorse
-
-- "You Don't Know JS" - Scope & Closures, Chapter 3
-- MDN: Function Expressions
-- IIFE Pattern (Immediately Invoked Function Expression)
-
-## 📌 Tag
-
-#javascript #scope #function-expressions #iife #declarations #encapsulation #privacy #patterns
+- [[hiding-in-scope|Hiding in Scope]] - Motivazioni generali dell'information hiding tramite isolamento
+- [[lexical-scope-base|Scope Lessicale Base]] - Fondamenta del paradigma
+- MDN: Function Expressions and Scope
+- "You Don't Know JS" - Scope & Closures chapter (Kyle Simpson)

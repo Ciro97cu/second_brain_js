@@ -31,11 +31,11 @@ Gli errori differiscono notevolmente tra la risoluzione dello scope e l'accesso 
 
 Se un identificatore non viene trovato nello scope lessicale, il motore JavaScript genera un `ReferenceError`. Se invece un oggetto viene risolto ma la proprietà richiesta non è presente su di esso (e nemmeno nella sua catena dei prototipi), l'espressione restituisce `undefined` senza lanciare errori.
 
-| Situazione      | Scope Lessicale    | Proprietà Oggetto  |
-| --------------- | ------------------ | ------------------ |
-| Non trovato     | `ReferenceError`   | `undefined`        |
-| Tipo di ricerca | Scope chain        | Prototype chain    |
-| Si ferma a      | Scope globale      | `null` prototype   |
+| Situazione      | Scope Lessicale  | Proprietà Oggetto |
+| --------------- | ---------------- | ----------------- |
+| Non trovato     | `ReferenceError` | `undefined`       |
+| Tipo di ricerca | Scope chain      | Prototype chain   |
+| Si ferma a      | Scope globale    | `null` prototype  |
 
 ```javascript
 let dict = { x: 10 };

@@ -38,15 +38,19 @@ var bar = new foo(2); // Constructor call (new binding)
 Quando una funzione viene invocata con `new`, il motore JavaScript esegue automaticamente **4 operazioni**:
 
 ### 1. Creazione Nuovo Oggetto
+
 Un nuovo oggetto vuoto viene creato sul momento.
 
 ### 2. Link Prototipale
+
 Il nuovo oggetto viene collegato tramite `[[Prototype]]` al prototipo della funzione costruttrice.
 
 ### 3. Effettuazione del Binding di `this`
+
 Il nuovo oggetto diventa il binding di `this` per l'esecuzione di quella specifica chiamata di funzione.
 
 ### 4. Ritorno Automatico
+
 La funzione ritorna automaticamente il nuovo oggetto appena costruito, a meno che non venga specificato un diverso ritorno esplicito di un oggetto.
 
 ```javascript

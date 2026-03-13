@@ -1,6 +1,6 @@
 # [[../../appunti-completi#le-bolle-di-scope-annidate|Best Practices per le Bolle di Scope]]
 
-La visualizzazione mentale o astratta delle bolle di scope agevola istantaneamente la comprensione sui diritti di accessibilità della memoria ed evita incomprensioni sui valori manipolabili per i relativi scope. 
+La visualizzazione mentale o astratta delle bolle di scope agevola istantaneamente la comprensione sui diritti di accessibilità della memoria ed evita incomprensioni sui valori manipolabili per i relativi scope.
 
 Viene considerata appropriata la prassi di assicurare nel software lo sviluppo di una chiara gerarchia interna.
 
@@ -41,4 +41,5 @@ function processa(input) {
 ```
 
 ## 🔗 Collegamenti
+
 - [[scope-bubbles]]

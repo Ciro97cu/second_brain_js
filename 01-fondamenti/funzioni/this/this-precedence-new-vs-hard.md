@@ -1,6 +1,6 @@
 # [[../../../appunti-completi#new-vs-hard-binding|New vs Hard Binding]]
 
-A sorpresa, anche lo stretto *hard binding* fornito da `bind()` può essere overridden dall'uso del costruttore, rendendo il *new binding* in assoluto il più prioritario di tutti.
+A sorpresa, anche lo stretto _hard binding_ fornito da `bind()` può essere overridden dall'uso del costruttore, rendendo il _new binding_ in assoluto il più prioritario di tutti.
 
 ## La Precedenza Sorprendente
 
@@ -20,6 +20,7 @@ console.log(baz.a); // 3 (new ha creato nuovo oggetto)
 ```
 
 **Osservazioni**:
+
 - `bar` è originariamente hard-bound a `obj1` con `bind`.
 - Chiamare `bar(2)` imposta coerentemente `obj1.a = 2`.
 - Ma `new bar(3)` crea a tutti gli effetti un **nuovo oggetto** con proprietà `a = 3`.
@@ -33,17 +34,18 @@ Come fa `new` a sovrascrivere `bind()` se le definizioni primordiali hard-codifi
 
 ```javascript
 // Frammenti del polyfill di bind standard (MDN / TC39)
-this instanceof fNOP && oThis ? this : oThis
+this instanceof fNOP && oThis ? this : oThis;
 ```
 
 Questo condizionale controlla esplicitamente:
+
 - **`this instanceof fNOP`**: La funzione è chiamata con `new`?
 - **Se sì**: Sceglie il `this` generato poc'anzi.
-- **Se no**: Cede al normale `oThis` (*hard binding*).
+- **Se no**: Cede al normale `oThis` (_hard binding_).
 
 ## Caso D'uso: Partial Application
 
-Se consentire a `new` tale prelevanza contro gli intenti sembrasse strano, ne giova la pratica della *partial application (currying)*.
+Se consentire a `new` tale prelevanza contro gli intenti sembrasse strano, ne giova la pratica della _partial application (currying)_.
 
 ### Constructor con Parametri Pre-Applicati
 

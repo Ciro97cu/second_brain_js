@@ -13,7 +13,7 @@ Quando si verifica un'eccezione all'interno di una funzione anonima, lo stack tr
 setTimeout(function () {
   throw new Error("Errore critico!");
 }, 100);
-// Stack trace: at <anonymous>:2:9 
+// Stack trace: at <anonymous>:2:9
 ```
 
 ### 2. Impossibilità di Auto-riferimento Sicuro
@@ -38,7 +38,7 @@ In passato per aggirare questo ostacolo si utilizzava `arguments.callee`, ma que
 // ❌ Pratica deprecata (non usare)
 var fattoriale = function (n) {
   if (n <= 1) return 1;
-  return n * arguments.callee(n - 1); 
+  return n * arguments.callee(n - 1);
 };
 ```
 

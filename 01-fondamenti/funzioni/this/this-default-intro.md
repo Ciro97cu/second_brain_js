@@ -33,8 +33,8 @@ Definire una variabile tramite `var` nello scope globale, comporta la creazione 
 var a = 42;
 
 console.log(window.a); // 42 (browser)
-console.log(this.a);   // 42 (global scope)
-console.log(a);        // 42
+console.log(this.a); // 42 (global scope)
+console.log(a); // 42
 // Sono tutti riferimenti alla stessa proprietà.
 ```
 
@@ -64,4 +64,5 @@ foo();
 ```
 
 ---
+
 **Tags**: `#javascript` `#this` `#default-binding` `#global-object`

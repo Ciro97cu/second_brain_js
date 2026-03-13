@@ -10,7 +10,7 @@ In modalità non-strict, una ricerca LHS fallita non provoca un errore. Al contr
 // NON-STRICT: crea variabile globale accidentale
 function assegna(a) {
   // 'b' non è mai stata dichiarata nello scope attuale o in quelli esterni
-  b = a * 2; 
+  b = a * 2;
 }
 
 assegna(5);

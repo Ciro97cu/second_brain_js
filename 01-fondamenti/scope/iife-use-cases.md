@@ -62,11 +62,11 @@ var Logger = (function () {
 
 ## ⚖️ Vantaggi a Confronto
 
-| Pattern Costruttivo | Vantaggio Principale Ricavato |
-| --- | --- |
-| `(function(){})();` | Definizione IIFE di base; syntax standard e chiaro internazionalmente |
-| `(function NOME(){})();` | IIFE con nominazione; migliora significativamente il debugging base e gli stack trace generati |
-| `(function(w){...})(window)` | IIFE con argomenti; ottimizza lo scope lookup per riferimenti globali pesanti |
+| Pattern Costruttivo          | Vantaggio Principale Ricavato                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| `(function(){})();`          | Definizione IIFE di base; syntax standard e chiaro internazionalmente                          |
+| `(function NOME(){})();`     | IIFE con nominazione; migliora significativamente il debugging base e gli stack trace generati |
+| `(function(w){...})(window)` | IIFE con argomenti; ottimizza lo scope lookup per riferimenti globali pesanti                  |
 
 ## 📌 Tag
 

@@ -7,6 +7,7 @@ Gli errori legati allo scope in JavaScript si dividono in due categorie principa
 Il **ReferenceError** si verifica a causa di un fallimento nella **risoluzione dello scope**. Indica che l'Engine non ha trovato una variabile in nessuno scope della catena (fino al globale). Questo errore viene generalmente identificato prima dell'esecuzione (durante la fase di compilazione o risoluzione).
 
 **Esempio di ricerca RHS (recupero valore) fallita**:
+
 ```javascript
 function foo(a) {
   console.log(a + b); // ❌ ReferenceError: b is not defined
@@ -16,6 +17,7 @@ foo(2);
 ```
 
 **Esempio di utilizzo generico**:
+
 ```javascript
 console.log(variabileInesistente); // ❌ ReferenceError: variabileInesistente is not defined
 
@@ -29,6 +31,7 @@ function test() {
 Il **TypeError** si verifica quando lo scope è stato risolto correttamente (la variabile è stata trovata), ma si tenta un'**operazione illegale** sul valore contenuto nella variabile. Questo avviene sempre durante l'esecuzione del codice.
 
 **Esempi di operazioni illegali**:
+
 ```javascript
 let numero = 42;
 numero(); // ❌ TypeError: numero is not a function (esiste, ma non è una funzione)

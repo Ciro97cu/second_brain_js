@@ -2,7 +2,7 @@
 
 ## 🎯 Il Valore delle Espressioni Nominate
 
-Nominare sempre le espressioni di funzione è considerata una *best practice* fondamentale nell'ecosistema JavaScript. Fornire un identificatore interno risolve strutturalmente i problemi tipici (debugging o auto-riferimento) intrinseci all'approccio con funzioni anonime.
+Nominare sempre le espressioni di funzione è considerata una _best practice_ fondamentale nell'ecosistema JavaScript. Fornire un identificatore interno risolve strutturalmente i problemi tipici (debugging o auto-riferimento) intrinseci all'approccio con funzioni anonime.
 
 **Regola d'oro**: le dichiarazioni di funzione richiedono sempre un nome, mentre per le espressioni è opzionale ma vi è un ampio consenso sul fatto che dovrebbero possederne uno.
 
@@ -23,7 +23,7 @@ valori.map(function raddoppiaValore(numero) {
   return numero * 2; // Intento evidente al primo sguardo
 });
 
-// ✅ Event handlers nominati: rendono facile il disaccoppiamento 
+// ✅ Event handlers nominati: rendono facile il disaccoppiamento
 pulsante.addEventListener("click", function gestisciPressione(evento) {
   // Struttura predisposta per un'eventuale pulizia pulita
 });

@@ -53,11 +53,10 @@ function test(condition) {
 
 // SCHEMA 2: Derivazione sintetica da costrutti logici rapidi
 function test(condition) {
-  const foo = condition 
-    ? () => "A" 
-    : () => "B";
+  const foo = condition ? () => "A" : () => "B";
 
   return foo();
 }
 ```
+
 Queste due derivazioni implementano certezze granitiche e non si affidano irresponsabilmente all'ingegnerizzazione di backporting e differenziazioni fra specifiche iterazioni di linguaggio.

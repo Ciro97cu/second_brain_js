@@ -94,16 +94,6 @@ if ((temp > 20 && sole) || weekend) {
   console.log("Bella giornata!");
 }
 
-// Uso pratico: validazione
-function saluta(persona) {
-  let nome = persona && persona.nome;
-  console.log("Ciao " + (nome || "ospite"));
-}
-
-saluta({ nome: "Anna" }); // "Ciao Anna"
-saluta(null); // "Ciao ospite"
-saluta({}); // "Ciao ospite"
-
 // Catena di OR per default
 function configura(opts) {
   opts = opts || {};
@@ -115,12 +105,6 @@ function configura(opts) {
 console.log(configura()); // { timeout: 3000, retry: 3 }
 console.log(configura({ timeout: 5000 })); // { timeout: 5000, retry: 3 }
 
-// Evitare esecuzione con &&
-let debug = true;
-debug && console.log("Debug attivo"); // esegue solo se debug è true
-
-let arr = [1, 2, 3];
-arr.length > 0 && console.log("Array non vuoto");
 ```
 
 ## Punti Chiave

@@ -37,7 +37,7 @@ La valutazione del codice "in esecuzione" blocca l'accesso e l'output è sempre 
 
 La TDZ ha conseguenze sull'utilizzo dell'operatore condizionale `typeof`. Generalmente, `typeof` applicato ad una variabile assente produce la stringa `"undefined"` ed è definito come sicura ("safe"), cioè omettendo la violazione di reference.
 
-Tuttavia, all'interno della Temporal Dead Zone di let e const, il `typeof` non protegge dall'eccezione: 
+Tuttavia, all'interno della Temporal Dead Zone di let e const, il `typeof` non protegge dall'eccezione:
 
 ```javascript
 // Con variabile non dichiarata

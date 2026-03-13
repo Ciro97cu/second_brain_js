@@ -26,7 +26,7 @@ bar.call(window); // 2 (il contesto non può essere sovrascritto)
 
 Dal rilascio di ES5, JavaScript include un'utilità nativa per applicare l'hard binding: `Function.prototype.bind()`.
 
-Il metodo `bind()` restituisce una **nuova funzione**, codificata per invocare la funzione originale con il valore di `this` specificato, indipendentemente da come la nuova funzione viene chiamata. 
+Il metodo `bind()` restituisce una **nuova funzione**, codificata per invocare la funzione originale con il valore di `this` specificato, indipendentemente da come la nuova funzione viene chiamata.
 
 ```javascript
 function foo(something) {
@@ -60,7 +60,9 @@ Un aspetto cruciale da ricordare è che l'output di un'operazione di `bind()` cr
 var obj1 = { a: 1 };
 var obj2 = { a: 2 };
 
-function foo() { console.log(this.a); }
+function foo() {
+  console.log(this.a);
+}
 
 var bar = foo.bind(obj1);
 var baz = bar.bind(obj2);

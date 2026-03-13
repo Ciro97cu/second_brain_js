@@ -17,6 +17,7 @@ Le IIFE permettono il passaggio di argomenti al momento dell'invocazione, consen
 ```
 
 **Vantaggi**:
+
 - Fornisce un accesso esplicito allo scope globale dall'interno della IIFE.
 - Permette una micro-ottimizzazione riducendo le operazioni di scope lookup, dato che il parametro `global` è risolto localmente.
 - Rende evidente quando il codice sta apportando modifiche al contesto globale.

@@ -25,7 +25,7 @@ var a = "oops, global";
 bar(); // "oops, global" (Default binding applicato)
 ```
 
-In questo caso, `bar = obj.foo` crea una copia del *riferimento* alla funzione originale. Essendo invocata tramite `bar()`, questa risulta essere una chiamata normale, scollegata da qualsiasi riferimento all'oggetto `obj`.
+In questo caso, `bar = obj.foo` crea una copia del _riferimento_ alla funzione originale. Essendo invocata tramite `bar()`, questa risulta essere una chiamata normale, scollegata da qualsiasi riferimento all'oggetto `obj`.
 
 ## L'Assegnazione per Callback e Temporizzatori
 
@@ -71,6 +71,7 @@ La perdita di correlazione occorre, allo stesso modo, quando una funzione è dep
 
 **Metodi di iterazione su Array**
 Nel caso di `.forEach()` o simili e array puri (senza bind), il binding non viene salvaguardato.
+
 ```javascript
 const obj = {
   a: 2,
@@ -87,6 +88,7 @@ methods[0](); // "global" - come: const fn = obj.foo; fn();
 
 **Assegnazione da destrutturazione (Destructuring)**
 Istanziando le property per via destrutturata su variabili autonome, avviene una normale assegnazione.
+
 ```javascript
 const obj = {
   a: 2,
@@ -104,10 +106,12 @@ foo(); // "global"
 ## Rimediare
 
 Per affrontare queste anomalie si può far riferimento a:
+
 - **Arrow Functions**: per consolidare `this` rispetto al blocco in modo lessicale.
 - **`.bind()`**: producendo copie forzate del proprio function wrapper (Explicit binding).
 
 Vedere [[this-binding-problems]] per approfondimenti specifici alle problematiche dei callback.
 
 ---
+
 **Tags**: `#javascript` `#this` `#implicit-lost` `#binding` `#callback`

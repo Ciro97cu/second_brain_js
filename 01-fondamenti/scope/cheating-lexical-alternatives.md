@@ -9,6 +9,7 @@ Modificare lo scope lessicale a runtime tramite `eval()` o `with` causa ineffici
 Invece di eseguire stringhe di testo come codice dinamico, è preferibile ricorrere a funzioni o notazioni standard.
 
 ### Accesso a Proprietà Dinamiche
+
 ```javascript
 var prop = "b";
 var obj = { a: 1, b: 2 };
@@ -21,6 +22,7 @@ console.log(obj[prop]);
 ```
 
 ### Calcoli Dinamici e Valutazione Espressioni
+
 ```javascript
 // ❌ Uso pericoloso
 var result = eval("2 + 2 * 3");
@@ -33,6 +35,7 @@ var result = calc(); // 8
 L'uso di librerie specializzate in parsing e interpretazione (come `math.js`) risulta la scelta più sicura.
 
 ### Esecuzione di Logica Dinamica
+
 ```javascript
 // ❌ Approccio deprecato
 eval("console.log('Hello')");
@@ -47,12 +50,16 @@ code();
 L'assegnazione e la lettura ripetuta delle proprietà di un oggetto non richiedono il costrutto deprecato `with`.
 
 ### Lettura Valori
+
 La sintassi di destructuring (ES6+) permette l'accesso pulito e compatto.
+
 ```javascript
 var obj = { a: 1, b: 2, c: 3 };
 
 // ❌ Con with
-with(obj) { console.log(a, b); }
+with (obj) {
+  console.log(a, b);
+}
 
 // ✅ Destructuring
 const { a, b } = obj;
@@ -60,7 +67,9 @@ console.log(a, b);
 ```
 
 ### Configurazione Valori
+
 Per assegnazioni multiple, è preferibile l'uso esplicito dell'oggetto o un riferimento temporaneo.
+
 ```javascript
 // ✅ Assegnazione diretta (ottimizzabile dall'engine)
 obj.a = 2;

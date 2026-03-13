@@ -9,5 +9,6 @@ A livello concettuale, ogni funzione e blocco crea una nuova bolla locale. Quest
 La regola assoluta che dirige le bolle di scope è il contenimento totale: una bolla più piccola, corrispondente per esempio a uno scope in un blocco di codice contenuto in una certa funzione, deve trovarsi **interamente** nella bolla creata dalla funzione che le fa da contenitore, mai una frazione esterna o a cavallo di altre.
 
 ## 🔗 Collegamenti
+
 - [[scope-bubbles]]
 - [[lexical-scope-base]]

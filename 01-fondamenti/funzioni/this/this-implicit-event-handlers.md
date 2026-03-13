@@ -6,7 +6,7 @@ Questa manomissione viene definita in gergo **Hard binding non intenzionale**.
 
 ## Azioni Forzate nel DOM
 
-Gli event listener associati ad elementi HTML spesso dirottano deliberatamente il contesto di una funzione fornita come risorsa o callback, ridirigendolo affinché corrisponda all'agente scatenante l'evento. 
+Gli event listener associati ad elementi HTML spesso dirottano deliberatamente il contesto di una funzione fornita come risorsa o callback, ridirigendolo affinché corrisponda all'agente scatenante l'evento.
 
 In questi ambiti, l'operazione avviene in maniera trasparente, sovrascrivendo l'implicit binding preventivato dello sviluppatore a favore di quello stabilito internamente dall'API di gestione degli eventi.
 
@@ -47,4 +47,5 @@ button.addEventListener("click", (e) => controller.handleClick(e));
 ```
 
 ---
+
 **Tags**: `#javascript` `#this` `#event-handlers` `#dom` `#implicit-lost`

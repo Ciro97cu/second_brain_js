@@ -6,10 +6,10 @@ JavaScript utilizza esclusivamente il **lexical scope** (scope lessicale), come 
 
 La differenza fondamentale risiede nel criterio utilizzato per risolvere i riferimenti alle variabili non dichiarate localmente:
 
-| Tipo | Di base su | Esempi di linguaggi |
-| --- | --- | --- |
-| **Lexical** | **Dove** la funzione è stata definita (struttura statica del codice) | JavaScript, C, Java, Python |
-| **Dynamic** | **Da dove** la funzione è stata invocata (catena dinamica delle chiamate) | Bash, alcuni dialetti Lisp |
+| Tipo        | Di base su                                                                | Esempi di linguaggi         |
+| ----------- | ------------------------------------------------------------------------- | --------------------------- |
+| **Lexical** | **Dove** la funzione è stata definita (struttura statica del codice)      | JavaScript, C, Java, Python |
+| **Dynamic** | **Da dove** la funzione è stata invocata (catena dinamica delle chiamate) | Bash, alcuni dialetti Lisp  |
 
 ### Esempio di Confronto
 

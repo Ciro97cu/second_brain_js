@@ -6,7 +6,7 @@ La keyword `this` è uno dei meccanismi più fraintesi in JavaScript. Si tratta 
 
 - **Binding dinamico (Runtime)**: È determinato al momento dell'invocazione, non al momento della dichiarazione.
 - **Contesto Implicito**: Fornisce un modo elegante per operare su oggetti multipli senza passare esplicitamente il loro riferimento come parametro, favorendo API pulite e il riutilizzo del codice.
-- **Quattro Regole**: Il suo valore viene deciso attraverso 4 regole di binding rigorose (Default, Implicit, Explicit, New). 
+- **Quattro Regole**: Il suo valore viene deciso attraverso 4 regole di binding rigorose (Default, Implicit, Explicit, New).
 
 ## 💡 Perché this Esiste
 
@@ -15,13 +15,14 @@ Il meccanismo `this` permette la condivisione di metodi tra oggetti diversi senz
 ## ⚠️ Le Confusioni Comuni (Cosa NON è this)
 
 Prima di studiarne il funzionamento, è vitale rimuovere due assunzioni errate:
+
 1. **NON punta alla funzione stessa**: Approfondisci l'errore in [[this-confusion-itself]]
 2. **NON punta al Lexical Scope della funzione**: Non funge in alcun modo da "ponte" per le variabili dello scope di definizione. Approfondisci in [[this-confusion-scope]]
 
 ## 🔗 Approfondimenti Correlati
 
 - [[this-call-site]] - Comprendere il punto di chiamata ed il Call-Stack
-- [[this-binding-rules]] - Le 4 Regole del Binding di this 
+- [[this-binding-rules]] - Le 4 Regole del Binding di this
 - [[this-arrow-functions]] - L'identificatore this lessicale
 - [[this-binding-problems]] - Smarrimento del this e pattern avanzati
 

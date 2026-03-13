@@ -4,7 +4,7 @@ Sebbene il meccanismo alla base dell'istanziazione degli oggetti rimanga largame
 
 ## Differenze tra Classi e Constructor Functions
 
-Una `class` di ES6 agisce essenzialmente da costrutto sintattico (un comunissimo *syntactic sugar*) stratificato sui meccanismi classici dei costruttori. Sotto la scocca, gli elaboratori continuano ad appoggiarsi ai medesimi prototipi e princìpi.
+Una `class` di ES6 agisce essenzialmente da costrutto sintattico (un comunissimo _syntactic sugar_) stratificato sui meccanismi classici dei costruttori. Sotto la scocca, gli elaboratori continuano ad appoggiarsi ai medesimi prototipi e princìpi.
 
 ### Utilizzo con Constructor Function (Approccio ES5)
 
@@ -47,4 +47,4 @@ Sebbene il risultato in memoria differisca minimamente, transitare verso la sint
 - Viene obbligata l'invocazione mediante `new`. Invocare erroneamente la classe come se fosse una mera funzione causerà automaticamente un'eccezione a runtime.
 - Risulta garantita maggiore leggibilità e coesione del blocco di codice, mantenendo costruttore e metodi nella stessa struttura d'appartenenza.
 - Vengono formalizzati sistemi di derivazione tramite la keyword `extends` e la delega al costruttore superiore con la keyword `super`.
-- Vengono esplicitati e standardizzati metodi o proprietà `static`, oltre allo snellimento delle dichiarazioni dei moduli *getter* e *setter*.
+- Vengono esplicitati e standardizzati metodi o proprietà `static`, oltre allo snellimento delle dichiarazioni dei moduli _getter_ e _setter_.

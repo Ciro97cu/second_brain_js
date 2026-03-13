@@ -22,6 +22,7 @@ var p2 = createPerson("Luigi");
 ```
 
 Questa prassi non è tuttavia imposta dal linguaggio a livello sintattico:
+
 ```javascript
 function foo() {
   this.a = 1;
@@ -76,7 +77,7 @@ Per ottimizzare le prestazioni e ridurre il consumo di memoria, i metodi generic
 ```javascript
 function Person(name) {
   this.name = name;
-  
+
   // Prassi da evitare: ogni istanza conterrebbe una propria copia della funzione
   // this.greet = function() { ... };
 }

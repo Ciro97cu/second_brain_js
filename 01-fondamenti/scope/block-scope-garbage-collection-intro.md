@@ -1,16 +1,20 @@
 # [[../../appunti-completi#blocchi-come-scope-blocks-as-scopes|Block Scope e Garbage Collection: Introduzione]]
 
 ## Il Problema: Closures e Memory Leaks
+
 Lo scope di blocco con `let` e `const` ha importanti implicazioni sulla gestione della memoria. Confinare variabili in blocchi espliciti aiuta il Garbage Collector a liberare memoria non più necessaria, in particolare in presenza di closures.
 
 Il motore JavaScript può identificare con certezza quando una variabile non è più utilizzabile e liberare la memoria associata.
 
 ### Closure Mantiene Tutto lo Scope
+
 Quando una funzione crea una closure, può mantenere in memoria l'intero scope circostante. Se sono presenti strutture dati molto grandi non utilizzate dalla closure, queste rimangono in memoria indefinitamente.
 
 ```javascript
 function process(data) {
-  let someReallyBigData = { /* ... milioni di record, 50MB ... */ };
+  let someReallyBigData = {
+    /* ... milioni di record, 50MB ... */
+  };
   let result = doSomething(someReallyBigData);
 
   // La closure click non usa someReallyBigData
@@ -25,6 +29,7 @@ function process(data) {
 Il motore non può sapere con certezza se le funzioni accederanno in futuro all'oggetto massivo, mantenendo tutto in memoria.
 
 ### Esempio Reale
+
 In scenari applicativi quotidiani, come il caricamento di risposte API pesanti, mantenere una closure attiva può consumare risorse inutilmente:
 
 ```javascript
@@ -36,7 +41,7 @@ function loadUserProfile(userId) {
   };
 
   $("#saveProfile").click(function () {
-    saveProfile(profile); 
+    saveProfile(profile);
   });
 
   return profile;

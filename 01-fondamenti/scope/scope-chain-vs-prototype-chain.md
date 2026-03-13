@@ -36,7 +36,7 @@ Nel contesto in cui è in analisi una catena di operandi su proprietà, è racco
 let config = { server: { host: "localhost" } };
 
 // Optional chaining previene un TypeError (nel caso in cui 'server' non esistesse),
-// restituendo 'undefined'. Tuttavia, 'config' necessita di rientrare nello scope 
+// restituendo 'undefined'. Tuttavia, 'config' necessita di rientrare nello scope
 // accessibile per prevenire il sollevamento di un ReferenceError.
 console.log(config?.server?.port); // undefined (l'esecuzione prosegue regolarmente)
 ```

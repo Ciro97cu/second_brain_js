@@ -4,7 +4,7 @@ Nel tracciamento della default binding di `this` è imperativo prestare attenzio
 
 ## Confusione tra const, let e var
 
-Nelle versioni pregresse di JS, la keyword `var` deteneva il monopolio sulle dichiarazioni nello scope globale, causando la consequenziale materializzazione delle relative variabili quali attributi del *global object* adiacente (es. `window`). Sebbene codesta associazione simbiotica permanga vera ancora oggi per la keyword `var`, un comportamento divergente avviene in relazione alle odierne istruzioni `let` e `const`.
+Nelle versioni pregresse di JS, la keyword `var` deteneva il monopolio sulle dichiarazioni nello scope globale, causando la consequenziale materializzazione delle relative variabili quali attributi del _global object_ adiacente (es. `window`). Sebbene codesta associazione simbiotica permanga vera ancora oggi per la keyword `var`, un comportamento divergente avviene in relazione alle odierne istruzioni `let` e `const`.
 
 L'utilizzo di `let` e `const` nello scope globale **non porta alla genesi di una corrispettiva proprietà del global object**.
 
@@ -46,4 +46,5 @@ Il ricorso consapevole ai precetti protocollati permette di minimizzare le devia
 3. **Esplicitazione del contesto**: Nel caso d'uso ove sia comprovato ed eludibile il bisogno del riferimento al global object, diviene preferibile disporne sotto forma di parametro in ingresso alla procedura interessata in sostituzione della cieca e non deterministica acquisizione di un globale ambientale.
 
 ---
+
 **Tags**: `#javascript` `#this` `#default-binding` `#best-practices`

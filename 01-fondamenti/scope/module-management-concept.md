@@ -1,6 +1,6 @@
 # [[../../appunti-completi#gestione-dei-moduli-module-management|Module Management: Concetto e Scope Privati]]
 
-I **moduli** rappresentano l'evoluzione moderna dei namespace in JavaScript. Invece di fare affidamento su una o più variabili globali, ogni file viene trattato come un modulo indipendente con uno **scope privato** per default. 
+I **moduli** rappresentano l'evoluzione moderna dei namespace in JavaScript. Invece di fare affidamento su una o più variabili globali, ogni file viene trattato come un modulo indipendente con uno **scope privato** per default.
 
 Gli identificatori necessari vengono **esplicitamente importati** solo dove servono, eliminando alla radice il problema dell'inquinamento dello scope globale.
 

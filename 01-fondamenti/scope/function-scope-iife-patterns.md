@@ -54,12 +54,12 @@ config.apiUrl; // Accessibile ed utilizzabile
 
 La scelta di sfruttare le funzioni, ed in particolare espressioni come le IIFE, apporta benefici notevoli dal punto di vista dell'architettura dello stato:
 
-| Caratteristica | Dichiarazione di Funzione | Espressione/IIFE |
-| ---------------------------- | ------------- | ----------- |
-| Nome visibile esternamente   | ✅ Sì         | ❌ No       |
-| Esecuzione automatica        | ❌ No         | ✅ Sì       |
-| Inquinamento scope globale   | ⚠️ Possibile  | ❌ Mai      |
-| Privacy dei dati implementati| ⚠️ Parziale   | ✅ Totale   |
+| Caratteristica                | Dichiarazione di Funzione | Espressione/IIFE |
+| ----------------------------- | ------------------------- | ---------------- |
+| Nome visibile esternamente    | ✅ Sì                     | ❌ No            |
+| Esecuzione automatica         | ❌ No                     | ✅ Sì            |
+| Inquinamento scope globale    | ⚠️ Possibile              | ❌ Mai           |
+| Privacy dei dati implementati | ⚠️ Parziale               | ✅ Totale        |
 
 Le problematiche tipicamente risolte includono l'eliminazione di collisioni accidentali tra nomi identici (shadowing e sovrascritture impreviste) e il rispetto dei principi dell'information hiding.
 

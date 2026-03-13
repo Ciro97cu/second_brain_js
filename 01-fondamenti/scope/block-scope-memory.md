@@ -1,6 +1,6 @@
 # [[../../appunti-completi#blocchi-come-scope-blocks-as-scopes|Block Scope e Memory Management]]
 
-L'uso cosciente dello scope di blocco offre vantaggi cruciali per le performance e la gestione della memoria, specialmente ottimizzando il ciclo vitale del Garbage Collector del motore JavaScript. 
+L'uso cosciente dello scope di blocco offre vantaggi cruciali per le performance e la gestione della memoria, specialmente ottimizzando il ciclo vitale del Garbage Collector del motore JavaScript.
 
 Di seguito la suddivisione degli argomenti affrontati in concetti atomici:
 

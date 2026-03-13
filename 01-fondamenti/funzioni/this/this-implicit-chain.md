@@ -54,4 +54,5 @@ Anche in questo caso, il metodo viene invocato sull'oggetto `bottom`, che divent
 Questo comportamento sottolinea come in JavaScript l'assegnazione del contesto dipenda strettamente da come la funzione viene chiamata nel suo call-site finale, piuttosto che da come gli oggetti sono strutturati in memoria.
 
 ---
+
 **Tags**: `#javascript` `#this` `#implicit-binding` `#object-chain`

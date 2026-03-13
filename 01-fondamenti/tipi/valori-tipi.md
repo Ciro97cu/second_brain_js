@@ -90,15 +90,6 @@ let obj = { x: 1 };
 obj.x = 2; // modifica l'oggetto
 console.log(obj); // { x: 2 }
 
-/* Symbol per proprietà uniche */
-let ID = Symbol("userId");
-let utente = {
-  [ID]: 12345,
-  nome: "Anna",
-};
-console.log(utente[ID]); // 12345
-console.log(utente.nome); // "Anna"
-
 /* Casi pratici */
 // null per assenza esplicita
 let searchResult = null; // nessun risultato
@@ -106,14 +97,6 @@ if (searchResult === null) {
   console.log("Nessun risultato");
 }
 
-// undefined per valori mancanti
-function saluta(nome) {
-  if (nome === undefined) {
-    nome = "Ospite";
-  }
-  return "Ciao " + nome;
-}
-console.log(saluta()); // "Ciao Ospite"
 ```
 
 ## Punti Chiave

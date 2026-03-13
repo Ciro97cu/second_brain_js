@@ -29,12 +29,12 @@ La variabile `i` viene dichiarata nell'intestazione del `for`, con l'intenzione 
 ```javascript
 function foo(bar) {
   if (bar) {
-    var baz = bar * 2; 
+    var baz = bar * 2;
     console.log(baz);
   }
 
   // ⚠️ 'baz' è accessibile qui!
-  console.log(baz); 
+  console.log(baz);
 }
 ```
 

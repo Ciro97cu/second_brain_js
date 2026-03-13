@@ -64,10 +64,6 @@ console.log(5 == "5"); // true (coercizione)
 console.log(true == 1); // true
 console.log(null == undefined); // true (speciale)
 
-// Casi pericolosi con ==
-console.log(false == ""); // true ⚠️
-console.log(false == []); // true ⚠️
-console.log(0 == ""); // true ⚠️
 
 // Uso sicuro di ==
 let input = "42";
@@ -103,16 +99,6 @@ console.log(7 < 2); // false
 console.log("apple" < "banana"); // true
 console.log("10" < "9"); // true (confronto caratteri: "1" < "9")
 
-// Coercizione a numero
-console.log("42" > 10); // true (42 > 10)
-console.log("100" < 50); // false (100 < 50)
-
-// NaN sempre false
-let nan = "test" - 5; // NaN
-console.log(nan > 0); // false
-console.log(nan < 0); // false
-console.log(nan == nan); // false ⚠️
-console.log(isNaN(nan)); // true ✅
 
 // Casi speciali con null
 console.log(null > 0); // false

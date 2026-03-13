@@ -2,7 +2,7 @@
 
 Quando una funzione viene invocata con `new` davanti, viene chiamata **constructor call**. In questo caso, `this` viene impostato a un nuovo oggetto creato appositamente per questa istanziazione. Questo meccanismo rappresenta la quarta regola (o pattern) del binding di `this` in JavaScript.
 
-Gli argomenti legati al *New Binding* sono stati suddivisi in moduli per facilitarne la consultazione:
+Gli argomenti legati al _New Binding_ sono stati suddivisi in moduli per facilitarne la consultazione:
 
 - **[[this-new-algorithm]]**: Dettaglia i quattro passaggi segreti messi in moto dall'operatore `new` (creazione dell'oggetto, linking del prototipo, binding di this e return).
 - **[[this-new-return-values]]**: Illustra le particolarità che subentrano nel restiture un oggetto esplicito piuttosto che un valore primitivo all'interno del costruttore.

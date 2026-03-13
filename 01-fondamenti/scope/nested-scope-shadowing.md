@@ -42,7 +42,7 @@ console.log(nome); // "Globale" (non modificata dalle funzioni chiamate prima)
 
 ## Shadowing con Blocchi
 
-Anche i semplici costrutti di blocco `{}` con l'ausilio di `let` e `const` creano ed estendono l'azione dello shadowing. 
+Anche i semplici costrutti di blocco `{}` con l'ausilio di `let` e `const` creano ed estendono l'azione dello shadowing.
 
 ```javascript
 let x = 100;

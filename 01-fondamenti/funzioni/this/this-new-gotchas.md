@@ -18,6 +18,7 @@ console.log(window.name); // "Mario" (inquinamento indesiderato del global scope
 ```
 
 Le soluzioni comuni comportano:
+
 1. L'utilizzo del costrutto ES6 `class`, che impone categoricamente l'uso di `new`.
 2. Verificare cautelativamente all'interno del costruttore che `this instanceof Constructor` sia vero.
 3. Affidarsi agli strumenti di analisi statica (linter) per segnalare queste casistiche.
@@ -36,7 +37,7 @@ const Foo = () => {
 
 ## L'Operatore `new` Sovrascrive il Bind
 
-Esiste una precisa gerarchia per le regole di binding: l'operatore `new` gode della precedenza massima, riuscendo addirittura a scavalcare l'invocazione di costruttori derivati da un *hard binding*.
+Esiste una precisa gerarchia per le regole di binding: l'operatore `new` gode della precedenza massima, riuscendo addirittura a scavalcare l'invocazione di costruttori derivati da un _hard binding_.
 
 ```javascript
 function Foo(name) {

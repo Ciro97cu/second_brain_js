@@ -17,19 +17,19 @@ var App = {
     },
     valida: function (email) {
       return email.includes("@");
-    }
+    },
   },
 
   // Sub-namespace per l'interfaccia utente
   ui: {
     mostraMessaggio: function (msg) {
       console.log("[UI]", msg);
-    }
+    },
   },
 
   init: function () {
     this.ui.mostraMessaggio("App inizializzata v" + this.version);
-  }
+  },
 };
 
 App.init(); // "[UI] App inizializzata v2.0.1"
@@ -47,7 +47,9 @@ var CalcolatriceAvanzata = (function () {
   var precisione = 2;
 
   function arrotonda(num) {
-    return Math.round(num * Math.pow(10, precisione)) / Math.pow(10, precisione);
+    return (
+      Math.round(num * Math.pow(10, precisione)) / Math.pow(10, precisione)
+    );
   }
 
   // API Pubblica esposta nel namespace
@@ -58,7 +60,7 @@ var CalcolatriceAvanzata = (function () {
     },
     getRisultato: function () {
       return risultato;
-    }
+    },
   };
 })();
 

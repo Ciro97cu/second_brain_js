@@ -13,7 +13,7 @@ Esistono due stili sintattici principali per definire e invocare una IIFE, che r
 // STILE 2: Parentesi di invocazione ALL'INTERNO (meno comune ma valido)
 (function () {
   console.log("Stile 2");
-}());
+})();
 ```
 
 Entrambi gli stili garantiscono l'immediata esecuzione della funzione.

@@ -74,11 +74,11 @@ obj.fn(); // Stampa prima 10, poi 42
 
 ## 📊 Confronto Meccanismi
 
-| Feature | Lexical Scope | this Binding |
-| :--- | :--- | :--- |
-| Determinato | Author-time (scrittura) | Call-time (esecuzione) |
-| Accede a | Variabili locali/esterne | Proprietà di oggetti |
-| Sintassi | Identificatore (`x`) | Membro (`this.x`) |
-| Meccanismo | Closure, scope chain | Call-site, regole binding |
-| Modificabile | No (fisso) | Sì (call/apply/bind) |
-| Ponte tra i due | **NON ESISTE** | **NON ESISTE** |
+| Feature         | Lexical Scope            | this Binding              |
+| :-------------- | :----------------------- | :------------------------ |
+| Determinato     | Author-time (scrittura)  | Call-time (esecuzione)    |
+| Accede a        | Variabili locali/esterne | Proprietà di oggetti      |
+| Sintassi        | Identificatore (`x`)     | Membro (`this.x`)         |
+| Meccanismo      | Closure, scope chain     | Call-site, regole binding |
+| Modificabile    | No (fisso)               | Sì (call/apply/bind)      |
+| Ponte tra i due | **NON ESISTE**           | **NON ESISTE**            |

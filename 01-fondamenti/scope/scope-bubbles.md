@@ -11,6 +11,7 @@ Le bolle di scope impongono precisi meccanismi legati ad accessi, validazione e 
 - [[scope-bubbles-best-practices]] - Misure da adottare e pratiche utili o meno per bilanciare i pesi durante i progetti legati alla profondità e modularizzazione con astrazioni.
 
 ## 🔗 Collegamenti
+
 - [[scope-lookup]]
 - [[lexical-scope-base]]
 - [[nested-scope]]

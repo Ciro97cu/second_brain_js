@@ -44,7 +44,7 @@ publicMethod(); // ✅ OK
 
 ## Strumenti per la Prevenzione Collisioni
 
-Visto che i moduli lavorano con la visibilità nello scope locale in cui vengono importati, è facile trovarsi a gestire librerie differenti che offrono elementi con nomi identici. 
+Visto che i moduli lavorano con la visibilità nello scope locale in cui vengono importati, è facile trovarsi a gestire librerie differenti che offrono elementi con nomi identici.
 
 E' possibile evitare questi problemi ricorrendo ad alias per separare le referenze.
 

@@ -24,7 +24,7 @@ console.log(x); // ❌ ReferenceError: non può scendere negli scope interni
 
 ### Aspettarsi l'accesso a variabili "fratello"
 
-Gli scope che si trovano allo stesso livello nidificato (ovvero che non sono reciprocamente annidati l'uno nell'altro) agiscono come moduli isolati e non riescono in nessun modo a condividere le loro variabili locali e di conseguenza causano un errore durante l'esecuzione del codice. 
+Gli scope che si trovano allo stesso livello nidificato (ovvero che non sono reciprocamente annidati l'uno nell'altro) agiscono come moduli isolati e non riescono in nessun modo a condividere le loro variabili locali e di conseguenza causano un errore durante l'esecuzione del codice.
 
 ```javascript
 function funzioneA() {

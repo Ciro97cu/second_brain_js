@@ -11,7 +11,9 @@ var obj1 = { value: 1 };
 var obj2 = { value: 2 };
 
 var arrow = () => console.log(this.value);
-var regular = function () { console.log(this.value); };
+var regular = function () {
+  console.log(this.value);
+};
 
 regular.call(obj1); // 1
 regular.call(obj2); // 2
@@ -37,8 +39,9 @@ var objErrato = {
 // Implementazione corretta
 var objCorretto = {
   value: 42,
-  getValue() { // equivalente del classico function()
-    return this.value; 
+  getValue() {
+    // equivalente del classico function()
+    return this.value;
   },
 };
 ```

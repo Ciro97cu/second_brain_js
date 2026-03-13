@@ -17,7 +17,7 @@ console.log(nomeDichiarazione.name); // Accessibile e visibile esternamente
 
 ### Nelle Espressioni
 
-Nelle espressioni di funzione (in particolare nelle *named function expressions*, ovvero le espressioni denominate), il nome della funzione risulta inaccessibile dall'esterno. Tale identificatore viene limitato al solo scope interno della funzione stessa.
+Nelle espressioni di funzione (in particolare nelle _named function expressions_, ovvero le espressioni denominate), il nome della funzione risulta inaccessibile dall'esterno. Tale identificatore viene limitato al solo scope interno della funzione stessa.
 
 ```javascript
 var varEsterna = function nomeEspressione() {

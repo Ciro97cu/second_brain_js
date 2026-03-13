@@ -7,6 +7,7 @@ Gli scope annidati creano una **catena di ricerca** (scope chain) dove l'Engine 
 Lo scope non è mai isolato: funzioni e blocchi creano scope **annidati** l'uno dentro l'altro. La **scope chain** è il meccanismo che permette al codice di cercare variabili risalendo attraverso scope annidati. La ricerca delle variabili segue una direzione precisa: **dal locale verso il globale**.
 
 Quando l'Engine cerca una variabile:
+
 1. **Parte dallo scope corrente**
 2. **Non trova?** Sale allo scope esterno
 3. **Continua a risalire** finché trova la variabile

@@ -74,8 +74,10 @@ Inoltre, permette di prendere in prestito metodi degli array per oggetti "array-
 function sum() {
   return Array.prototype.reduce.call(
     arguments,
-    function (a, b) { return a + b; },
-    0
+    function (a, b) {
+      return a + b;
+    },
+    0,
   );
 }
 
@@ -84,10 +86,12 @@ console.log(sum(1, 2, 3, 4)); // 10
 
 ## ⚠️ Gotcha: null e undefined
 
-Se si passa `null` o `undefined` come primo argomento (il `thisArg`) in *non-strict mode*, JavaScript li sostituisce con l'oggetto globale (es. `window` nel browser). In *strict mode*, `this` rimane null o undefined. È considerata una best practice passare un oggetto vuoto indipendente (`Object.create(null)`) piuttosto che `null` per evitare modifiche involontarie all'oggetto globale.
+Se si passa `null` o `undefined` come primo argomento (il `thisArg`) in _non-strict mode_, JavaScript li sostituisce con l'oggetto globale (es. `window` nel browser). In _strict mode_, `this` rimane null o undefined. È considerata una best practice passare un oggetto vuoto indipendente (`Object.create(null)`) piuttosto che `null` per evitare modifiche involontarie all'oggetto globale.
 
 ```javascript
-function foo() { console.log(this); }
+function foo() {
+  console.log(this);
+}
 foo.call(null); // Oggetto globale (non-strict)
 ```
 

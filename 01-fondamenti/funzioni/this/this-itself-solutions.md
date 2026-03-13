@@ -90,16 +90,16 @@ for (var i = 0; i < 10; i++) {
 console.log(foo.count); // 4 - Esecuzione corretta e coerente col motore
 ```
 
-**La spiegazione**: Utilizzando il metodo `.call()`, non si elude la valutazione dinamica. Al contrario, si applica una tecnica definita *explicit binding* controllando esattamente a cosa l'identificatore `this` debba riferirsi.
+**La spiegazione**: Utilizzando il metodo `.call()`, non si elude la valutazione dinamica. Al contrario, si applica una tecnica definita _explicit binding_ controllando esattamente a cosa l'identificatore `this` debba riferirsi.
 
 ## 📊 Confronto Analitico degli Approcci
 
-| Approccio | Risultato Operativo | Utilizzo di this | Valutazione Tecnica |
-| --- | --- | --- | --- |
-| `this.count++` in chiamata diretta | ❌ Fallisce | Sì (involontario) | Si poggia sul Default Binding (globale/undefined) |
-| Oggetto esterno `data.count++` | ✅ Completa | No | Elusione tramite Lexical Scope |
-| Nome funzione `foo.count++` | ✅ Completa | No | Elusione tramite Lexical Scope |
-| Explicit binding tramite `foo.call(foo, i)` | ✅ Completa | Sì (volontario) | Abbraccia l'Explicit Binding gestito |
+| Approccio                                   | Risultato Operativo | Utilizzo di this  | Valutazione Tecnica                               |
+| ------------------------------------------- | ------------------- | ----------------- | ------------------------------------------------- |
+| `this.count++` in chiamata diretta          | ❌ Fallisce         | Sì (involontario) | Si poggia sul Default Binding (globale/undefined) |
+| Oggetto esterno `data.count++`              | ✅ Completa         | No                | Elusione tramite Lexical Scope                    |
+| Nome funzione `foo.count++`                 | ✅ Completa         | No                | Elusione tramite Lexical Scope                    |
+| Explicit binding tramite `foo.call(foo, i)` | ✅ Completa         | Sì (volontario)   | Abbraccia l'Explicit Binding gestito              |
 
 ---
 

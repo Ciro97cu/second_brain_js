@@ -5,11 +5,13 @@ L'introduzione delle arrow functions impone una scelta architetturale tra il bin
 ## Linee Guida di Utilizzo
 
 **Uso raccomandato delle Arrow Functions:**
+
 1. **Callback e limitazione di scope**: Quando è necessario mantenere il `this` del contesto esterno.
 2. **Event handler in classi**: Per preservare l'istanza della classe senza dover ricorrere forzatamente a `bind()`.
 3. **Metodi degli array**: Per operazioni concise asincrone (`map`, `filter`, `reduce`).
 
 **Uso NON raccomandato (da evitare):**
+
 - Definizione di metodi di oggetti letterali (prediligere il method shorthand).
 - Funzioni costruttore con operatore `new`.
 - Necessità di gestire un binding dinamico basato sul call-site.
@@ -27,12 +29,16 @@ Il pattern storico per mantenere il contesto (`var self = this`) viene nativamen
 // Pre-ES6 Pattern Lexical (Self)
 function Timer() {
   var self = this;
-  setInterval(function () { self.seconds++; }, 1000);
+  setInterval(function () {
+    self.seconds++;
+  }, 1000);
 }
 
 // ES6 Pattern Lexical (Arrow)
 function Timer() {
-  setInterval(() => { this.seconds++; }, 1000);
+  setInterval(() => {
+    this.seconds++;
+  }, 1000);
 }
 ```
 
@@ -46,11 +52,11 @@ Evitare del tutto le regole e il caos di `this` limitandosi all'affidamento all'
 ```javascript
 // La funzione non si espone e non impiega nessun this e si fonda sul Lexical Scope
 function ControllerClosure(id) {
-  var myId = id; 
+  var myId = id;
   return {
     init() {
       document.addEventListener("click", () => handleClick());
-    }
+    },
   };
   function handleClick() {
     console.log("Variabile Locale: " + myId);
@@ -64,12 +70,12 @@ Utilizzare coerentemente l'orientamento agli oggetti e favorire il dinamismo:
 ```javascript
 class ControllerOriented {
   id = 42;
-  
+
   // Arrow function definita come field cattura 'this' istanziato
   handleClick = (evt) => {
     console.log("Valore: " + this.id);
   };
-  
+
   init() {
     document.addEventListener("click", this.handleClick); // non ha bisogno di context bind() !
   }

@@ -91,17 +91,6 @@ console.log(val); // 8
 let sum = (a = b = 10); // assegnamenti (destra → sinistra)
 console.log(sum, a, b); // 10, 10, 10
 
-// Best practice: parentesi per chiarezza
-let prezzo = 100;
-let tasse = 20;
-let sconto = 0.1;
-
-// ❌ Difficile da leggere
-let totale1 = prezzo + tasse * 1 - sconto;
-
-// ✅ Chiaro con parentesi
-let totale2 = (prezzo + tasse) * (1 - sconto);
-
 // Ternario ha bassa precedenza
 let age = 20;
 let tipo = age >= 18 ? "adulto" : "minore";

@@ -41,8 +41,8 @@ console.log(foo.count); // 0 -- Il contatore non è stato incrementato
 ### Spiegazione del Fallimento
 
 1. L'istruzione `foo.count = 0` crea effettivamente una proprietà `count` sull'oggetto funzione `foo`.
-2. Quando avviene l'esecuzione tramite `foo(i)` (una chiamata di tipo diretto o *standalone*), l'associazione di `this` all'interno della funzione non punta a `foo`, ma viene applicato il *default binding*.
-3. Di conseguenza, `this` fa riferimento all'oggetto globale (oppure risulterà `undefined` se si opera in *strict mode*).
+2. Quando avviene l'esecuzione tramite `foo(i)` (una chiamata di tipo diretto o _standalone_), l'associazione di `this` all'interno della funzione non punta a `foo`, ma viene applicato il _default binding_.
+3. Di conseguenza, `this` fa riferimento all'oggetto globale (oppure risulterà `undefined` se si opera in _strict mode_).
 4. L'operazione `this.count++` va così a creare accidentalmente una variabile globale `count` con valore `NaN` (poiché eseguire l'incremento `undefined++` genera `NaN`).
 5. La proprietà originale `foo.count` associata alla funzione rimane intoccata al suo valore iniziale di 0.
 
@@ -54,7 +54,7 @@ Le ragioni per cui questo malinteso è così radicato includono diversi fattori:
 2. **Struttura di JavaScript**: Le funzioni in JavaScript sono a tutti gli effetti oggetti con la capacità di ospitare proprie proprietà.
 3. **Apparente comodità**: La capacità di memorizzare uno stato all'interno della funzione stessa appare come un design pattern vantaggioso.
 
-La verità strutturale è che `this` viene progettato e impiegato per il **binding dinamico a oggetti esterni** sulla base del contesto di invocazione (*call-site*), e non per generare un'auto-referenza statica all'interno del corpo della funzione.
+La verità strutturale è che `this` viene progettato e impiegato per il **binding dinamico a oggetti esterni** sulla base del contesto di invocazione (_call-site_), e non per generare un'auto-referenza statica all'interno del corpo della funzione.
 
 ---
 

@@ -4,13 +4,14 @@ L'approccio basato su namespace permette di raggruppare le funzionalità sotto u
 
 ## Concetti e Pattern
 
-* **[[namespace-pattern|Namespace Pattern]]**: Come evitare l'inquinamento dello scope globale utilizzando un oggetto contenitore per le librerie, con esempi e vantaggi.
-* **[[namespace-advanced-patterns|Namespace Pattern Avanzati]]**: Estendere i namespace con sub-namespaces per l'organizzazione e l'integrazione con il Module Pattern (tramite IIFE) per l'incapsulamento dei dettagli implementativi.
+- **[[namespace-pattern|Namespace Pattern]]**: Come evitare l'inquinamento dello scope globale utilizzando un oggetto contenitore per le librerie, con esempi e vantaggi.
+- **[[namespace-advanced-patterns|Namespace Pattern Avanzati]]**: Estendere i namespace con sub-namespaces per l'organizzazione e l'integrazione con il Module Pattern (tramite IIFE) per l'incapsulamento dei dettagli implementativi.
 
 ## Risorse
 
-* Module Pattern (JavaScript Design Patterns)
-* "You Don't Know JS" - Scope & Closures
+- Module Pattern (JavaScript Design Patterns)
+- "You Don't Know JS" - Scope & Closures
 
 ## Tag
+
 #javascript #scope #namespace #design-patterns #global-scope #module-pattern #libraries

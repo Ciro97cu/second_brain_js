@@ -65,4 +65,5 @@ Rappresenta un antiparttern mescolare porzioni di codice strict e non-strict nel
 Va operata un'eccezione a titolo prudenziale quando l'esecuzione coinvolge librerie fornite da parti terze: codeste ultime potrebbero adottare di default un differente livello di restrittività. È opportuno riporre massima cautela circa i dettagli intrinseci alla compatibilità inter-modulare e alla potenziale contaminazione dello scope.
 
 ---
+
 **Tags**: `#javascript` `#this` `#default-binding` `#strict-mode`

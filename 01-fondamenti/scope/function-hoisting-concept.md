@@ -42,7 +42,7 @@ function outer() {
   }
 }
 
-outer(); 
+outer();
 ```
 
 ## Function Expressions (Solo Variabile Hoisted)

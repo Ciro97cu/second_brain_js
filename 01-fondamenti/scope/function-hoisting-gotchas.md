@@ -4,12 +4,12 @@
 
 Ai fini di facilitazione di studio, segue un riepilogo sistematico e comparato fra i diversi paradigmi assunti dalla registrazione identificativa e sul loro impatto formale in materia di preannuncio al vertice isolante e l'avanzamento funzionale dell'hoisting interno:
 
-| Formulazione Sintattica             | Variabile Hoisted in Cima  | Corpo Innalzato | Accessibilità Iniziale  |
-| ----------------------------------- | -------------------------- | --------------- | ----------------------- |
-| **Dichiarazioni (Declaration)**     | Segnale Affermativo        | Avallato        | Segnale Affermativo     |
-| **Espressioni var**                 | Confermato (`undefined`)   | Escluso         | Negato (`TypeError`)    |
-| **Espressioni let/const**           | Rigettato (Zona TDZ)       | Escluso         | Negato (`ReferenceError`)|
-| **Format Arrow (Funzioni Freccia)** | Equivalente alla stringa   | Escluso         | Negato per costrutto    |
+| Formulazione Sintattica             | Variabile Hoisted in Cima | Corpo Innalzato | Accessibilità Iniziale    |
+| ----------------------------------- | ------------------------- | --------------- | ------------------------- |
+| **Dichiarazioni (Declaration)**     | Segnale Affermativo       | Avallato        | Segnale Affermativo       |
+| **Espressioni var**                 | Confermato (`undefined`)  | Escluso         | Negato (`TypeError`)      |
+| **Espressioni let/const**           | Rigettato (Zona TDZ)      | Escluso         | Negato (`ReferenceError`) |
+| **Format Arrow (Funzioni Freccia)** | Equivalente alla stringa  | Escluso         | Negato per costrutto      |
 
 ## La Fallacia degli Eccezioni Categoriali (TypeError e ReferenceError)
 

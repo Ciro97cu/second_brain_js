@@ -56,6 +56,7 @@ function esterna() {
 ```
 
 ## 🔗 Collegamenti
+
 - [[scope-bubbles]]
 - [[nested-scope]]
 - [[scope-lookup]]

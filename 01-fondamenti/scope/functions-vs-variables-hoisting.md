@@ -56,7 +56,7 @@ function foo() {
 
 // Analisi post-compilativa riepilogativa:
 function foo() {
-  console.log("3");  // Questo stadio finale azzera storicamente il richiamo preambolare su console "1"
+  console.log("3"); // Questo stadio finale azzera storicamente il richiamo preambolare su console "1"
 }
 ```
 

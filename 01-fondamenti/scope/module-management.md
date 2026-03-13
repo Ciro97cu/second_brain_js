@@ -10,10 +10,8 @@ L'argomento della gestione dei moduli è suddiviso nei seguenti approfondimenti 
 
 1. **[[module-management-concept|Concetto e Scope Privati]]**
    Spiega il concetto di base dei moduli, l'incapsulamento automatico tramite scope privati e i principali standard utilizzati (CommonJS ed ES6 Modules).
-   
 2. **[[scope-module-patterns|Pattern e Vantaggi dei Moduli]]**
    Confronta l'approccio moderno dei moduli con il pattern classico dei Namespace, mostra come prevenire collisioni tra librerie tramite alias, ed elenca i vantaggi architetturali (ad es. Tree Shaking, Code Splitting).
-   
 3. **[[scope-module-managers|Dependency Managers e Regole di Base]]**
    Illustra come i gestori di dipendenze (come npm) operano in sinergia con il sistema a moduli. Viene inoltre chiarito il funzionamento dei moduli in relazione alle regole dello scope lessicale (ovvero che ogni file agisce come una funzione con scope chiuso).
 

@@ -6,7 +6,7 @@ L'utilizzo di costrutti che modificano lo scope lessicale a runtime (come `eval(
 
 ## 📉 Motivi della Degradazione
 
-Gli engine JavaScript moderni (come V8) eseguono un'analisi statica del codice per determinare in anticipo dove risiedono le variabili e le funzioni, velocizzando la fase di esecuzione. 
+Gli engine JavaScript moderni (come V8) eseguono un'analisi statica del codice per determinare in anticipo dove risiedono le variabili e le funzioni, velocizzando la fase di esecuzione.
 
 Tuttavia, con l'uso di codice dinamico:
 
@@ -24,6 +24,7 @@ function bar(code) {
 ```
 
 In presenza di questi costrutti, l'engine deve assumere che lo scope possa essere stato invalidato, e pertanto:
+
 - È costretto a disabilitare la ricerca statica (scope lookup statico), risolvendo le variabili esclusivamente a runtime.
 - Non è in grado di utilizzare l'inline caching.
 - È impedita l'applicazione della minification aggressiva (le variabili non possono essere ridenominate in modo sicuro se possono essere riferite dinamicamente).

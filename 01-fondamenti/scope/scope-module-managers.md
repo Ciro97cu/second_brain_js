@@ -18,11 +18,11 @@ Dalle dipendenze locali, ogni parte del modulo diventa facilmente accessibile:
 
 ```javascript
 // app.js
-import _ from 'lodash';
-import axios from 'axios';
+import _ from "lodash";
+import axios from "axios";
 
 // Librerie in scope locale, NO globali!
-const raddoppiati = _.map([1, 2, 3], n => n * 2);
+const raddoppiati = _.map([1, 2, 3], (n) => n * 2);
 ```
 
 ## Struttura dell'Applicazione Modulare

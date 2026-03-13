@@ -1,6 +1,6 @@
 # [[../../appunti-completi#funzioni-anonime-vs-funzioni-nominate|Funzioni Anonime vs Nominate]]
 
-Le **espressioni di funzione** in JavaScript possono essere dichiarate senza un identificatore (**anonime**) o fornite di un nome esplicito (**nominate**). 
+Le **espressioni di funzione** in JavaScript possono essere dichiarate senza un identificatore (**anonime**) o fornite di un nome esplicito (**nominate**).
 
 Sebbene la sintassi anonima sia diffusa per la sua concisione, l'approccio raccomandato consiste nel nominare sistematicamente le espressioni per facilitare il debugging, l'auto-riferimento e la leggibilità.
 

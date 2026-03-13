@@ -10,11 +10,15 @@ La definizione di variabili e funzioni direttamente nello scope globale può por
 
 ```javascript
 // Libreria 1
-function helper() { /* ... */ }
+function helper() {
+  /* ... */
+}
 var version = "1.0";
 
 // Libreria 2 (Sovrascrive gli identificatori precedenti)
-function helper() { /* ... */ } 
+function helper() {
+  /* ... */
+}
 var version = "2.0";
 ```
 
@@ -28,7 +32,7 @@ var MyLibrary = {
   version: "1.0",
   helper: function () {
     console.log("Helper di MyLibrary");
-  }
+  },
 };
 
 // Definizione del namespace per la seconda libreria
@@ -36,7 +40,7 @@ var AnotherLibrary = {
   version: "2.0",
   helper: function () {
     console.log("Helper di AnotherLibrary");
-  }
+  },
 };
 
 // Nessun conflitto
@@ -50,7 +54,9 @@ Molte librerie JavaScript popolari utilizzano il pattern del namespace per espor
 
 ```javascript
 // jQuery espone le funzionalità sull'oggetto 'jQuery' o '$'
-jQuery.ajax({ /* ... */ });
+jQuery.ajax({
+  /* ... */
+});
 
 // Lodash utilizza l'oggetto '_'
 _.map(array, fn);

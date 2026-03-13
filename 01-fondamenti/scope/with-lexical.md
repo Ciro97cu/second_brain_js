@@ -42,7 +42,7 @@ console.log(o1.a); // 2 - proprietà modificata correttamente
 
 foo(o2);
 console.log(o2.a); // undefined - o2 non possiede la proprietà 'a'
-console.log(a);    // 2 - ⚠️ CREAZIONE DI VARIABILE GLOBALE ACCIDENTALE!
+console.log(a); // 2 - ⚠️ CREAZIONE DI VARIABILE GLOBALE ACCIDENTALE!
 ```
 
 Se la proprietà richiesta (es. `a`) non viene trovata nell'oggetto, la risoluzione (scope lookup) sale nello scope lessicale esterno. Nel caso di una riassegnazione, se non viene trovata in nessuno degli scope superiori, viene generata una variabile globale (in non-strict mode) invece di aggiungerla all'oggetto o sollevare un errore.

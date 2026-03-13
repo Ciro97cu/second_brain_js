@@ -7,6 +7,7 @@ L'**explicit binding** permette di indicare esplicitamente quale oggetto deve es
 In JavaScript, tutte le funzioni hanno accesso ai metodi `call()` e `apply()`, ereditati tramite `[[Prototype]]`.
 
 Entrambi i metodi:
+
 - Accettano come **primo parametro** l'oggetto da usare come `this`.
 - Invocano immediatamente la funzione con il contesto specificato.
 

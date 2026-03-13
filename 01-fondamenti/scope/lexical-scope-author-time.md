@@ -1,6 +1,6 @@
 # [[../../appunti-completi#scope-lessicale-lexical-scope|Lexical Scope: Author-Time vs Run-Time]]
 
-Il concetto di **lexical scope** (scope lessicale o statico) si basa sul fatto che l'accesso alle variabili è determinato **dove il codice è stato scritto** e non da dove esso viene eseguito. 
+Il concetto di **lexical scope** (scope lessicale o statico) si basa sul fatto che l'accesso alle variabili è determinato **dove il codice è stato scritto** e non da dove esso viene eseguito.
 
 Tale struttura dell'ambiente lessicale è finalizzata durante la fase di **lexing** (ovvero la prima parte della compilazione o parsing) che produce l'AST (Abstract Syntax Tree), rimanendo quindi **fissa** e invariabile a runtime.
 
@@ -23,7 +23,7 @@ function mostraMessaggio() {
 
 function test() {
   let messaggio = "Locale";
-  
+
   // Nonostante venga chiamata all'interno di test,
   // la funzione mostraMessaggio non accede a questo scope 'locale',
   // ma continua a cercare nell'ambiente in cui è stata DEFINITA.
@@ -45,10 +45,10 @@ L'accesso a variabili definite in un determinato scope continuerà a funzionare 
 // La definizione del lexical scope consente le closures
 function creaMoltiplicatore(fattore) {
   // 'fattore' è limitato al lexical scope di creaMoltiplicatore
-  
+
   return function (numero) {
     // La funzione ritornata conserva l'accesso lessicale a 'fattore'
-    return numero * fattore; 
+    return numero * fattore;
   };
 }
 

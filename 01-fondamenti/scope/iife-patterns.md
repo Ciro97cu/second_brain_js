@@ -13,6 +13,7 @@ L'argomento è stato suddiviso nei seguenti concetti atomici per facilitarne la 
 - [[iife-umd-pattern|Pattern UMD]]: Approfondimento del pattern storicone Universal Module Definition per la creazione nativa di codice multi-ambiente o cross-environment (Supporto Browser, Node.js e AMD Loaders contemporaneamente).
 
 ## 📉 Stato Attuale
+
 Sebbene molte utilità centrali siano state deprecate dall'avvento degli ES6 Modules o dai Bundler che risolvono ogni forma localmente, le IIFE risultano la colonna portante di tonnellate infinite di codice legacy e script liberi tuttora mantenuti in esecuzioni libere sul Browser.
 
 ## 🔗 Concetti Correlati
@@ -24,6 +25,7 @@ Sebbene molte utilità centrali siano state deprecate dall'avvento degli ES6 Mod
 - [[../../appunti-completi#variazioni-del-pattern-iife|Pattern IIFE Completo Riferimento]]
 
 ## 📚 Risorse
+
 - "You Don't Know JS" - Volume dedicato interamente a Scope & Closures
 - Documentazione base per JavaScript Design Patterns applicabili
 - UMD Pattern (Universal Module Definition) implementazioni classiche

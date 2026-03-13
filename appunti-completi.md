@@ -1856,6 +1856,149 @@ let copiaProfonda = JSON.parse(JSON.stringify(utente));
 // Oppure librerie come lodash (_.cloneDeep)
 ```
 
+#### Esistenza delle Proprietà
+
+Si è osservato che accedere a una proprietà (es. `oggetto.a`) può restituire `undefined` sia se la proprietà contiene esplicitamente quel valore, sia se non esiste all'interno dell'oggetto. Per distinguere questi due scenari, è necessario chiedere all'oggetto se possiede una determinata proprietà senza tentare di leggerne il valore.
+
+Esistono due approcci principali per farlo:
+
+```javascript
+let mioOggetto = {
+  a: 2,
+};
+
+// Operatore in
+console.log("a" in mioOggetto); // true
+console.log("b" in mioOggetto); // false
+
+// Metodo hasOwnProperty
+console.log(mioOggetto.hasOwnProperty("a")); // true
+console.log(mioOggetto.hasOwnProperty("b")); // false
+```
+
+- **L'operatore `in`** → Verifica se la proprietà esiste nell'oggetto stesso oppure se è presente in un qualsiasi livello della catena del `[[Prototype]]`.
+- **Il metodo `hasOwnProperty()`** → Controlla esclusivamente se l'oggetto locale possiede la proprietà, senza esaminare la catena del `[[Prototype]]`.
+
+> **Nota**: Il metodo `hasOwnProperty()` è solitamente accessibile su tutti gli oggetti normali grazie alla delega a `Object.prototype`. Tuttavia, è possibile creare oggetti privati di collegamento al prototipo (usando `Object.create(null)`). In questo caso, chiamare `oggetto.hasOwnProperty()` genererà un errore. Per arginare il problema in modo robusto, si può prendere in prestito il metodo e forzare il binding: `Object.prototype.hasOwnProperty.call(oggetto, "prop")`.
+
+Attenzione all'uso dell'operatore `in` con gli array: esso controlla l'esistenza del **nome della proprietà**, non del valore contenuto. L'istruzione `4 in [2, 4, 6]` non cercherà il valore 4 all'interno dell'array, ma cercherà se esiste un elemento all'indice "4" (restituendo `false` poiché gli indici validi in quel caso sono solo 0, 1 e 2).
+
+#### Enumerabilità
+
+Una caratteristica fondamentale delle proprietà è la loro enumerabilità. Se si definisce una proprietà con il descrittore `enumerable: false`, essa continuerà a esistere regolarmente ma verrà deliberatamente "nascosta" durante determinate iterazioni sulle proprietà dell'oggetto.
+
+```javascript
+let mioOggetto = {};
+
+// Proprietà enumerabile (comportamento standard)
+Object.defineProperty(mioOggetto, "a", {
+  enumerable: true,
+  value: 2,
+});
+
+// Proprietà NON enumerabile
+Object.defineProperty(mioOggetto, "b", {
+  enumerable: false,
+  value: 3,
+});
+
+console.log(mioOggetto.b); // 3 (la proprietà esiste ed è accessibile)
+console.log("b" in mioOggetto); // true
+console.log(mioOggetto.hasOwnProperty("b")); // true
+
+for (let k in mioOggetto) {
+  console.log(k, mioOggetto[k]);
+}
+// Il ciclo for..in stamperà solo `a` e 2, nascondendo completamente `b`
+```
+
+In sintesi, "enumerabile" significa che una proprietà verrà regolarmente inclusa quando si esegue un'iterazione sulle proprietà visibili di un oggetto.
+
+> **Attenzione ai cicli e agli array**: È sconsigliato utilizzare i cicli `for..in` sugli array. La loro enumerazione andrebbe a includere non soltanto gli indici numerici classici, ma anche eventuali proprietà enumerabili custom aggiunte casualmente all'array, producendo comportamenti inattesi. Sugli array risulta preferibile utilizzare sempre i classici cicli numerici o i più moderni iterator (`for..of`).
+
+Esistono altre funzionalità apposite per manipolare e distinguere l'enumerabilità di una proprietà o estrarla:
+
+```javascript
+// Verifica se è una proprietà diretta dell'oggetto ed è `enumerable: true`
+mioOggetto.propertyIsEnumerable("a"); // true
+mioOggetto.propertyIsEnumerable("b"); // false
+
+// Restituisce un array con SOLO le chiavi enumerabili dirette dell'oggetto
+Object.keys(mioOggetto); // ["a"]
+
+// Restituisce un array con TUTTE le chiavi dirette dell'oggetto (sia enumerabili, sia non)
+Object.getOwnPropertyNames(mioOggetto); // ["a", "b"]
+```
+
+Si noti che, mentre l'operatore `in` si preoccupa di risalire e consultare l'intera catena del `[[Prototype]]`, `Object.keys()` e `Object.getOwnPropertyNames()` si limitano a ispezionare esclusivamente l'oggetto diretto passato come parametro.
+
+#### Iterare sui Valori: Cicli e `for..of`
+
+Mentre il ciclo `for..in` itera sulle chiavi o _proprietà_ enumerabili di un oggetto, risulta spesso necessario scorrere direttamente i **valori** contenuti in esso, specialmente lavorando con gli array. Negli array indicizzati numericamente, questa iterazione sui valori si è storicamente svolta combinando un classico ciclo numerico `for` e accedendo poi tramite l'indice.
+
+Successivamente, il linguaggio ha introdotto metodi helper nativi (`forEach`, `every`, `some`) che accettano callback iterando in vario modo, ma restano astrazioni sul concetto del ciclo originario.
+
+Per scorrere comodamente sui **valori** puri degli array (senza referenziare gli indici o le chiavi), l'ultima introduzione sintattica è il ciclo **`for..of`**.
+
+```javascript
+let mioArray = [1, 2, 3];
+
+// Iterazione pulita sui VALORI invece che sugli INDICI (chiavi numeriche)
+for (let v of mioArray) {
+  console.log(v);
+}
+// 1
+// 2
+// 3
+```
+
+Il costrutto `for..of` necessita che l'elemento da ciclare abbia una funzione interna chiamata `@@iterator`. Agli Array viene assegnato nativamente e di default dal linguaggio. Il ciclo richiama silenziosamente questo speciale oggetto iteratore che possiede a sua volta un metodo `.next()` il quale, ad ogni "giro", restituisce iterativamente un oggetto nel formato: `{ value: [valoreCorrente], done: [boolean] }` fino a quando `done: true`.
+
+#### Iteratori Custom per Oggetti Normali
+
+Gli oggetti regolari JavaScript **non dispongono di un `@@iterator` nativo** di default: non è quindi possibile usare direttamente un `for..of` su un comune `{ a: 1, b: 2 }`.
+
+Tuttavia, è assolutamente possibile definire i propri iteratori personalizzati sugli oggetti sovrascrivendo la proprietà speciale tramite un ES6 Symbol (`Symbol.iterator`).
+
+```javascript
+let mioOggetto = {
+  a: 2,
+  b: 3,
+};
+
+// Implementare a mano il default @@iterator sull'oggetto tramite Object.defineProperty
+Object.defineProperty(mioOggetto, Symbol.iterator, {
+  enumerable: false,
+  writable: false,
+  configurable: true,
+  value: function () {
+    let o = this;
+    let idx = 0;
+    let ks = Object.keys(o);
+
+    return {
+      next: function () {
+        return {
+          value: o[ks[idx++]],
+          done: idx > ks.length,
+        };
+      },
+    };
+  },
+});
+
+// Grazie a questa definizione, ora il semplice "oggetto" può essere scorso con for..of!
+for (let v of mioOggetto) {
+  console.log(v);
+}
+// 2
+// 3
+```
+
+Questa flessibilità permette di creare iteratori custom innumerevoli o complessi, come algoritmi che calcolano costantemente il prossimo nodo logico o generatori "infiniti" di numeri casuali intercettabili poi con l'uso dei comandi `break` o interruzioni logiche dirette dei cicli for.
+
+> **Nota sull'ordine**: Quando si scorrono gli elementi di un array, l'ordinamento è perfettamente numerico e garantito dal linguaggio. Contrariamente, quando si ispezionano o si tenta di iterare le proprietà enumerabili di un generico oggetto (come nell'iteratore custom dell'esempio), l'**ordine di iterazione delle chiavi/proprietà generiche di un oggetto non è formalmente garantito** con coerenza assoluta tra i vari engine JS mondiali (risulta impreciso contarci ad occhi chiusi).
+
 #### Sottotipi di Oggetto: Array e Funzioni
 
 In JavaScript, anche gli array e le funzioni sono, a un livello più profondo, dei tipi speciali di oggetti. Hanno funzionalità aggiuntive (come l'accesso agli elementi tramite indice per gli array o la possibilità di essere invocate per le funzioni), ma ereditano le caratteristiche di base degli oggetti.

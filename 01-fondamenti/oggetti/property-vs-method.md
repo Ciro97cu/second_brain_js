@@ -1,4 +1,4 @@
-# Proprietà vs Metodi (Property Versus Method)
+# [[../../../appunti-completi#proprietà-vs-metodi-property-versus-method|Proprietà vs Metodi (Property Versus Method)]]
 
 In molti linguaggi di programmazione Object-Oriented (come Java o C++), una funzione legata strettamente a un oggetto o a una classe gode di uno status semantico speciale ed è chiamata un **"metodo"**.
 

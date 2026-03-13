@@ -172,7 +172,7 @@ function foo() {
 
 var a = "global";
 
-foo(); // undefined (non puoi accedere a this.a)
+foo(); // undefined (non è possibile accedere a this.a)
 
 // Errore se provi ad accedere a proprietà
 function bar() {

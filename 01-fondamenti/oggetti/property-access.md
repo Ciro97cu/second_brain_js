@@ -1,4 +1,4 @@
-# Accesso alle Proprietà (Property Access)
+# [[../../../appunti-completi#accesso-alle-proprietà-degli-oggetti|Accesso alle Proprietà (Property Access)]]
 
 JavaScript offre due sintassi per accedere alle proprietà degli oggetti: **dot notation** (`.`) e **bracket notation** (`[]`). La scelta tra le due dipende dalla natura del nome della proprietà e dal contesto di utilizzo.
 

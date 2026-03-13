@@ -372,11 +372,11 @@ switch (comandoUtente) {
 ```javascript
 // ✅ Buon caso per if...else
 if (eta >= 18 && haPatente) {
-  console.log("Puoi guidare");
+  console.log("È possibile guidare");
 } else if (eta >= 16) {
-  console.log("Puoi guidare con supervisione");
+  console.log("È possibile guidare con supervisione");
 } else {
-  console.log("Non puoi guidare");
+  console.log("Non È possibile guidare");
 }
 
 // ❌ Cattivo uso di switch (impossibile!)

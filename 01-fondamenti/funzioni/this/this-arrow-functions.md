@@ -5,7 +5,7 @@ Le arrow functions (ES6+) hanno un comportamento completamente diverso rispetto 
 ## 🎯 Concetti Chiave
 
 - **Lexical this**: Arrow functions NON hanno un proprio `this` - usano quello del contesto esterno
-- **Immutabile**: Non puoi cambiare il `this` di una arrow function con `call`, `apply` o `bind`
+- **Immutabile**: Non è possibile cambiare il `this` di una arrow function con `call`, `apply` o `bind`
 - **Soluzione ai callback**: Risolvono il problema della perdita di contesto nei callback
 - **Pattern pre-ES6 equivalente**: `var self = this` fa la stessa cosa (cattura lessicale)
 - **Cambio di paradigma**: Non sono solo una feature, ma un shift da binding dinamico a scoping lessicale

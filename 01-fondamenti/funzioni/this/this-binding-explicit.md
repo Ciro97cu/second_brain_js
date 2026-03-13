@@ -114,7 +114,7 @@ setTimeout(function () {
   foo.call(obj);
 }, 100);
 
-// Non puoi assegnare il riferimento
+// Non è possibile assegnare il riferimento
 var bar = foo.call; // ❌ Non funziona così!
 ```
 
@@ -310,7 +310,7 @@ $("button").each(function (index) {
   console.log(this.id);
 });
 
-// Ma puoi anche usare bind per controllo custom
+// Ma è anche possibile usare bind per controllo custom
 var controller = {
   name: "Controller",
   handleClick: function (event) {

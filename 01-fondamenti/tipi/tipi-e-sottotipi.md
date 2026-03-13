@@ -1,4 +1,4 @@
-# Sistema dei Tipi JavaScript: Tipi e Sottotipi
+# [[../../../appunti-completi#il-sistema-di-tipi-in-javascript|Sistema dei Tipi JavaScript: Tipi e Sottotipi]]
 
 JavaScript ha un sistema di tipi composto da **6 tipi primitivi** più un tipo complesso **object**. Contrariamente al mito popolare, **non tutto è un oggetto** in JavaScript. Inoltre, alcuni tipi come `function` e array sono **sottotipi specializzati** di object, non tipi indipendenti.
 
@@ -263,7 +263,7 @@ console.log(numeri.length); // 4 (aggiornato automaticamente)
 numeri.forEach((n) => console.log(n));
 let raddoppiati = numeri.map((n) => n * 2); // [20, 40, 60, 80]
 
-// Ma puoi comunque aggiungere proprietà come oggetto
+// Ma è comunque possibile aggiungere proprietà come oggetto
 numeri.descrizione = "Lista di numeri";
 console.log(numeri.descrizione); // "Lista di numeri"
 

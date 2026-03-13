@@ -295,7 +295,7 @@ console.log(obj2.result); // 10
 
 **Passaggi**:
 
-1. `bind(null, 2)` presetta `a = 2` (usiamo `null` perché verrà sovrascritto da `new`)
+1. `bind(null, 2)` presetta `a = 2` (si usa `null` perché verrà sovrascritto da `new`)
 2. `new multiplyByTwo(3)` fornisce `b = 3`
 3. `new` crea nuovo oggetto con `result = 6`
 

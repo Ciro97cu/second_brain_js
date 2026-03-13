@@ -30,7 +30,7 @@ foo(); // Output: 30
 
 ## 💻 La Conversazione Engine-Scope
 
-Per comprendere il meccanismo, immaginiamo la **conversazione** tra Engine e i vari Scope:
+Per comprendere il meccanismo, si immagini la **conversazione** tra Engine e i vari Scope:
 
 ```javascript
 let nome = "Mario"; // Dichiarato nello scope globale
@@ -229,7 +229,7 @@ for (let x = 0; x < 3; x++) {
 console.log(x); // 100 (non modificata)
 ```
 
-**Nota Importante**: Non puoi ri-dichiarare la stessa variabile con `let`/`const` nello stesso scope, ma puoi farlo in scope diversi (shadowing).
+**Nota Importante**: Non è possibile ri-dichiarare la stessa variabile con `let`/`const` nello stesso scope, ma è possibile farlo in scope diversi (shadowing).
 
 ```javascript
 let y = 10;

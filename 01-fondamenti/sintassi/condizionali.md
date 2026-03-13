@@ -165,7 +165,7 @@ let haPatente = true;
 
 // AND logico (&&) - entrambe devono essere true
 if (eta >= 18 && haPatente) {
-  console.log("Puoi guidare");
+  console.log("È possibile guidare");
 }
 
 // OR logico (||) - almeno una deve essere true

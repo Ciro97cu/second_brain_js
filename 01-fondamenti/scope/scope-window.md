@@ -25,7 +25,7 @@ console.log(window.globalConst); // undefined (❌ NON è in window)
 
 ## 💻 Bypass dello Shadowing
 
-Puoi "bypassare" lo shadowing di variabili **globali** dichiarate con `var` usando `window`.
+È possibile "bypassare" lo shadowing di variabili **globali** dichiarate con `var` usando `window`.
 
 ```javascript
 var varGlobale = "Sono globale";

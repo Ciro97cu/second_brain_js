@@ -1,4 +1,4 @@
-# Nomi di Proprietà Computati (Computed Property Names)
+# [[../../../appunti-completi#nomi-di-proprietà-computati-computed-property-names|Nomi di Proprietà Computati (Computed Property Names)]]
 
 I **nomi di proprietà computati** (Computed Property Names) consentono di specificare dinamicamente i nomi delle proprietà direttamente durante la dichiarazione di un oggetto letterale (object-literal), valutando un'espressione a runtime. Sono stati introdotti con ES6.
 

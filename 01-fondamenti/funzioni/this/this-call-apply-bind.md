@@ -173,7 +173,7 @@ function sum() {
 console.log(sum(1, 2, 3, 4)); // 10
 ```
 
-`arguments` non è un vero array, ma possiamo "prendere in prestito" metodi array con `call`.
+`arguments` non è un vero array, ma è possibile "prendere in prestito" metodi array con `call`.
 
 ## ✅ Best Practices
 

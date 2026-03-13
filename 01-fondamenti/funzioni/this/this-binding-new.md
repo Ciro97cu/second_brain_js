@@ -200,7 +200,7 @@ var obj = new foo(); // Funziona, ma va contro convezione
 
 ## 🔍 Verifica instanceof
 
-Puoi verificare se un oggetto è stato creato da un constructor con `instanceof`:
+È possibile verificare se un oggetto è stato creato da un constructor con `instanceof`:
 
 ```javascript
 function Person(name) {

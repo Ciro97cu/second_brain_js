@@ -398,7 +398,7 @@ let a = 20; // ❌ SyntaxError
 let b = 10;
 var b = 20; // ❌ SyntaxError
 
-// Non puoi mescolare var e let con stesso nome nello stesso scope
+// Non è possibile mescolare var e let con stesso nome nello stesso scope
 ```
 
 ## 📦 Blocchi Espliciti per Chiarezza

@@ -166,11 +166,11 @@ ScopeObject {
 function foo() {
   var a = 2;
 
-  // ❌ Non puoi fare questo:
+  // ❌ Non è possibile fare questo:
   // console.log(scopeObject.a);
   // console.log(this.scopeObject.a);
 
-  // ✅ Puoi solo fare questo:
+  // ✅ È possibile solo fare questo:
   console.log(a); // Lookup lessicale normale
 }
 ```

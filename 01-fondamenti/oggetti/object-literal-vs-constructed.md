@@ -1,4 +1,4 @@
-# Oggetti: Forma Letterale vs Forma Costruita
+# [[../../../appunti-completi#sintassi-degli-oggetti|Oggetti: Forma Letterale vs Forma Costruita]]
 
 Esistono due modi principali per creare oggetti in JavaScript: la **forma letterale** (object literal) e la **forma costruita** (constructed form). La scelta tra le due ha implicazioni su leggibilità, praticità e prestazioni.
 

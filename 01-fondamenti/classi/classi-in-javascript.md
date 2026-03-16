@@ -1,15 +1,16 @@
 # [[../../appunti-completi#73-i-meccanismi-delle-classi-in-javascript|I Meccanismi delle "Classi" in JS]]
 
-A prescindere dall'apparente architettura di facciata, il nucleo di JavaScript **non implementa** il reale paradigma basato su classe fornito da linguaggi affini (es. Java o C++). Tutta l'impalcatura che avvolge la concezione a classe si presenta unicamente come sintassi cosmetica.
+JavaScript possiede realmente le classi come Java o C++? Molto in breve: **no**. Le classi in JS sono quasi esclusivamente un costrutto estetico.
 
 ## 🎯 Concetti Chiave
 
-- **Syntactic Sugar**: Keywords come `new` o la successiva adozione di `class` introdotta da ES6 furono inserite in modo esplicito per accontentare un'utenza largamente abituata alla programmazione procedurare rigorosa, mascherando una differente operatività dei componenti sottostanti.
-- **Forzatura e Attriti**: Dal momento che adoperare il paradigma a _class pattern_ costituisce una mera scelta di programmazione mascherata all'interno del linguaggio, insistere nella simulazione di un ecosistema puramente OO non affine al _behavior delegation_ di JS può condurre a frizioni architetturali del programma causando bug o codici difficilmente mantenibili.
+- **Syntactic Sugar**: Per accontentare gli sviluppatori storici abituati alla programmazione ad oggetti rigorosa, in JS sono stati inseriti operatori `new`, `instanceof` e (da ES6 in poi) l'effettiva parola chiave `class`.
+- **Nessuna vera classe**: Nonostante questa facciata, l'operatività interna agli ingranaggi di JavaScript è completamente diversa (si basa sui prototipi e sulla delega). Le classi classiche non esistono in JavaScript.
+- **Forzatura e Attriti**: Usare il pattern a classi significa in JS "forzare" il linguaggio a fingere di essere ciò che non è. Voler simulare questo ecosistema può spesso generare rigidità, bug inaspettati e un codice scarsamente manutenibile nel tempo.
 
 ## ⚠️ Gotcha / Errori Comuni
 
-- ❌ **Equiparazione con linguaggi ad Orientamento Forte**: Scrivere Classi in JS e aspettarsi il comportamento rigoroso, privato e strettamente ereditario visto in altri linguaggi induce fortemente allo scontro con il runtime Javascript. La struttura in superficie che si appresta al design delle classi non corrisponde affatto all'ingranaggio che realmente fa muovere le proprietà degli oggetti (prototipi).
+- ❌ **Equiparazione con Java/C++**: Scrivere `class` in JS e aspettarsi la stessa identica gestione rigida della privatizzazione o dell'ereditarietà presente nei linguaggi puramente orientati ad oggetti è un errore comune. Le fondamenta in JS restano del tutto diverse.
 
 ## 🔗 Collegamenti
 

@@ -12828,57 +12828,59 @@ if ("serviceWorker" in navigator) {
 
 ### 7.1 Teoria delle Classi (Class Theory)
 
-L'orientamento agli oggetti (Object-Oriented, OO) e la programmazione basata sulle classi descrivono una forma di organizzazione e architettura del codice. Questo paradigma sottolinea che i dati possiedono intrinsecamente dei comportamenti specifici ad essi associati. Perciò, un design corretto prevede l'impacchettamento (o incapsulamento) di dati e comportamenti all'interno della medesima macrostruttura.
+La programmazione orientata agli oggetti (Object-Oriented, OO) è uno stile per organizzare il codice. Si basa sull'idea che i dati abbiano dei comportamenti specifici a loro associati. Per questo motivo, conviene raggruppare i dati e i comportamenti insieme (concetto di incapsulamento).
 
-Ad esempio, i caratteri che compongono una parola rappresentano i "dati", ma quasi sempre si desidera eseguire su di essi delle operazioni pratiche: contarne la lunghezza, concatenarli, ricercare porzioni di testo, ecc. Tutti questi comportamenti sono tipicamente progettati come _metodi_ di una classe `String`. Qualsiasi stringa nel codice diventa quindi una specifica _istanza_ di questa classe.
+Per esempio, il testo di una parola rappresenta i "dati", ma spesso serve eseguire delle operazioni: contarne la lunghezza, cercare una lettera, ecc. Queste operazioni vengono raggruppate come _metodi_ dentro una classe `String`. Qualsiasi stringa usata nel codice diventa quindi una specifica _istanza_ (o copia pratica) di quella classe.
 
-Le classi offrono un modo per classificare una struttura dati definendola come variante specifica di un concetto base più generale. Applicando questo concetto ad un generico veicolo, tale struttura astratta definita come genitore conterrà determinati fattori comuni a tutti i trasporti (motore, capacità di trasportare persone). Se si necessita progettare un'automobile, piuttosto che ridefinire la caratteristica "può trasportare persone" da zero e duplicare la logica, si dichiara che la classe `Automobile` **eredita** (o estende) le definizioni base dalla classe generica `Veicolo`.
+Usando le classi, si possono categorizzare le strutture dati in base ad un concetto generale. Se si inizia con una classe generica `Veicolo` (con comportamenti base come avere un motore o trasportare passeggeri), si può creare una classe più specifica `Automobile` che **eredita** quelle basi pur aggiungendo dettagli propri, evitando di duplicare il codice.
 
-Da questo meccanismo nascono tre concetti pilastro:
+I concetti chiave sono:
 
-1. **Classi**: definiscono lo scheletro astratto (il set di regole comuni, le "blueprints").
-2. **Ereditarietà**: descrive la filiazione tra forme genitore base e forme figlie specializzate.
-3. **Istanziazione**: l'azione di commutare la teoria dello scheletro astratto in una struttura concreta ("oggetto" o "istanza") immessa in memoria, pronta ad operare e in possesso di dati specifici.
+1. **Classe**: il progetto astratto o "blueprint" (le regole).
+2. **Ereditarietà**: il meccanismo con cui una classe figlia copia e specializza le basi di una classe genitore.
+3. **Istanziazione**: l'azione di usare il progetto per generare un "oggetto" reale in memoria, pronto all'uso.
 
-Un altro principio chiave è il **Polimorfismo**: una funzione (comportamento) ereditata da una classe genitore può essere sovrascritta (overridden) dalla propria classe figlia. A livello teorico, il comportamento più specifico nella classe discendente nasconde temporaneamente quello della classe genitrice, pur mantenendolo potenzialmente accessibile.
+Si parla spesso anche di **Polimorfismo**: una classe figlia può sovrascrivere (override) un comportamento ereditato dal genitore per modificarlo in base alle proprie esigenze, mantenendo comunque l'accesso al comportamento originale.
 
 ### 7.2 Le Classi Come Pattern di Design
 
-Generalmente, chi apprende lo sviluppo software tradizionale viene spinto ad assumere la logica orientata ad oggetti basata su classi come la "massima aspirazione universale" del panorama informatico, posta un gradino sempre superiore alla programmazione procedurale formata da pure funzioni.
+Nei linguaggi come Java, c'è la forte imposizione che "tutto debba essere una classe". Chi impara a programmare in questi ambienti tende a pensare alle classi come all'unico modo corretto di scrivere software.
 
-Osservando il paradigma della programmazione funzionale, ci si rende velocemente conto che la concezione a classe non è che uno degli innumerevoli _design pattern_ in circolazione, costituendo per la logica algoritmica semplicemente un'astrazione opzionale costruita al di sopra del codice, e non il fondamento procedurale basilare del software. Se linguaggi come Java impongono inequivocabilmente che "tutto è una classe", JavaScript adotta invece una forma molto diversa.
+In realtà, osservando altri paradigmi (come la programmazione funzionale formata da pure funzioni), è evidente che le classi sono solamente uno dei tanti _pattern di design_ (design pattern) disponibili: un'opzione architetturale, e non la base universale dell'informatica. JavaScript, ad esempio, adotta nativamente una forma completamente diversa.
 
 ### 7.3 I Meccanismi delle "Classi" in JavaScript
 
-JavaScript possiede realmente le classi sotto il cofano? Molto in breve: **no**.
+JavaScript possiede realmente le classi sotto il cofano? In breve: **no**.
 
-Sin dai suoi albori, in JavaScript sono stati inseriti degli elementi sintattici (le key `new` e `instanceof`) che imitano l'aspetto strutturale dei linguaggi basati su classe classici, culminando nell'adozione vera e propria della parola chiave sintattica `class` arrivata in ECMAScript 6. Tutto ciò è nato unicamente storicamente per assecondare il fortissimo desiderio degli sviluppatori, provenienti da mondi come Java e C++, di programmare all'interno di dinamiche a loro confortevoli.
+Per assecondare gli sviluppatori provenienti da mondi come Java e C++, in JavaScript sono stati inseriti elementi sintattici (come `new` e `instanceof`) per imitare l'aspetto delle classi. In ECMAScript 6 è arrivata anche la vera e propria parola chiave `class`.
 
-In JavaScript, l'intero costrutto ad "oggetti stile classe" risulta per l'appunto una mera facciata (_syntactic sugar_) sovrapposta a dinamiche interne completamente differenti. Poiché l'adozione delle astrazioni a classe costituisce unicamente una scelta del programmatore in JS per forzare un orientamento per il quale il linguaggio originariamente non era predisposto, la frizione architetturale sfocerà quasi sempre in bug di rigidità.
+In JavaScript, tutto questo costrutto a classi è una semplice facciata estetica (_syntactic sugar_) posizionata sopra a dinamiche interne profondamente diverse. Scegliere di usare le classi in JS significa forzare un approccio per il quale il linguaggio non è nato, portando spesso a codice rigido o a comportamenti inattesi.
 
-### 7.4 Costruire un'Istanza: Metàfora del Progetto
+### 7.4 Costruire un'Istanza: Metafora del Progetto
 
-Nei linguaggi ad oggetti convenzionali, il corpo di una classe si comporta puramente come la singola **planimetria architettonica** (blueprint) scarabocchiata su carta da un progettista. L'architetto disegna la posizione esatta di muri e porte su un foglio, limitandosi categoricamente alla pura ideazione strutturale asettica: il foglio non costituisce a livello spaziale e tangibile un vero e proprio stabile calpestabile.
+Nei linguaggi ad oggetti classici, la classe è come la **planimetria** (blueprint) disegnata da un architetto: definisce dove andranno i muri e le porte, ma non è una casa in cui si può fisicamente entrare.
 
-Per poterne usufruire, subentra la mano di un capocantiere che, traducendo passo per passo il blueprint, erige ed inserisce una replica nel mondo materiale dei concetti previsti dal disegno. Quest'operazione formale si chiama **Istanziazione**. L'edificio palpabile che ne scaturisce ricopre il ruolo dell'**Oggetto** tangibile dell'applicativo (popolato cioè con i propri veri dati interni in memoria).
+Per avere l'edificio reale, serve l'**Istanziazione**: un costruttore legge il progetto e crea materialmente una replica del disegno. Questo edificio tangibile, popolato con i suoi veri dati in memoria, è l'**Oggetto** (o Istanza).
 
-Terminata la copia dei concetti dalla carta all'ecosistema pratico, l'Istanza viaggia staccata dalle mutazioni del tracciato d'origine: non ci aspetta di trovare un blueprint intelaiato appeso nei muri di ogni edificio originato da esso per alterarne le fondamenta abitative a costruzione avviata. Un oggetto in tali linguaggi si ottiene pertando eseguendo fisicamente una operazione di _copia_.
+L'aspetto fondamentale è che si tratta di una pura operazione di **copia**. Una volta costruita la casa, l'edificio è indipendente: se in futuro si pasticcia la planimetria sulla carta, i muri della casa già costruita non si spostano per magia.
 
 ![Class](./assets/class.png)
 
-> **Nota Teorica**: Come si evince dallo schema illustrativo, i flussi direzionali delle frecce (da sinistra verso destra, e dall'alto verso il basso) indicano esplicitamente le **operazioni di copia** che avvengono durante i processi di architettura delle classi, sia a livello logico (concettuale) che ad effettivo livello di memoria (fisico).
+> **Nota Teorica**: Come si evince dallo schema illustrativo, i flussi direzionali delle frecce (da sinistra verso destra, e dall'alto verso il basso) indicano esplicitamente le **operazioni di copia** che avvengono durante l'istanziazione, sia a livello concettuale che fisico in memoria.
 
 ### 7.5 Costruttore (Constructor)
 
-Le istanze delle classi vengono costruite tramite un metodo speciale della classe, solitamente con lo stesso nome della classe stessa, chiamato costruttore. Il compito esplicito di questo metodo è inizializzare qualsiasi informazione o stato di cui l'istanza avrà bisogno.
+Le istanze di una classe vengono costruite tramite un metodo speciale chiamato costruttore (constructor), che di solito porta lo stesso nome della classe. Il suo unico compito è inizializzare le informazioni o lo stato di cui la nuova istanza avrà bisogno.
 
 ```javascript
 /* Pseudocodice (sintassi inventata) per illustrare il concetto */
 class CoolGuy {
   specialTrick = nothing;
+
   CoolGuy(trick) {
     specialTrick = trick;
   }
+
   showOff() {
     output("Here's my trick: ", specialTrick);
   }
@@ -12889,17 +12891,16 @@ Joe = new CoolGuy("jumping rope");
 Joe.showOff(); // Output: Here's my trick: jumping rope
 ```
 
-Si nota che la classe `CoolGuy` possiede un costruttore `CoolGuy()`, che è esattamente ciò che viene invocato utilizzando `new CoolGuy(...)`. Dal costruttore si ottiene un oggetto di ritorno (un'istanza della classe), sul quale è possibile richiamare metodi come `showOff()`.
-
-Il costruttore appartiene alla classe e si invoca quasi sempre utilizzando la parola chiave `new`, per informare il motore del linguaggio (engine) della volontà di creare ed istanziare un nuovo oggetto della classe esaminata.
+La chiamata a `new CoolGuy(...)` invoca direttamente il costruttore. Il risultato restituito è un nuovo oggetto indipendente, su cui è possibile chiamare i metodi come `showOff()`.
+L'uso della parola chiave `new` serve per avvisare esplicitamente il motore (engine) che si intende istanziare un oggetto completamente nuovo.
 
 ### 7.6 Ereditarietà di Classe (Class Inheritance)
 
-Nei linguaggi orientati agli oggetti, oltre a definire una singola classe che istanzia oggetti, è possibile configurare una seconda classe ereditante concetti dalla prima. Tali costoro vengono spesso chiamati rispettivamente "classe figlia" (child class) e "classe genitore" (parent class). L'uso della metafora biologica è tuttavia leggermente fuorviante in questo contesto.
+Nei linguaggi orientati agli oggetti è possibile creare una seconda classe che eredita dettagli da una prima. Vengono tipicamente chiamate "classe genitore" (parent class) e "classe figlia" (child class).
 
-Come in biologia, il momento dell'esistenza della figlia comporta inevitabilmente un distaccamento autonomo del gene dal proprio genitore, risultando dunque unica e indipendente per il resto della propria vita in esecuzione. Un tratto rosso per i capelli nel nascituro non provoca o comporta la corrispondente colorazione per la capigliatura parentale.
+La metafora biologica rende bene un concetto: un genitore fornisce il DNA iniziale, ma poi il figlio è entità del tutto separata. Se il figlio si tinge i capelli di rosso, quelli del genitore non diventano rossi.
 
-In modo analogo, una volta definita la sua implementazione, una classe eredita una semplice _copia_ comportamentale e dati dal genitore, riservandosi però il diritto di sovrascriverla o generarne di nuove per sé stessa.
+Nella programmazione avviene lo stesso. La classe figlia riceve una **copia** dei comportamenti del genitore, ma da quel momento è autonoma. Può definire nuove funzioni o modificare (sovrascrivere) i comportamenti ricevuti in eredità.
 
 ```javascript
 /* Pseudocodice (sintassi inventata) per illustrare il concetto */
@@ -12934,8 +12935,6 @@ class SpeedBoat inherits Vehicle {
 }
 ```
 
-Esplorando l'esempio pseudocodice di cui sopra (omette volontariamente i costruttori), `Vehicle` implementa comportamenti logici previsti generici per il veicolo. Essendo astratta per natura (un veicolo universale non esiste), se ne traggono formati specifici (ad es. un'Automobile e un Motoscafo), che estendono le funzioni o vi sovrascrivono la conformazione genitrice.
+Nell'esempio, `Vehicle` definisce le funzioni astratte di un veicolo generico. Classi specifiche come l'Auto (`Car`) o il Motoscafo (`SpeedBoat`) ereditano queste basi copiandole, e successivamente le specializzano (es. quattro ruote, oppure due motori da accendere).
 
-Ogni estensione necessiterà dell'inizializzatore `super` (anche se questo non è scritto nello snippet), richiamando costruttori od azioni esclusive per ripercorrere l'ereditarietà in via controllata.
-
----
+Logicamente, ogni specializzazione avrà spesso bisogno di chiamare esplicitamente le azioni della propria origine (ad esempio tramite la parola chiave `super`, anche se nello snippet è espresso come `inherited:`).

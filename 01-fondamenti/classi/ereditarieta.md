@@ -1,19 +1,19 @@
 # [[../../appunti-completi#76-ereditarieta-di-classe-class-inheritance|Ereditarietà di Classe]]
 
-Lo strumento maggiore alla base dell'economia programmatica orientata agli oggetti tradizionali verte sull'**Ereditarietà di classe** (Class Inheritance): in questa prospettiva, le singole forme del software operano allacciate a radici e specializzazioni comportamentali continue tra esse.
+Lo strumento maggiore alla base della programmazione orientata agli oggetti è l'**Ereditarietà** (Class Inheritance): permette alle classi di operare collegate tra loro condividendo schemi e comportamenti base.
 
 ## 🎯 Da Genitore a Figlio (Metafora limitata)
 
-Nello schema più classico si individua un assetto teorizzato che si allarga in più stadi differenziati tra l'uno e un altro stadio correlativo:
+Nello schema più classico si individuano due ruoli chiave:
 
-- Una entità definita di ordine superiore riceve tipicamente l'appellativo di **Classe Genitore** (parent class) poiché accerchia e distribusce ai ranghi il perno comune dei paradigmi standardizzati.
-- Di risposta la porzione conseguente formante è indicata come **Classe Figlia** (child class).
+- **Classe Genitore** (parent class): definisce le regole e i comportamenti generali (es. un generico _Veicolo_).
+- **Classe Figlia** (child class): si appoggia al genitore copiandone inizialmente tutte le basi per poi specializzarsi.
 
-> **Nota Teorica**: Nonostante i manuali informatici utilizzino pesantemente la comparativa biologica, essa tralascia meccaniche centrali del coding. Mentre i corredi parentali del mondo empirico evolvono il proprio figlio nel corso del tempo, l'istanza codificata di un blocco genitrice si esaurisce categoricamente in una singola _operazione di copia iniziale_ per generare le istanze figlie in quel frammento temporale esatto.
+> **Nota Teorica**: I manuali informatici usano la comparativa biologica (padre e figlio) che può confondere. Nel mondo della programmazione, la classe figlia acquisisce una singola forte **copia iniziale** delle capacità in quel momento esatto dal genitore, per poi vivere come elemento autonomo e slegato nella successiva esecuzione in memoria.
 
-## 💻 Specializzazione dell'Applicativo (Override)
+## 💻 Specializzazione (Override)
 
-Costruitasi a sua immagine durante il momento della filiazione, una forma erediteriale secondaria subisce tutti gli indici valoriali dei segmenti sopra descritti ma con lo stralcio in più della specializzazione (ovverosia l'implementazione in prima persona unicamente di regole o peculiarità altrimenti sconosciuti alle origini universali).
+Dopo aver copiato la forma della genitrice, la forma ereditaria seconda subisce l'azione della **specializzazione**: si possono definire regole esclusive estranee al genitore o _sovrascrivere_ (_override_) un comportamento ereditato per adattarlo al meglio.
 
 ```javascript
 /* Pseudocodice illustrativo OOP Ereditario */
@@ -24,15 +24,15 @@ class Vehicle {
 }
 
 class Car inherits Vehicle {
-  wheels = 4;
+  wheels = 4; // Specializzazione (Regola estranea al genitore)
   drive() {
-    inherited:drive();  // Estrapola il format iniziale...
-    output( "Completato sulle mie ", wheels, " ruote!" ); // ...Specializzandolo
+    inherited:drive();  // Estrapola il format iniziale copiato...
+    output( "Completato sulle mie ", wheels, " ruote!" ); // ...e lo sovrascrive (override)
   }
 }
 ```
 
-La `Car`, seppur attingendo palesamente ai costrutti architetturali del suo `Vehicle`, in quanto entità fisica distaccata dall'istanziazione di quest'ultimo implementa i soli costrutti e _sovrascritture_ (_override_) richiesti per il corretto moto della auto formata (come l'addizione strutturale delle quattro ruote).
+La `Car`, attingendo all'architettura generica del suo `Vehicle`, implementa solo quelle sovrascritture (_override_) esclusive necessarie per renderla un'auto reale, come l'aggiunta strutturale di quattro ruote o un tipo diverso di guida.
 
 ## 🏷️ Tags
 

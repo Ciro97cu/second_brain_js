@@ -1,11 +1,14 @@
-# [[../../appunti-completi#74-costruire-un-istanza-metàfora-del-progetto|Istanziazione come Operazione di Copia]]
+# [[../../appunti-completi#74-costruire-un-istanza-metafora-del-progetto|Istanziazione come Operazione di Copia]]
 
-Per assorbire i meccanismi puri di classe ad oggetti dei linguaggi convenzionali (come Java), la letteratura utilizza con successo l'allegoria dell'Architetto avversa al Capocantiere per esprimere che una istanza di un oggetto sia il risultato del copiare banalmente dei riferimenti cartacei in materie solide slegate fisicamente da una catena originale.
+Nei linguaggi orientati agli oggetti classici, per spiegare la creazione di un'istanza è molto utile l'allegoria dell'Architetto e del Costruttore.
 
 ## 🎯 Concetti Chiave
 
-- **La planimetria astratta (Classe)**: Come fa l'architetto, la Classe si limita a descrivere inchiostro su carta. Il fatto che un codice definisca un "veicolo con tre ruote e clacson" è assimilabile unicamente ad un progetto: è inerte, non esiste in forma tangibile sulla memoria navigabile pronti all'interazione.
-- **La costruzione copiata (Istanza, Oggetto)**: Il capocantiere legge la planimetria e produce fisicamente le regole. Ne uscirà l'entità (oggetto/istanza). Il processo ad oggetti convenzionale si basa sul principio della **copia**. Completata l'edificazione, l'Oggetto cammina per la sua strada assorbendo propri dati vitali senza che vi sia una sorta di persistenza della planimetria magica montata assieme assieme ad esso.
+- **La planimetria astratta (Classe)**: Come fa l'architetto, la Classe si limita a descrivere inchiostro su carta. Il file di codice che definisce un "veicolo con quattro ruote" è solo un progetto: non esiste in forma tangibile in memoria.
+- **La costruzione materiale (Istanziazione e Oggetto)**: Il costruttore legge la planimetria e produce fisicamente la casa seguendo le regole. Questo processo effettivo si chiama _Istanziazione_ e ne consegue la creazione del vero _Oggetto_ in memoria.
+- **L'operazione di Copia**: Tutto il processo si basa sul principio della copia. Completata la costruzione, l'Oggetto cammina per la sua strada con i propri dati. Se successivamente il progettista scarabocchia regole diverse sulla planimetria cartacea, i muri della casa già finita restano intatti.
+
+![Class](../../../assets/class.png)
 
 ## 🔗 Collegamenti
 

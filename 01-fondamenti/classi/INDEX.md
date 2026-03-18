@@ -8,3 +8,4 @@ JavaScript possiede una sua particolare (e controversa) interazione con tali cos
 - [[istanziazione]]
 - [[costruttore]]
 - [[ereditarieta]]
+- [[polimorfismo]]

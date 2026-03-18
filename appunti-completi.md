@@ -12938,3 +12938,29 @@ class SpeedBoat inherits Vehicle {
 Nell'esempio, `Vehicle` definisce le funzioni astratte di un veicolo generico. Classi specifiche come l'Auto (`Car`) o il Motoscafo (`SpeedBoat`) ereditano queste basi copiandole, e successivamente le specializzano (es. quattro ruote, oppure due motori da accendere).
 
 Logicamente, ogni specializzazione avrà spesso bisogno di chiamare esplicitamente le azioni della propria origine (ad esempio tramite la parola chiave `super`, anche se nello snippet è espresso come `inherited:`).
+
+### 7.7 Polimorfismo (Polymorphism)
+
+Il polimorfismo è una tecnica che permette a un unico metodo di avere più definizioni su diversi livelli della catena di ereditarietà. Grazie a questa logica, una classe figlia può far riferimento alla versione originale di un metodo del genitore, prima che quest'ultimo venisse sovrascritto.
+
+Nei linguaggi ad oggetti classici, questa parentela si sfrutta tramite la parola chiave `super`, che indica implicitamente al motore di "guardare un livello più in alto" nella gerarchia per eseguire un comportamento.
+
+Una sfaccettatura molto importante di questa meccanica è la scelta automatica dei metodi. Se si considera lo pseudocodice precedente, il `Costruttore` del Motoscafo chiama il metodo _pilot_, che al suo interno dice "usa la guida generale del genitore (`inherited:drive()`)". A sua volta, `drive()` internamente possiede un generico comando per azionare i motori, ovvero chiama `ignition()`. Ma quale dei due `ignition()` viene avviato qua? Quello generico del genitore o quello specializzato a due motori del Motoscafo?
+
+Il motore del linguaggio lo capisce in automatico: l'esecuzione cambia forma (diventa "polimorfa") in base a chi esegue la chiamata, utilizzando correttamente il comportamento personalizzato del Motoscafo, anche se ci si trovava temporaneamente in una funzione genitore.
+
+**L'Illusione del Collegamento**
+
+Attenzione a non cadere in inganno. Il fatto che la classe figlia utilizzi `super` o altre strutture di polimorfismo per riferirsi al genitore, può far credere che tra i due vi sia un collegamento invisibile permanente.
+
+In realtà si tratta sempre e solo di **copie**. Quando la classe figlia viene istanziata o ereditata, riceve una copia di tutti i comportamenti del genitore. Se ne sovrascrive un metodo, in memoria vengono conservate materialmente entrambe le copie del metodo (l'originale e il nuovo override) così da potervi accedere parallelamente in caso di necessità. Non c'è alcun cordone ombelicale reale in continuo dialogo con il padre.
+
+![Ereditarietà vs Istanziazione](./assets/class.png)
+
+> **Nota Teorica: Lo schema delle Copie**
+> Inerente allo schema qui sopra, si osserva la chiara divisione su due assi della dinamica di classe:
+>
+> - **Asse Verticale (Ereditarietà)**: La classe `Bar` eredita direttamente dalla classe `Foo` (freccia verso il basso).
+> - **Asse Orizzontale (Istanziazione)**: Le classi generano i propri singoli oggetti. `Foo` costruisce fisicamente le istanze `a1` e `a2`. `Bar`, che possiede un mix dei comportamenti di `Foo` sommati ai propri, genera le istanze `b1` e `b2`.
+>
+> Tutte queste frecce (sia quelle verticali che orizzontali) non indicano un "legame", ma rappresentano unicamente un'operazione di **copia** fisica istantanea. Dopo l'istanziazione, per esempio, l'oggetto `b1` è completamente autonomo. Conserva materialmente al suo interno i comportamenti ereditati (arrivati verticalmente da `Foo` a `Bar` e poi riversati orizzontalmente in `b1`), ma senza mantenere alcun collegamento residuo con le due classi progenitrici. Le frecce indicano un travaso di informazioni "una tantum".

@@ -12964,3 +12964,28 @@ In realtà si tratta sempre e solo di **copie**. Quando la classe figlia viene i
 > - **Asse Orizzontale (Istanziazione)**: Le classi generano i propri singoli oggetti. `Foo` costruisce fisicamente le istanze `a1` e `a2`. `Bar`, che possiede un mix dei comportamenti di `Foo` sommati ai propri, genera le istanze `b1` e `b2`.
 >
 > Tutte queste frecce (sia quelle verticali che orizzontali) non indicano un "legame", ma rappresentano unicamente un'operazione di **copia** fisica istantanea. Dopo l'istanziazione, per esempio, l'oggetto `b1` è completamente autonomo. Conserva materialmente al suo interno i comportamenti ereditati (arrivati verticalmente da `Foo` a `Bar` e poi riversati orizzontalmente in `b1`), ma senza mantenere alcun collegamento residuo con le due classi progenitrici. Le frecce indicano un travaso di informazioni "una tantum".
+
+### 7.8 Ereditarietà Multipla (Multiple Inheritance)
+
+Considerando l'allegoria classica del genitore e del figlio, si nota un dettaglio: biologicamente ogni discendente ha quasi sempre due genitori. Se una classe potesse ereditare contemporaneamente da più classi, questo rifletterebbe meglio la realtà e offrirebbe un enorme potere di composizione. 
+Nei linguaggi orientati agli oggetti che permettono questo costrutto, tale meccanismo prende il nome di **ereditarietà multipla**, limitandosi a copiare le definizioni di tutti i genitori all'interno della singola classe figlia.
+
+Sebbene sembri un'aggiunta molto potente, questo pattern genera rapidamente conflitti spinosi. Si supponga che due classi genitore possiedano entrambe un metodo con lo stesso nome, ad esempio `drive()`. Se una classe decide di ereditare da entrambe, quale delle due versioni del metodo `drive()` verrà copiata e risolta nella classe figlia? Per gestire l'inghippo, si perde quasi sempre l'immediatezza formale del polimorfismo, finendo per dover specificare manualmente, ogni volta, di quale genitore si sta parlando.
+
+**Il Problema del Diamante**
+
+Questa ambiguità raggiunge il culmine nel celebre *Problema del Diamante*:
+
+![Problema del Diamante](./assets/multiple_inheritance.png)
+
+Lo schema formale della logica va a creare una forma a rombo con i seguenti step:
+- Una classe `D` eredita da due classi genitore limitrofe (`B` e `C`).
+- A loro volta, `B` e `C` derivano da un nonno comune posto in cima, la classe `A`.
+- Se la classe `A` fornisce il metodo base `drive()`, ma poi sia `B` che `C` lo sovrascrivono (polimorfismo) implementando logiche diverse...
+- Quando la classe `D` tenta a sua volta di usare `drive()`, a quale dei due genitori diretti deve dare priorità per copiarne l'azione? Alla versione di `B` o a quella di `C`?
+
+**La Risposta di JavaScript**
+
+Gestire nativamente queste sovrapposizioni e queste ambiguità è computazionalmente e concettualmente molto oneroso. La soluzione di JavaScript in merito è tanto semplice quanto perentoria: **il linguaggio non possiede e non supporta alcun meccanismo nativo per l'ereditarietà multipla**.
+
+Questa drastica scelta strutturale è considerata molto positiva dalla maggioranza degli addetti ai lavori: la purificazione della logica del codice ripaga abbondantemente del disagio dovuto a una minore "potenza di fuoco". Questo netto rifiuto e questo divieto imposto dal linguaggio, tuttavia, non ostacola gli sviluppatori dal tentare ripetutamente di "falsificarla" per vie traverse (come l'uso dei *mixin*).

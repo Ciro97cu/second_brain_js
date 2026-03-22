@@ -10,3 +10,4 @@ JavaScript possiede una sua particolare (e controversa) interazione con tali cos
 - [[ereditarieta]]
 - [[polimorfismo]]
 - [[ereditarieta-multipla]]
+- [[mixin]]

@@ -12967,18 +12967,19 @@ In realtà si tratta sempre e solo di **copie**. Quando la classe figlia viene i
 
 ### 7.8 Ereditarietà Multipla (Multiple Inheritance)
 
-Considerando l'allegoria classica del genitore e del figlio, si nota un dettaglio: biologicamente ogni discendente ha quasi sempre due genitori. Se una classe potesse ereditare contemporaneamente da più classi, questo rifletterebbe meglio la realtà e offrirebbe un enorme potere di composizione. 
+Considerando l'allegoria classica del genitore e del figlio, si nota un dettaglio: biologicamente ogni discendente ha quasi sempre due genitori. Se una classe potesse ereditare contemporaneamente da più classi, questo rifletterebbe meglio la realtà e offrirebbe un enorme potere di composizione.
 Nei linguaggi orientati agli oggetti che permettono questo costrutto, tale meccanismo prende il nome di **ereditarietà multipla**, limitandosi a copiare le definizioni di tutti i genitori all'interno della singola classe figlia.
 
 Sebbene sembri un'aggiunta molto potente, questo pattern genera rapidamente conflitti spinosi. Si supponga che due classi genitore possiedano entrambe un metodo con lo stesso nome, ad esempio `drive()`. Se una classe decide di ereditare da entrambe, quale delle due versioni del metodo `drive()` verrà copiata e risolta nella classe figlia? Per gestire l'inghippo, si perde quasi sempre l'immediatezza formale del polimorfismo, finendo per dover specificare manualmente, ogni volta, di quale genitore si sta parlando.
 
 **Il Problema del Diamante**
 
-Questa ambiguità raggiunge il culmine nel celebre *Problema del Diamante*:
+Questa ambiguità raggiunge il culmine nel celebre _Problema del Diamante_:
 
 ![Problema del Diamante](./assets/multiple_inheritance.png)
 
 Lo schema formale della logica va a creare una forma a rombo con i seguenti step:
+
 - Una classe `D` eredita da due classi genitore limitrofe (`B` e `C`).
 - A loro volta, `B` e `C` derivano da un nonno comune posto in cima, la classe `A`.
 - Se la classe `A` fornisce il metodo base `drive()`, ma poi sia `B` che `C` lo sovrascrivono (polimorfismo) implementando logiche diverse...
@@ -12988,4 +12989,146 @@ Lo schema formale della logica va a creare una forma a rombo con i seguenti step
 
 Gestire nativamente queste sovrapposizioni e queste ambiguità è computazionalmente e concettualmente molto oneroso. La soluzione di JavaScript in merito è tanto semplice quanto perentoria: **il linguaggio non possiede e non supporta alcun meccanismo nativo per l'ereditarietà multipla**.
 
-Questa drastica scelta strutturale è considerata molto positiva dalla maggioranza degli addetti ai lavori: la purificazione della logica del codice ripaga abbondantemente del disagio dovuto a una minore "potenza di fuoco". Questo netto rifiuto e questo divieto imposto dal linguaggio, tuttavia, non ostacola gli sviluppatori dal tentare ripetutamente di "falsificarla" per vie traverse (come l'uso dei *mixin*).
+Questa drastica scelta strutturale è considerata molto positiva dalla maggioranza degli addetti ai lavori: la purificazione della logica del codice ripaga abbondantemente del disagio dovuto a una minore "potenza di fuoco". Questo netto rifiuto e questo divieto imposto dal linguaggio, tuttavia, non ostacola gli sviluppatori dal tentare ripetutamente di "falsificarla" per vie traverse (come l'uso dei _mixin_).
+
+### 7.9 Mixin
+
+Poiché in JavaScript non esistono classicità pure, l'ereditarietà non funziona copiando automaticamente i comportamenti da un oggetto genitore a un oggetto figlio. Nel linguaggio, gli oggetti non vengono nativamente "copiati" l'uno nell'altro, ma vengono semplicemente "collegati".
+
+Tuttavia, siccome gli sviluppatori spesso desiderano simulare il comportamento copia-incolla tipico delle classi tradizionali, fanno ricorso a una tecnica conosciuta come **Mixin**.
+
+L'idea di base del _mixin esplicito_ è creare una funzione apposita (spesso chiamata `extend` in varie librerie, oppure `mixin`) che prende due oggetti e copia manualmente, una per una, le proprietà e le funzioni dal primo al secondo.
+
+```javascript
+/*
+ * Versione super semplificata di una funzione mixin.
+ * Copia le proprietà dal genitore (source) al figlio (target)
+ * solo se quest'ultimo non le possiede già.
+ */
+function mixin(sourceObj, targetObj) {
+  for (var key in sourceObj) {
+    if (!(key in targetObj)) {
+      targetObj[key] = sourceObj[key];
+    }
+  }
+  return targetObj;
+}
+
+var Vehicle = {
+  engines: 1,
+  ignition: function () {
+    console.log("Accendo il motore.");
+  },
+  drive: function () {
+    this.ignition();
+    console.log("Vado avanti!");
+  },
+};
+
+/*
+ * Creiamo l'auto (Car) mescolando (mixin) le proprietà
+ * di Vehicle assieme a quelle specifiche di Car.
+ */
+var Car = mixin(Vehicle, {
+  wheels: 4,
+  drive: function () {
+    // Pseudopolimorfismo esplicito
+    Vehicle.drive.call(this);
+    console.log("Su " + this.wheels + " ruote!");
+  },
+});
+```
+
+È fondamentale ricordare che in questo caso non si stanno copiando materialmente le funzioni, ma si stanno duplicando soltanto i _riferimenti_ in memoria che puntano alla stessa identica funzione condivisa.
+
+**Pseudopolimorfismo Esplicito**
+
+Nel codice precedente, l'oggetto `Car` possiede un proprio metodo `drive()`. All'interno di questo metodo, per non dover riscrivere tutto da zero, si è costretti a chiamare il `drive()` originale di `Vehicle`.
+Tuttavia, siccome (prima di ES6) JavaScript non possiede un collegamento genetico nativo per risalire alla gerarchia genitore-figlio (come la parola chiave `super` dei linguaggi classici), occorre fare un richiamo testuale assoluto e manuale: `Vehicle.drive.call(this)`.
+
+L'uso forzato di `.call(this)` impone di eseguire la funzione originaria nel contesto di sé stessi (l'auto) anziché nel suo contesto originale. Questa pratica viene chiamata _pseudopolimorfismo esplicito_, ed è considerata una tecnica molto fragile: crea un legame diretto e rigido che aumenta enormemente il costo di manutenzione del codice.
+
+### 7.10 Ereditarietà Parassita (Parasitic Inheritance)
+
+Una nota variazione del mixin (che sfuma il confine tra "implicito" ed "esplicito") è un pattern chiamato _Ereditarietà Parassita_, diffuso dall'ingegnere Douglas Crockford.
+
+La logica si basa sul creare un oggetto genitore standard dall'interno di una funzione costruttrice, per poi "truccarlo" abusivamente aggiungendogli proprietà specializzate. Infine, invece di far generare in automatico un normale oggetto alla funzione, la si costringe a restituire l'oggetto modificato.
+
+```javascript
+// Costruttore Classico Genitore
+function Vehicle() {
+  this.engines = 1;
+}
+Vehicle.prototype.ignition = function () {
+  console.log("Accendo il motore.");
+};
+Vehicle.prototype.drive = function () {
+  this.ignition();
+  console.log("Vado avanti!");
+};
+
+// Costruttore "Parassita" Figlio
+function Car() {
+  // 1. Si "ruba" (istanzia) un oggetto genitore standard
+  var car = new Vehicle();
+
+  // 2. Lo si personalizza
+  car.wheels = 4;
+
+  // 3. Si salva un riferimento privilegiato al metodo originale
+  var vehDrive = car.drive;
+
+  // 4. Si sovrascrive il metodo, ripescando tramite il riferimento salvato
+  car.drive = function () {
+    vehDrive.call(this);
+    console.log("Su " + this.wheels + " ruote!");
+  };
+
+  // 5. Si impone al costruttore di restituire l'oggetto truccato
+  return car;
+}
+
+var myCar = new Car();
+myCar.drive();
+```
+
+Questo approccio esegue una copia dell'oggetto genitore base per via naturale (instanziando `Vehicle`), ma costringe la chiamata successiva `new Car()` a scartare l'oggetto nuovo che avrebbe normalmente costruito, sostituendolo arbitrariamente con quello forzato dal `return`.
+
+### 7.11 Mixin Impliciti (Implicit Mixins)
+
+Esiste anche una variante strettamente legata allo pseudopolimorfismo, definita _mixin implicito_. Si verifica quando si "prende in prestito" una funzione appartenente a un altro oggetto e la si esegue forzatamente nel contesto temporaneo del proprio oggetto usando `.call(this)`.
+
+```javascript
+var Something = {
+  cool: function () {
+    this.greeting = "Hello World";
+    this.count = this.count ? this.count + 1 : 1;
+  },
+};
+
+var Another = {
+  cool: function () {
+    // Si mescola "implicitamente" il comportamento di Something dentro Another
+    Something.cool.call(this);
+  },
+};
+
+Another.cool();
+console.log(Another.greeting); // "Hello World"
+console.log(Another.count); // 1 (Stato separato, non condiviso con `Something`)
+```
+
+In questo esempio, l'oggetto `Another` non ha copiato formalmente nulla da `Something`. Si è limitato a intercettare la sua funzione `cool()` per farle eseguire le assegnazioni e la logica matematica direttamente su sé stesso (grazie alla forzatura di `this`).
+
+Poiché il funzionamento si basa sullo stesso richiamo manuale, testuale e rigido tipico dello _pseudopolimorfismo esplicito_, questa tecnica porta con sé le stesse gravi limitazioni. Indirizzare i riferimenti in modo così "fragile" (`Something.cool.call(this)`) sporca l'architettura base e ne impedisce il normale ingrandimento. In generale si raccomanda di evitare, ove possibile, costrutti del genere.
+
+### 7.12 Riepilogo: Mascherare le Classi in JavaScript
+
+A conclusione di un'analisi profonda sull'architettura a classi rispetto al prototipo JavaScript, è fondamentale consolidare queste certezze:
+
+1. **Le classi descrivono un comportamento di copia**: L'architettura tradizionale a classi prevede sempre l'esecuzione di una copia fisica del codice (sia quando si definisce un'ereditarietà genitore-figlio, sia quando si istanzia un oggetto dalla planimetria).
+2. **Nessuna copia in JavaScript**: In JavaScript la copia automatica del comportamento non avviene mai in via nativa; gli oggetti preferiscono essere unicamente collegati.
+3. **L'illusione del polimorfismo**: Osservare l'uso gerarchico di un metodo e dei collegamenti verso la classe base (tramite `super`) potrebbe conferire un'idea di connessione duratura ma, nei linguaggi tradizionali e orientati agli oggetti classe, si tratta sempre del puro risultato secondario dell'operatività di "copia".
+4. **I Mixin creano fragilità estreme**: Per colmare la mancanza del sistema di copia, gli sviluppatori in JS costringono il linguaggio a mimarlo. Il pattern Mixin, sia in forma esplicita che implicita, impone l'uso di legami testuali fragili per tracciare chiamate fisse, lo _pseudopolimorfismo esplicito_. In ultimo non copia affatto tutti gli oggetti per intero ma si limita a sdoppiare il riferimento primario alle medesime copie di funzione, introducendo conflitti incrociati silenti.
+
+In totale sintesi, intestardirsi a tentare di "falsificare" o mimare il corredo funzionale delle classi assolute forzando le logiche di JavaScript, molto probabilmente impianterà serie mine vaganti all'interno dell'app e non porterà alcun beneficio per la futura manutenzione o leggibilita del progetto.

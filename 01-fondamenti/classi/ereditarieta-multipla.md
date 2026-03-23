@@ -1,4 +1,4 @@
-# Ereditarietà Multipla
+# [[../../appunti-completi#78-ereditarieta-multipla-multiple-inheritance|Ereditarietà Multipla]]
 
 ## Il Desiderio di Comporre
 
@@ -26,3 +26,13 @@ Tutte queste dinamiche andrebbero a costare sforzi immani a livello progettuale 
 La soluzione di JavaScript a questa spinosa questione è perentoria: **il linguaggio vieta nativamente l'ereditarietà multipla**.
 
 La maggior parte degli sviluppatori concorda che la purificazione e la semplificazione architetturale che ne deriva compensi ampiamente l'impossibilità di usare questo strumento. Ciò, inevitabilmente, non spegne il desiderio degli ingegneri che tentano ostinatamente di simularla ricorrendo ad astuzie e ai mixin.
+
+## 🔗 Collegamenti
+
+**Prerequisiti**:
+
+- [[../../appunti-completi#71-teoria-delle-classi|Teoria delle Classi]]
+
+**Approfondimenti**:
+
+- [[mixin|Mixin ed Ereditarietà Parassita]]

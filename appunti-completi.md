@@ -13132,3 +13132,59 @@ A conclusione di un'analisi profonda sull'architettura a classi rispetto al prot
 4. **I Mixin creano fragilità estreme**: Per colmare la mancanza del sistema di copia, gli sviluppatori in JS costringono il linguaggio a mimarlo. Il pattern Mixin, sia in forma esplicita che implicita, impone l'uso di legami testuali fragili per tracciare chiamate fisse, lo _pseudopolimorfismo esplicito_. In ultimo non copia affatto tutti gli oggetti per intero ma si limita a sdoppiare il riferimento primario alle medesime copie di funzione, introducendo conflitti incrociati silenti.
 
 In totale sintesi, intestardirsi a tentare di "falsificare" o mimare il corredo funzionale delle classi assolute forzando le logiche di JavaScript, molto probabilmente impianterà serie mine vaganti all'interno dell'app e non porterà alcun beneficio per la futura manutenzione o leggibilita del progetto.
+
+## 8. I Prototipi (Prototypes)
+
+I tentativi di emulare le classi in JavaScript ignorano il reale meccanismo di base del linguaggio: la **catena dei prototipi**.
+
+### 8.1 `[[Prototype]]` e la Catena
+
+In JavaScript, quasi tutti gli oggetti hanno una proprietà interna nascosta chiamata `[[Prototype]]`. Questa proprietà è un semplice riferimento o collegamento a un altro oggetto.
+
+Quando si cerca di leggere una proprietà in un oggetto (operazione `[[Get]]`) e questa non c'è, il motore non restituisce subito errore. Al contrario, segue il collegamento `[[Prototype]]` e la cerca nell'oggetto collegato.
+
+```javascript
+const anotherObject = { a: 2 };
+
+// myObject è collegato a anotherObject
+const myObject = Object.create(anotherObject);
+
+console.log(myObject.a); // 2 (Trovato seguendo il [[Prototype]])
+```
+
+Se la proprietà non si trova nemmeno lì, il motore continua a risalire di collegamento in collegamento. Questo percorso si chiama **catena dei prototipi**. La ricerca si ferma solo se trova la proprietà, oppure se la catena finisce (restituendo `undefined`).
+Questa esplorazione viene richiamata anche quando si scansiona un oggetto con un ciclo `for..in` o con l'operatore `in`.
+
+### 8.2 La Fine della Catena: `Object.prototype`
+
+La catena dei prototipi ha un limite e finisce sempre in un oggetto globale chiamato `Object.prototype`.
+Qui dentro si trovano le utility comuni (es. `.toString()`, `.valueOf()` e `.hasOwnProperty()`) che vengono ereditate in questo modo da tutti i normali oggetti JavaScript.
+
+### 8.3 Shadowing (Oscuramento) nell'Assegnazione
+
+Quando si _assegna_ un valore a una proprietà (`myObject.foo = "bar"`), se `foo` esiste già in alto nella catena dei prototipi ma non in `myObject`, si scatena un effetto chiamato **Shadowing** (Oscuramento).
+
+Ci sono 3 scenari:
+
+1. **Scrivibile (`writable: true`)**: Si crea una nuova proprietà `foo` direttamente su `myObject`. La proprietà originale in alto viene "oscurata" e non più ritrovata leggendo da `myObject`.
+2. **Sola Lettura (`writable: false`)**: L'assegnazione viene bloccata. Non viene creata alcuna proprietà in `myObject`. In `strict mode` lancia un errore, altrimenti fallisce in silenzio. È un comportamento controintuitivo, creato volontariamente nel linguaggio per tentare di imitare le rigidità delle classi in altri linguaggi.
+3. **Setter**: Se in alto c'è una funzione Setter per `foo`, questa viene eseguita senza creare alcuna nuova proprietà su `myObject`.
+
+Se si vuole forzare la creazione della proprietà e aggirare il blocco nel caso 2 o 3, si deve usare `Object.defineProperty(...)` al posto dell'operatore `=`.
+
+### 8.4 Shadowing Implicito e la Trappola dell'Autoincremento
+
+Le operazioni matematiche abbreviate come `++` nascondono una doppia meccanica, causando spesso uno shadowing involontario e molto problematico.
+
+```javascript
+const parent = { a: 2 };
+const child = Object.create(parent);
+
+// Pare un incremento remoto, ma...
+child.a++;
+
+console.log(parent.a); // 2 (Intatto)
+console.log(child.a); // 3 (Ora child ha una sua variabile "a" indipendente)
+```
+
+Il comando `child.a++` viene eseguito così: `child.a = child.a + 1`. Il motore legge `a` risalendo al genitore (trovando 2), ci somma 1, e dopodiché _assegna_ materialmente il 3 in `child.a`, cadendo nel caso 1 dello Shadowing. D'ora in poi, il base `child` oscurerà l'originale del padre.

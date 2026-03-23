@@ -1,4 +1,4 @@
-# Mixin ed Ereditarietà Parassita
+# [[../../appunti-completi#79-mixin|Mixin ed Ereditarietà Parassita]]
 
 Poiché in JavaScript gli oggetti non vengono copiati nativamente ma semplicemente "collegati", il linguaggio è privo del meccanismo che concretamente riversa il DNA di una classe genitore in un figlio.
 
@@ -81,3 +81,9 @@ In questo caso, `Another` prende semplicemente in prestito per un istante il cod
 
 Come riepilogo per il paradigma "Classi in JavaScript" va ricordato questo incipit: le classi si basano intrinsecamente sull'azione della "Copia" materiale dei dati e del codice.
 JavaScript non crea mai meccanicamente copie. Cercare allora di appiccicare una finta "copia in stile classe" a JavaScript — appoggiandosi ai Mixin o ai pesanti trick dell'Ereditarietà Parassita e dello stringente pseudopolimorfismo esplicito — genererà nella stragrande e assoluta maggioranza dei casi più problemi occulti e futuri fallimenti, le cosiddette _mine vaganti_, rispetto che applicare i corretti e fluidi schemi di costruzione nati o intrinseci dell'anima di JavaScript.
+
+## 🔗 Collegamenti
+
+**Prerequisiti**:
+
+- [[ereditarieta-multipla|Ereditarietà Multipla]]

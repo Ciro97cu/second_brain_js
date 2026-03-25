@@ -13188,3 +13188,92 @@ console.log(child.a); // 3 (Ora child ha una sua variabile "a" indipendente)
 ```
 
 Il comando `child.a++` viene eseguito così: `child.a = child.a + 1`. Il motore legge `a` risalendo al genitore (trovando 2), ci somma 1, e dopodiché _assegna_ materialmente il 3 in `child.a`, cadendo nel caso 1 dello Shadowing. D'ora in poi, il base `child` oscurerà l'originale del padre.
+
+### 8.5 L'Illusione delle Classi e le Funzioni Costruttrici
+
+A differenza dei linguaggi _class-oriented_, in JavaScript non esistono strati astratti (le "classi") da cui copiare e fabbricare fisicamente gli oggetti. JavaScript possiede solo oggetti nativi che si collegano direttamente fra loro.
+
+Per scimmiottare l'aspetto e il comportamento delle classi convenzionali, per anni si è abusato di una caratteristica nascosta delle funzioni.
+
+Ogni funzione dichiarata ottiene nativamente una proprietà non enumerabile di nome `prototype`, che punta a un oggetto solitario in memoria.
+
+```javascript
+function Foo() {
+  // ...
+}
+
+console.log(Foo.prototype); // { } - Oggetto verso cui punta nativamente la funzione
+```
+
+### 8.6 L'effetto della keyword `new`
+
+Quando si crea un oggetto anteponendo la parola chiave `new` davanti alla chiamata di funzione (`new Foo()`), si forza il motore a generare un nuovo oggetto. Quel nuovo oggetto viene magicamente **collegato**, tramite il proprio cordone ombelicale `[[Prototype]]`, allo stesso ed identico oggetto puntato da `Foo.prototype`.
+
+```javascript
+const a = new Foo(); // Chiamata della funzione Costruttrice
+
+console.log(Object.getPrototypeOf(a) === Foo.prototype); // true
+```
+
+Tale operazione non esegue alcuna copia genetica, tipica invece della formale ereditarietà classica. Con la direttiva `new`, ci si ritrova unicamente con "un oggetto collegato a un altro". Si è forzata una semplice connessione di Delega facendola passare subdolamente per un'Ereditarietà di stampo classista.
+
+### 8.7 Cos'è in un nome: L'Ereditarietà Prototipale e la Delega
+
+In JavaScript non si producono copie delle proprietà da un oggetto (come fosse una "classe") a un altro (una "istanza"). Tramite il meccanismo del `[[Prototype]]`, vengono creati semplicemente dei **collegamenti** tra gli oggetti.
+
+Chiamare questo meccanismo **Ereditarietà Prototipale** crea molta confusione. La parola "ereditarietà" implica un'operazione di copia. Aggiungere il termine "prototipale" per indicare un comportamento che è quasi l'esatto opposto nel mondo JavaScript, è come chiamare una mela "arancia rossa".
+
+Poiché JavaScript non copia nulla nativamente ma crea collegamenti che permettono a un oggetto di appoggiarsi a un altro per l'accesso a determinate proprietà o funzioni, il termine molto più accurato è **Delega** (Delegation).
+
+![Pattern Delegation](./assets/whats_in_a_name.png)
+
+Un altro termine spesso usato è **Ereditarietà Differenziale**, cioè l'idea di descrivere un oggetto solo in base alle differenze rispetto a un modello base predefinito, unendoli concettualmente in un unico blocco.
+
+Tuttavia, anche questo modello mentale sbaglia: in JavaScript non avviene alcun appiattimento in stile copia. Un oggetto viene creato con le sue specifiche caratteristiche affiancate a dei veri e propri "buchi" (parti non definite). Sono esattamente questi spazi vuoti che la Delega riempie "al volo", andando a rintracciare e fornire quel comportamento richiesto tramite l'oggetto collegato. La **Delega** descrive perfettamente la realtà fisica di ciò che fa il linguaggio, senza appoggiarsi a modelli mentali fittizi.
+
+### 8.8 I "Costruttori" e la Convenzione delle Classi
+
+Riprendendo l'esempio precedente, ci si potrebbe chiedere cosa porti a pensare che `Foo` sia un modello base o una "classe".
+
+In primo luogo, l'uso della parola chiave `new` ricorda i linguaggi orientati agli oggetti quando istanziano le classi. In secondo luogo, sembra effettivamente di eseguire un metodo costruttore: `Foo()` viene invocato esternamente in maniera analoga all'istanziazione di un costruttore classico.
+
+A confondere ulteriormente l'interpretazione semantica, l'oggetto arbitrario creato di default all'interno di una funzione e chiamato `.prototype`, possiede nativamente un'altra proprietà speciale:
+
+```javascript
+function Foo() {
+  // ...
+}
+
+console.log(Foo.prototype.constructor === Foo); // true
+
+const a = new Foo();
+console.log(a.constructor === Foo); // true
+```
+
+L'oggetto `Foo.prototype`, in automatico al momento della dichiarazione della funzione, riceve una proprietà pubblica e non enumerabile chiamata `.constructor`, la quale consiste in un riferimento (o collegamento) alla funzione stessa di cui fa parte (`Foo` in questo caso).
+
+Inoltre, osservando il codice, sembra che anche l'oggetto `a` (creato dalla chiamata costruttrice `new Foo()`) possieda una proprietà `.constructor` che punti alla "funzione che lo ha creato". In realtà, **`a` non possiede alcuna proprietà `.constructor` diretta**; la risolve delegando l'accesso, salendo lungo la catena dei prototipi fino a trovare quella situata in `Foo.prototype`. Tra l'altro, il termine "constructor" assunto qui per delega non significa di fatto "è stato costruito da", sebbene l'apparenza lo suggerisca fortemente.
+
+A rafforzare l'illusione vi è l'universale convenzione del mondo JavaScript di nominare queste funzioni con l'iniziale maiuscola (es. `Foo` invece di `foo`). Un indizio quasi obbligatorio per comunicare agli altri sviluppatori l'intento logico di usarla come "classe". Tale convenzione è così radicata che molti linter segnalano errore se si usa `new` su una funzione minuscola o se non lo si usa su una funzione maiuscola, nonostante per il motore JavaScript la lettera maiuscola non abbia alcuna valenza sintattica.
+
+### 8.9 Costruttori o Chiamate Costruttrici?
+
+È forte la tentazione di definire `Foo` un costruttore, poiché richiamandolo con `new` si osserva che esso "costruisce" un oggetto.
+
+In realtà, `Foo` non è un costruttore più di quanto non lo sia qualsiasi altra funzione presente nel programma. **Le funzioni in sé non sono mai costruttori**. Tuttavia, inserendo la parola chiave `new` davanti a una normale chiamata di funzione, la si trasforma in una **"chiamata costruttrice"** (constructor call).
+
+L'operatore `new` "dirotta" l'esecuzione di una qualsiasi funzione normale inducendola a fabbricare un nuovo oggetto, quasi come un effetto collaterale aggiunto a quelle che sarebbero state le sue normali direttive operative.
+
+```javascript
+function NothingSpecial() {
+  console.log("Non farci caso!");
+}
+
+const a = new NothingSpecial(); // "Non farci caso!"
+
+console.log(a); // {} -> Un oggetto è stato creato comunque!
+```
+
+La funzione `NothingSpecial` non fa assolutamente nulla di particolare, ma l'impiego di `new` provoca fisicamente la creazione di un oggetto che viene assegnato ad `a`. Sebbene l'invocazione sia stata una chiamata costruttrice, non rende di certo `NothingSpecial` un costruttore vero e proprio.
+
+In altre parole, limitatamente a JavaScript, è più appropriato affermare che i "costruttori" sono semplicemente le funzioni invocate col prefisso `new`. Nessuna funzione in sé nasce o esiste in memoria come costruttore. Le chiamate alle funzioni sono "chiamate costruttrici" se e soltanto se si usa l'operatore `new`.

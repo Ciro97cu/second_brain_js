@@ -1,36 +1,55 @@
 # [[../../appunti-completi#83-shadowing-oscuramento-nellassegnazione|Shadowing e Assegnazione]]
 
-Lo **Shadowing** (o oscuramento) si verifica quando si assegna (`[[Put]]`) una proprietà a un oggetto (`myObject.foo = "bar"`), ma `foo` è già presente più in alto nella sua catena dei prototipi.
+Lo **Shadowing** (o oscuramento) si verifica tramite un blocco visivo durante un'operazione di Set (`[[Put]]`). Avviene quando si tenta di assegnare una proprietà a un oggetto, la quale è invece già presente più in alto nella gerarchia (Catena dei Prototipi).
 
-La proprietà `foo` viene creata direttamente in `myObject`, oscurando la versione originale.
+## 🎯 Concetti Chiave
 
-Se `foo` si trova _solo_ sul prototipo superiore, ci sono 3 scenari in cui si suddivide l'assegnazione:
+- **3 Scenari Imprevedibili**: A seconda di come la proprietà originale è definita nel prototipo superiore, l'assegnazione della nuova proprietà nell'oggetto "figlio" muta radicalmente risultato.
+- **Caso 1 (Scrivibile)**: Se il prototipo ha `writable: true`, il linguaggio crea la nuova proprietà sull'oggetto figlio e ignora perennemente l'originale del genitore in tutte le successive consultazioni. Questo è lo Shadowing classico e corretto.
+- **Caso 2 (Solo Lettura)**: Se la proprietà originale ha `writable: false`, JS ferma l'operazione in maniera silente (o lancia errore in Strict Mode). L'oscuramento non avviene e l'oggetto figlio non riceverà alcun nuovo dato.
+- **Caso 3 (Setter Intercettivo)**: Se in cima alla catena c'è un Setter con lo stesso nome, questo fa da calamita intercettando e consumando la richiesta. La proprietà extra non viene creata nel figlio.
 
-1. **Scrivibile**: Se la proprietà nel prototipo ha `writable: true`, l'assegnazione aggiunge regolarmente `foo` al nostro `myObject`, creando a tutti gli effetti lo `shadowing`.
-2. **Read-only**: Se nel prototipo superiore ha `writable: false`, `foo` in `myObject` **non viene aggiunto**, l'operazione fallisce o in Modalità Rigida (Strict Mode), lancia un Errore. Lo shadowing non avviene affatto.
-3. **Setter**: Se nel prototipo c'è un Setter associato al nome (es. `set foo() { ... }`), scatta l'esecuzione di tale setter. La proprietà aggiuntiva su `myObject` **non viene** posta come shadowing, perché la chiamata viene intercettata originariamente.
+## 💻 Esempi di Codice
 
-## Shadowing Implicito
+### L'Illusione Implicita (`++`)
 
-Lo shadowing può crearsi accidentalmente, come con l'operatore di incremento `++`, che equivale a `[[Get]]` + `[[Put]]`.
+L'operatore di incremento crea insidiosi bug in merito perché maschera l'operazione. Equivale ad un `[[Get]]` (per analizzare il numero superiore) per po far scattare un `[[Put]]` (il base tenterà di schiantarci l'assegnazione generando Shadowing istantaneo).
 
 ```javascript
 const obj2 = { a: 2 };
 const obj1 = Object.create(obj2);
 
-console.log(obj1.a); // 2
-console.log(obj2.a); // 2
+console.log(obj1.a); // 2 (Del genitore)
+console.log(obj2.a); // 2 (Del genitore)
 
 // obj1.a = obj1.a + 1
 obj1.a++;
 
 // Lo shadowing implicito è scattato:
-console.log(obj1.a); // 3 (Proprietà nuova!)
-console.log(obj2.a); // 2
+console.log(obj1.a); // 3 (Proprietà nuova e disgiunta!)
+console.log(obj2.a); // 2 (L'originale è salvo ma oscurato per obj1)
 ```
+
+## ⚠️ Gotcha / Errori Comuni
+
+- ❌ **Sovrascrivere per Modificare**: Molti programmatori causano Shadowing quando il loro scopo primario era in realtà modificare la fonte superiore. Se si vuole modificare lo standard ereditato, non si deve fare `child.prop = "X"`, altrimenti il costrutto si scollega incapsulando il nuovo dato localmente. Bisogna risalire e mutare in scala l'originale.
+
+## ✅ Best Practices
+
+- ✓ **Definizione Forzata**: Per aggirare i limitanti Casi 2 e 3 descritti sopra, se strettamente necessario oscurare o imporre la regola al figlio per aggirare i divieti della catena, si consiglia vivamente l'uso asettico di `Object.defineProperty(...)`.
 
 ## 🔗 Collegamenti
 
 **Prerequisiti**:
 
 - [[../../appunti-completi#81-prototype-e-la-catena|La Catena dei Prototipi `[[Prototype]]`]]
+
+## 📚 Riferimenti
+
+- [MDN - Prototypes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain)
+
+## 📌 Note Personali
+
+---
+
+**Tags**: `#javascript` `#prototype` `#shadowing` `#objects`

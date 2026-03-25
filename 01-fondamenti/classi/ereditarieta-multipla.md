@@ -1,31 +1,47 @@
 # [[../../appunti-completi#78-ereditarieta-multipla-multiple-inheritance|Ereditarietà Multipla]]
 
-## Il Desiderio di Comporre
+L'ereditarietà multipla è un design object-oriented che consente a una classe figlia di ereditare contemporaneamente da più classi genitore genitrici (come avviene biologicamente). Nonostante la sua utilità per la composizione del codice, JavaScript non ne supporta esplicitamente e nativamente l'implementazione.
 
-Considerando l'allegoria classica del genitore e del figlio, si nota che biologicamente ogni discendente nasce da due genitori. Se il codice permettesse a una classe di ereditare da più classi contemporaneamente, il parallelismo genitore/figlio risulterebbe più calzante e consentirebbe un grande livello di composizione.
-I linguaggi orientati agli oggetti che lo consentono applicano l'**ereditarietà multipla**, limitandosi a copiare le definizioni di tutti i genitori all'interno della singola classe figlia.
+## 🎯 Concetti Chiave
 
-## Il Problema del Diamante
-
-Un'enorme potenza compositiva, tuttavia, porta a complicanze non indifferenti. Se si eredita da genitori diversi che condividono metodi con lo stesso identico nome (es. `drive()`), si genera inevitabilmente l'ambiguità su quale versione la classe figlia debba adottare, forzando spesso specificazioni manuali che rompono l'eleganza del polimorfismo.
-
-La complicazione peggiore si definisce come **Il Problema del Diamante**:
-
-- Una classe `D` eredita dai genitori `B` e `C`.
-- I genitori `B` e `C` ereditano, in partenza, da un comune "nonno" `A`.
-- Si supponga che `A` introduca un metodo `drive()`. Successivamente, le classi `B` e `C` lo modificano e lo sovrascrivono internamente (polimorfismo) con comportamenti totalmente diversi.
-- Al momento della creazione di `D` (che eredita da `B` e `C`), la classe quale versione di `drive()` dovrebbe scegliere?
+- **Il Desiderio di Comporre**: Ereditare assemblando comportamenti complessi da sorgenti multiple offrirebbe un inquadramento più realistico (sulla metafora Parent-Child) e un codice enormemente più flessibile e versatile.
+- **Il Problema del Diamante**: Se una classe _D_ eredita da _B_ e _C_, ed entrambe queste dipendono a loro volta dallo stesso progenitore _A_, si crea una struttura a forma di rombo (o diamante). Se _B_ e _C_ sovrascrivono lo stesso metodo (es. `drive()`), al momento in cui _D_ deve richiamarlo intercorre un conflitto insormontabile: l'engine non può decidere quale dei due parent ha ragione di validità, provocando fatali ambiguità.
+- **La Soluzione di JavaScript**: Per ovviare ai costi spropositati nell'ingegnerizzazione e risolvere drasticamente incomprensioni a runtime (come nel Diamante), ECMAScript/JavaScript blocca nativamente qualsiasi tentativo formale di ereditarietà multipla.
 
 ![Problema del Diamante](../../../assets/diamond-problem.png)
 
-> **Nota Visiva**: Il problema si definisce "del diamante" a causa della peculiare forma romboidale che lo schema gerarchico va a creare, con il nonno `A` in cima, i genitori `B` e `C` allargati al centro, e la classe figlia finale `D` riunita alla base.
+## 💻 Esempi di Codice
 
-## L'Approccio Drastico di JavaScript
+### Il Problema Concettuale
 
-Tutte queste dinamiche andrebbero a costare sforzi immani a livello progettuale e a livello di compilazione dei motori di sistema.
-La soluzione di JavaScript a questa spinosa questione è perentoria: **il linguaggio vieta nativamente l'ereditarietà multipla**.
+```javascript
+/* Pseudocodice che mostra l'ambiguità del caso in esame */
 
-La maggior parte degli sviluppatori concorda che la purificazione e la semplificazione architetturale che ne deriva compensi ampiamente l'impossibilità di usare questo strumento. Ciò, inevitabilmente, non spegne il desiderio degli ingegneri che tentano ostinatamente di simularla ricorrendo ad astuzie e ai mixin.
+class A {
+  drive() {}
+}
+
+class B inherits A {
+  drive() { output("Vado come B!"); }
+}
+
+class C inherits A {
+  drive() { output("Vado come C!"); }
+}
+
+class D inherits B, C { } // Vietato in JS
+
+let obj = new D();
+obj.drive(); // Quale dovrebbe far scattare l'engine? (crash)
+```
+
+## ⚠️ Gotcha / Errori Comuni
+
+- ❌ **Cercare di forzarla sfuggendo al compilatore**: Siccome JS non la supporta, spessissimo i programmatori usano utilità non native altamente problematiche.
+
+## ✅ Best Practices
+
+- ✓ **Aggirare con la Composizione**: In JavaScript si preferisce ampiamente la "Composizione" (creare oggetti mettendo insieme funzionalità non imparentate via link o deleghe, in gergo Object Composition) o i pattern specifici al posto dell'ereditarietà dura e pura.
 
 ## 🔗 Collegamenti
 
@@ -36,3 +52,13 @@ La maggior parte degli sviluppatori concorda che la purificazione e la semplific
 **Approfondimenti**:
 
 - [[mixin|Mixin ed Ereditarietà Parassita]]
+
+## 📚 Riferimenti
+
+- [MDN - Composition vs Inheritance](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain#composition_over_inheritance)
+
+## 📌 Note Personali
+
+---
+
+**Tags**: `#javascript` `#classi` `#oop` `#composizione` `#ereditarieta`

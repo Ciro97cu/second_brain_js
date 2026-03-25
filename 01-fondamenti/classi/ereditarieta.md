@@ -2,29 +2,31 @@
 
 Lo strumento maggiore alla base della programmazione orientata agli oggetti è l'**Ereditarietà** (Class Inheritance): permette alle classi di operare collegate tra loro condividendo schemi e comportamenti base.
 
-## 🎯 Da Genitore a Figlio (Metafora limitata)
+## 🎯 Concetti Chiave
 
-Nello schema più classico si individuano due ruoli chiave:
+- **Classe Genitore (parent class)**: Definisce le regole e i comportamenti generali (es. un generico "Veicolo").
+- **Classe Figlia (child class)**: Si appoggia al genitore copiandone inizialmente tutte le basi per poi specializzarsi.
+- **La metafora biologica è limitata**: Nei linguaggi di programmazione classici, la classe figlia acquisisce una singola e forte _copia iniziale_ delle capacità genitoriali in un preciso momento, per poi vivere come elemento autonomo e slegato nella successiva esecuzione in memoria.
+- **Specializzazione (Override)**: La classe figlia può definire regole esclusive o _sovrascrivere_ un comportamento ereditato per adattarlo al meglio rispetto all'archetipo del genitore.
 
-- **Classe Genitore** (parent class): definisce le regole e i comportamenti generali (es. un generico _Veicolo_).
-- **Classe Figlia** (child class): si appoggia al genitore copiandone inizialmente tutte le basi per poi specializzarsi.
+## 💻 Esempi di Codice
 
-> **Nota Teorica**: I manuali informatici usano la comparativa biologica (padre e figlio) che può confondere. Nel mondo della programmazione, la classe figlia acquisisce una singola forte **copia iniziale** delle capacità in quel momento esatto dal genitore, per poi vivere come elemento autonomo e slegato nella successiva esecuzione in memoria.
-
-## 💻 Specializzazione (Override)
-
-Dopo aver copiato la forma della genitrice, la forma ereditaria seconda subisce l'azione della **specializzazione**: si possono definire regole esclusive estranee al genitore o _sovrascrivere_ (_override_) un comportamento ereditato per adattarlo al meglio.
+### Esempio Base
 
 ```javascript
 /* Pseudocodice illustrativo OOP Ereditario */
 
 class Vehicle {
   engines = 1;
-  drive() { output( "Driving forward!" ); }
+
+  drive() {
+    output( "Driving forward!" );
+  }
 }
 
 class Car inherits Vehicle {
   wheels = 4; // Specializzazione (Regola estranea al genitore)
+
   drive() {
     inherited:drive();  // Estrapola il format iniziale copiato...
     output( "Completato sulle mie ", wheels, " ruote!" ); // ...e lo sovrascrive (override)
@@ -32,12 +34,31 @@ class Car inherits Vehicle {
 }
 ```
 
-La `Car`, attingendo all'architettura generica del suo `Vehicle`, implementa solo quelle sovrascritture (_override_) esclusive necessarie per renderla un'auto reale, come l'aggiunta strutturale di quattro ruote o un tipo diverso di guida.
+## ⚠️ Gotcha / Errori Comuni
 
-## 🏷️ Tags
+- ❌ **Collegamento in tempo reale**: È un errore comune credere che genitore e figlio siano dinamicamente collegati a runtime (nei linguaggi class-oriented). Questo modello effettua invece una copia dura e permanente.
 
-- #javascript
-- #classi
-- #oop
-- #ereditarieta
-- #override
+## ✅ Best Practices
+
+- ✓ **Generalizzazione corretta**: Mantenere nella classe genitore solo le proprietà universali condivise da tutti i futuri componenti della gerarchia.
+
+## 🔗 Collegamenti
+
+**Prerequisiti**:
+
+- [[costruttore|Costruttore di Classe]]
+
+**Approfondimenti**:
+
+- [[polimorfismo|Polimorfismo di Classe]]
+- [[ereditarieta-multipla|Ereditarietà Multipla]]
+
+## 📚 Riferimenti
+
+- [MDN - Class Inheritance](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#sub_classing_with_extends)
+
+## 📌 Note Personali
+
+---
+
+**Tags**: `#javascript` `#classi` `#oop` `#ereditarieta` `#override`

@@ -13277,3 +13277,62 @@ console.log(a); // {} -> Un oggetto è stato creato comunque!
 La funzione `NothingSpecial` non fa assolutamente nulla di particolare, ma l'impiego di `new` provoca fisicamente la creazione di un oggetto che viene assegnato ad `a`. Sebbene l'invocazione sia stata una chiamata costruttrice, non rende di certo `NothingSpecial` un costruttore vero e proprio.
 
 In altre parole, limitatamente a JavaScript, è più appropriato affermare che i "costruttori" sono semplicemente le funzioni invocate col prefisso `new`. Nessuna funzione in sé nasce o esiste in memoria come costruttore. Le chiamate alle funzioni sono "chiamate costruttrici" se e soltanto se si usa l'operatore `new`.
+
+### 8.10 Meccaniche e Simulazione delle Classi
+
+Per simulare il più fedelmente possibile il paradigma orientato agli oggetti, in JavaScript si usano comunemente due tecniche combinate: l'uso del `this` interno e la manipolazione diretta dell'oggetto `.prototype`.
+
+```javascript
+function Foo(name) {
+  this.name = name; // Iniezione di incapsulamento (dati specifici dell'istanza)
+}
+
+// Iniezione di un metodo valido per tutte le istanze
+Foo.prototype.myName = function () {
+  return this.name;
+};
+
+const a = new Foo("a");
+const b = new Foo("b");
+
+console.log(a.myName()); // "a"
+console.log(b.myName()); // "b"
+```
+
+A prima vista si potrebbe giurare che le proprietà e le funzioni dichiarate dentro `Foo.prototype` siano state _copiate_ all'interno di `a` e `b` al momento della loro istanziazione astratta. Invece, l'ecosistema JavaScript si rifiuta categoricamente di copiare.
+
+In virtù del modo in cui li si costruisce (tramite `new`), `a` e `b` si ritrovano dotati di un collegamento interno `[[Prototype]]` direzionato forzatamente a `Foo.prototype`.
+Quando si invoca `a.myName()`, l'Engine analizza `a`, nota che il metodo semplicemente "non c'è", e dirotta la richiesta (Delega) risolvendola al piano superiore su `Foo.prototype`.
+
+### 8.11 L'inaffidabilità della proprietà `.constructor`
+
+Come analizzato precedentemente (sezione 8.8), l'operazione booleana `a.constructor === Foo` restituisce `true`, regalando a tutti l'illusione tangibile che esista una proprietà "costruttore" indicante che "a è stato costruito da Foo".
+
+La verità cruda è che l'oggetto `a` non ha mai avuto alcuna proprietà `.constructor` incastonata al suo interno; in assenza, risolve la richiesta passandola a `Foo.prototype`, trovandola lì ad aspettare.
+
+Ma il `.constructor` agganciato inizialmente al prototipo genitore è un ponte assai instabile. Quella proprietà dimora lì unicamente perché il motore la inietta di default sull'oggetto base _al momento della prima dichiarazione in memoria della funzione_.
+Se un programmatore dovesse brutalmente sostituire l'intero oggetto legato al predefinito `.prototype`, il nuovo oggetto agganciato non la otterrà magicamente come dotazione assunta:
+
+```javascript
+function Foo() {
+  /* ... */
+}
+
+// Sostituzione irreversibile del prototipo originale
+Foo.prototype = {
+  /* ... */
+};
+
+const a1 = new Foo();
+
+console.log(a1.constructor === Foo); // false!
+console.log(a1.constructor === Object); // true!
+```
+
+Il risultato rovescia del tutto le carte in tavola. Che l'oggetto si sia costruito da solo attraverso la funzione nativa `Object()`? Assolutamente no, è stato indubbiamente invocato e costruito da `Foo()`. Tuttavia, `a1` cerca `.constructor` internamente e non lo trova; passa palla al neonato e vuoto `Foo.prototype` e non lo trova neanche lì; sale ulteriormente la gerarchia riversando per un'ultima rocambolesca volta il collegamento, spiaggiandosi sulla cima globale del linguaggio `Object.prototype`. Questo lo possiede di default, per cui risponde orgoglioso risolvendo il percorso.
+
+Questo dimostra fisicamente quanto il paradigma basato sul concetto "è stato costruito da..." fallisca del tutto.
+
+È chiaramente possibile manipolare a forza il codice per rimettere un `.constructor` al suo posto tramite `Object.defineProperty(...)`, ma costerebbe manutenzione e calcoli per una fatica fine a se stessa: tenere fittiziamente e disperatamente in vita l'illusione semantica della Classe.
+
+La proprietà `.constructor` non è inviolabile: si può scrivere, sovrascrivere o eludere, su un oggetto come in tutta l'intera catena soprastante, sfalsando ogni risultato calcolato dall'algoritmo globale `[[Get]]`. Ne consegue che affidarsi alle referenze cieche passanti per il metodo `.constructor` in JavaScript è universalmente pericoloso e sconsigliatissimo in produzione. Nessuna logica dovrebbe poggiare la sua riuscita su tale puntatore.

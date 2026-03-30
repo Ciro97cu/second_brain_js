@@ -13535,3 +13535,55 @@ console.log(myObject.b); // 3 (Impostato localmente)
 
 Queste specifiche di Property Descriptors (es. `enumerable`, `writable`, ecc.) appaiono nativamente su ES5 e, non potendone emulare la logica interna nel vecchio linguaggio, il polyfill completo è fattualmente inapplicabile.
 Tuttavia, nell'architettura front-end odierna, il target `ES5` è di base supportato virtualmente in ogni browser moderno, rendendo tale limitazione un ricordo accademico. Pertanto usare `Object.create()` risulta uno standard solido ed elegantissimo per l'architettura a delega in JavaScript.
+
+### 8.15 Link tra Oggetti come Fallback e Delegazione
+
+Spesso si è tentati di pensare che il meccanismo dei prototipi (`[[Prototype]]`) serva principalmente a fornire un _fallback_ per proprietà o metodi mancanti: se non si trova un metodo nell'oggetto, lo si cerca nel suo delegato. Questo comportamento avviene realmente, ma utilizzarlo intenzionalmente per creare interfacce (API) basate sui "fallback" magici può introdurre notevole complessità e rendere il software difficile da manutenere e interpretare.
+
+Si consideri questo scenario:
+
+```javascript
+const anotherObject = {
+  cool: function () {
+    console.log("cool!");
+  },
+};
+
+const myObject = Object.create(anotherObject);
+myObject.cool(); // "cool!"
+```
+
+Il codice funziona perfettamente. Tuttavia, se questo viene fatto di proposito affinché `anotherObject` intervenga _nel caso in cui_ un utente chiami un metodo inesistente su `myObject`, si sta creando una API "magica" e implicita. L'utente crede di chiamare un metodo di `myObject`, ma dietro le quinte l'esecuzione avviene su un altro oggetto.
+
+> **Nota Avanzata**: ECMAScript 6 (ES6) introduce i `Proxy`, costrutti avanzati che consentono di intercettare dinamicamente chiamate a proprietà o metodi inesistenti, fornendo un controllo granulare sul comportamento "method not found". Tuttavia, questo esula dai comuni concetti di delegazione prototipale.
+
+Per mantenere l'integrità del design a oggetti e sfruttare i link `[[Prototype]]` in modo leggibile ed esplicito, è raccomandato il pattern della **delegazione interna**:
+
+```javascript
+const anotherObject = {
+  cool: function () {
+    console.log("cool!");
+  },
+};
+
+const myObject = Object.create(anotherObject);
+
+// Creazione di un metodo esplicito per l'API pubblica
+myObject.doCool = function () {
+  this.cool(); // Delegazione interna al [[Prototype]]
+};
+
+myObject.doCool(); // "cool!"
+```
+
+Così facendo, `myObject.doCool()` espone un metodo reale e tangibile appartenente all'oggetto stesso. Internamente, il codice si appoggia alla delega instradando la richiesta al corrispondente `anotherObject.cool()` tramite il link prototipale. Questo espediente produce codice molto meno magico: l'interfaccia resta solida ed esplicita per lo sviluppatore che la consumerà in futuro, mantenendo la flessibilità del design a oggetti linkati confinata come dettaglio di implementazione.
+
+### 8.16 Riepilogo: Dai Prototipi alla Delegazione
+
+Attraverso lo studio dei prototipi emerge che, tentando di accedere a una proprietà inesistente su un oggetto, l'operazione `[[Get]]` risale attraverso la catena invisibile tracciata dai collegamenti `[[Prototype]]`. Questa ricerca avviene in modo analogo alla risalita di una _Scope Chain_ per la risoluzione delle variabili. In assenza di vincoli espliciti diversi, tale iterazione termina all'apice massimo della catena, situato nell'oggetto in cima, ossia `Object.prototype` (da cui derivano universalmente costrutti come `toString` o `valueOf`).
+
+Il collegamento basilare più comune si consolida quando interviene la parola chiave `new`. Essa genera al volo un oggetto e lo aggancia al parametro `.prototype` proprio della funzione da cui viene innescata.
+
+Sebbene le peculiarità concettuali del linguaggio ricordino l'istanziazione o l'ereditarietà proveniente da paradigmi storici strutturati a Classi (Class-Oriented languages), va riaffermata la discrepanza fondante e cruciale: **in JavaScript nessun oggetto ne copia un altro**.
+
+I legami generati dal motore JavaScript creano ponti di comunicazione. Usare terminologie derivative come "ereditarietà" ed "ereditarietà prototipale" spesso confonde e costringe l'architettura a piegarsi su concetti non nativi (copiature, mixins complessi, finti costruttori). La definizione in assoluto più appropriata, logica e indicativa di questo comportamento è **Delegazione** (o _Behavior Delegation_). L'idea che gli oggetti non dipendano per via genetica l'uno dall'altro, bensì deleghino in maniera volontaria e a ritroso alcune responsabilità e comportamenti agli oggetti "colleghi" che si trovano alle loro spalle.

@@ -13336,3 +13336,124 @@ Questo dimostra fisicamente quanto il paradigma basato sul concetto "è stato co
 È chiaramente possibile manipolare a forza il codice per rimettere un `.constructor` al suo posto tramite `Object.defineProperty(...)`, ma costerebbe manutenzione e calcoli per una fatica fine a se stessa: tenere fittiziamente e disperatamente in vita l'illusione semantica della Classe.
 
 La proprietà `.constructor` non è inviolabile: si può scrivere, sovrascrivere o eludere, su un oggetto come in tutta l'intera catena soprastante, sfalsando ogni risultato calcolato dall'algoritmo globale `[[Get]]`. Ne consegue che affidarsi alle referenze cieche passanti per il metodo `.constructor` in JavaScript è universalmente pericoloso e sconsigliatissimo in produzione. Nessuna logica dovrebbe poggiare la sua riuscita su tale puntatore.
+
+### 8.12 Ereditarietà Prototipale
+
+In JavaScript, l'equivalente dell'ereditarietà tra classi si ottiene collegando i prototipi tra loro tramite delega. Sebbene si utilizzi il termine "ereditarietà", questo meccanismo non implica alcuna copia di proprietà o metodi da un oggetto genitore a un figlio, ma si basa esclusivamente sull'instaurazione di collegamenti `[[Prototype]]` tra vari oggetti.
+
+Per creare una relazione simile a quella genitore-figlio, si fa in modo che l'oggetto `.prototype` di una funzione (o "sottoclasse") sia collegato all'oggetto `.prototype` di una funzione a livello gerarchico superiore (o "superclasse").
+
+```javascript
+function Foo(name) {
+  this.name = name;
+}
+
+Foo.prototype.myName = function () {
+  return this.name;
+};
+
+function Bar(name, label) {
+  Foo.call(this, name); // Chiama la funzione costruttrice Foo contestualizzando "this"
+  this.label = label;
+}
+
+// Creazione di un nuovo `Bar.prototype` collegato a `Foo.prototype`
+Bar.prototype = Object.create(Foo.prototype);
+
+// Attenzione: ora la proprietà `Bar.prototype.constructor` originaria è andata persa
+
+Bar.prototype.myLabel = function () {
+  return this.label;
+};
+
+const a = new Bar("a", "obj a");
+console.log(a.myName()); // "a"
+console.log(a.myLabel()); // "obj a"
+```
+
+Nel codice presentato, l'istruzione chiave è `Bar.prototype = Object.create(Foo.prototype)`. Il metodo `Object.create(...)` genera un nuovo oggetto, dotandolo di un collegamento interno `[[Prototype]]` puntato all'oggetto passato come argomento. Così si scarta il prototipo predefinito di `Bar` e lo si sostituisce con l'oggetto appena creato, impostando il giusto rapporto di delega.
+
+Ci sono due approcci alternativi scorretti o problematici che tentano di ricreare lo stesso link, spesso confusi tra loro:
+
+```javascript
+// NON funziona: condivide la stessa referenza
+Bar.prototype = Foo.prototype;
+
+// Funziona, ma innesca effetti collaterali
+Bar.prototype = new Foo();
+```
+
+Assegnare direttamente `Bar.prototype = Foo.prototype` non crea un nuovo oggetto a cui delegare, ma passa per riferimento lo stesso indirizzo di memoria. Di conseguenza, assegnando metodi aggiuntivi a `Bar.prototype` (ad esempio `Bar.prototype.myLabel = ...`), si finirebbe per mutare inavvertitamente l'oggetto condiviso `Foo.prototype`, inquinando lo stato per tutte le altre funzioni o istanze ad esso collegate.
+
+Assegnare usando la chiamata costruttrice `Bar.prototype = new Foo()` crea effettivamente un nuovo oggetto collegato a `Foo.prototype`, ma esegue allo stesso tempo il corpo di un'istanziazione di `Foo()`. Se quest'ultima dovesse ospitare effetti collaterali, come mutazioni di stato, registrazioni di log o aggiunta di dati, questi verrebbero innescati prematuramente al momento della creazione del collegamento, in un contesto del tutto sbagliato.
+
+Per evitare l'esecuzione di costruttori non voluti, prima dell'avvento di ES6 la soluzione maestra era dunque l'impiego di `Object.create(...)`, pur costringendo alla creazione e successiva distruzione in memoria del prototipo scartato.
+Con ES6 è stato introdotto il metodo helper `Object.setPrototypeOf(...)`, il quale permette di modificare dinamicamente il collegamento di un oggetto esistente in memoria in modo standardizzato e prevedibile.
+
+```javascript
+// Tecnica pre-ES6 (Crea un nuovo oggetto e getta via il vecchio)
+Bar.prototype = Object.create(Foo.prototype);
+
+// Tecnica ES6+ (Modifica il collegamento dell'oggetto esistente)
+Object.setPrototypeOf(Bar.prototype, Foo.prototype);
+```
+
+Nonostante la lieve penalità prestazionale dovuta allo scarto del vecchio prototipo (che verrà recuperato dal Garbage Collector), `Object.create()` resta una tecnica sintatticamente rapida e ampiamente valida per impostare gerarchie prototipali. Entrambi gli approcci supportano JavaScript nel simulare l'ereditarietà ad oggetti pur restando un linguaggio che ruota esclusivamente sui collegamenti di delega.
+
+### 8.13 Ispezione delle Relazioni (Introspezione)
+
+In ambienti orientati alle classi, esaminare la discendenza o l'ereditarietà di un'istanza viene spesso definito introspezione o riflessione (reflection). In JavaScript, questa esplorazione non riguarda le classi in senso stretto, bensì l'ispezione logica dei collegamenti di delega instauratisi tra oggetti lungo la catena `[[Prototype]]`.
+
+Esistono vari approcci a questa ispezione, con utilità differenti.
+
+#### L'operatore `instanceof`
+
+Il primo approccio sfrutta l'operatore nativo `instanceof`:
+
+```javascript
+function Foo() { /* ... */ }
+Foo.prototype.blah = /* ... */;
+
+const a = new Foo();
+
+console.log(a instanceof Foo); // true
+```
+
+L'operatore `instanceof` interroga il motore JavaScript ponendo una specifica domanda: "L'oggetto memorizzato in `Foo.prototype` appare da qualche parte in tutta la catena `[[Prototype]]` dell'istanza `a`?".
+Il limite di questo approccio consiste nel richiedere tassativamente una funzione a destra dell'operazione. Per verificare se due oggetti isolati (es. `b` e `c`) possiedono tra loro relazioni prototipali, non si potrà usare in modo diretto `instanceof` poiché esso esige la presenza del contenitore funzionale come intermediario.
+
+#### Il metodo `isPrototypeOf()`
+
+Un approccio più pulito e coerente con la vera natura orientata agli oggetti (O-L-O-O) di JavaScript passa tramite l'interrogazione diretta.
+
+```javascript
+// Verifica se il prototipo interviene sulla catena
+console.log(Foo.prototype.isPrototypeOf(a)); // true
+
+// Verifica diretta di delega tra due oggetti arbitrari
+const b = {};
+const c = Object.create(b);
+
+console.log(b.isPrototypeOf(c)); // true
+```
+
+Il metodo `isPrototypeOf(...)` risponde alla stessa identica domanda dell'operatore precedente, tuttavia la differenza cruciale è che non c'è più bisogno dell'indirezione semantica di una funzione o referenza a `.prototype`. Basterà chiamare un oggetto qualsiasi e passargliene un altro per verificare l'effettivo legame di delega.
+
+#### Accesso Esplicito: `Object.getPrototypeOf()` e `.__proto__`
+
+Per estrapolare direttamente un riferimento all'interno della catena ed esaminarlo, dalla versione ES5 è consigliato avvalersi del metodo standard:
+
+```javascript
+console.log(Object.getPrototypeOf(a) === Foo.prototype); // true
+```
+
+Tuttavia storicamente i browser hanno sempre supportato ed implementato la logica attraverso una proprietà fuori standard chiamata `.__proto__` (gergalmente soprannominata _"dunder proto"_, ovvero _"double underscore proto"_), definita standard ECMAScript solo in ES6 per retrocompatibilità.
+
+Così come accade per un `.constructor`, l'ancora chiamata a `.__proto__` non è fisicamente situata nell'oggetto isolato, ma è allocata nel predefinito `Object.prototype`, assumendo a tutti gli effetti un comportamento da metodo _getter_ / _setter_.
+
+```javascript
+// Simile operatività tramite dunder per interrogare la catena
+console.log(a.__proto__ === Foo.prototype); // true
+```
+
+Sebbene `.__proto__` supporti l'assegnazione e l'impostazione logica di un nuovo iter (agendo da setter tramite l'under-the-hood di `Object.setPrototypeOf`), procedere a riassegnazioni volontarie costituisce una grande limitazione. Operare continue risaldature dei legami rallenta gravemente le prestazioni perché interferisce con l'allocazione predittiva stabilita dal motore JavaScript in background. Mantenere la traccia della delega come operazione di "sola lettura" aumenta stabilità ed eviterà incastri architetturali complessi e deleteri nel tempo.

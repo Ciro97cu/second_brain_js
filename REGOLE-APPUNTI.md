@@ -34,3 +34,6 @@ oppure:
 
 **Eccezione alla sintesi:**  
 Se un concetto è già brevissimo e un’ulteriore sintesi rischierebbe di renderlo meno chiaro, è consentito riportare una traduzione diretta, purché sia sempre in terza persona. Questa deve restare una vera eccezione e non la regola.
+
+**IMPORTANTE**
+Bisogna dare massima priorità alla regola sul linguaggio semplice e alla forma discorsiva. Se un concetto è complesso, si deve spiegare con parole semplici e con una narrazione fluida, anche se questo significa scrivere più parole. La chiarezza e la comprensibilità sono sempre più importanti della brevità.

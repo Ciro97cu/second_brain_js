@@ -13457,3 +13457,81 @@ console.log(a.__proto__ === Foo.prototype); // true
 ```
 
 Sebbene `.__proto__` supporti l'assegnazione e l'impostazione logica di un nuovo iter (agendo da setter tramite l'under-the-hood di `Object.setPrototypeOf`), procedere a riassegnazioni volontarie costituisce una grande limitazione. Operare continue risaldature dei legami rallenta gravemente le prestazioni perché interferisce con l'allocazione predittiva stabilita dal motore JavaScript in background. Mantenere la traccia della delega come operazione di "sola lettura" aumenta stabilità ed eviterà incastri architetturali complessi e deleteri nel tempo.
+
+### 8.14 Collegamenti tra Oggetti (Object Links) e `Object.create()`
+
+Il meccanismo di `[[Prototype]]` è prima di tutto un collegamento invisibile e interno che un oggetto possiede per puntare a un altro oggetto. Questo legame entra in gioco prevalentemente per la delega: qualora si tenti di recuperare una proprietà o un metodo non nativo sull'oggetto di base, il motore JavaScript si sposterà, interrogando per delega l'oggetto immediatamente superiore. Se anche lì non vi è riscontro, l'operazione procederà risalendo il flusso, componendo l'iter noto come "catena dei prototipi".
+
+Nei pattern architetturali, lo studio e la gestione di queste relazioni tramite funzioni costruttrici (per cercare di simulare le classi) porta in eredità pesanti fardelli: confusione tra `.prototype` e `.constructor`, chiamate al "finto" costruttore che generano side effect o complessi collegamenti di riflessione.
+
+Tuttavia, l'essenza relazionale si può astrarre totalmente per creare un design molto più snello concentrato esclusivamente sull'oggetto, usando `Object.create()`.
+
+```javascript
+const foo = {
+  something: function () {
+    console.log("Dimmi qualcosa di bello...");
+  },
+};
+
+const bar = Object.create(foo);
+
+bar.something(); // "Dimmi qualcosa di bello..."
+```
+
+Il metodo `Object.create(...)` crea all'istante un nuovo oggetto e conferisce a quest'ultimo un collegamento `[[Prototype]]` diretto all'oggetto passato come parametro. L'oggetto `bar` ottiene le funzionalità di `foo` per mera delega. Viene abbattuto qualsiasi passaggio intermedio: nessuna finta classe, nessun operatore `new`, ma puro e semplice instradamento tra due oggetti. L'obiettivo primario dei legami, che è appunto la delega, è così servito nella sua forma più elegante.
+
+#### L'oggetto puro: "Dizionario" vuoto (`null`)
+
+Esplorando le capacità esclusive di questo metodo, è importante considerare il caso di distacco totale:
+
+```javascript
+const objVuoto = Object.create(null);
+```
+
+Passando `null` al posto di un oggetto "genitore", `Object.create(null)` realizza un oggetto privo del tipico collegamento vitale alla catena gerarchica. Non puntando a niente, nemmeno a `Object.prototype`, l'oggetto risultante non riceve nativamente metodi ausiliari quali `.toString()`, né alcun `.constructor` delegato; parimenti `instanceof` fallirà sempre.
+Questi oggetti isolati sono specialmente definiti **"Dizionari"**. Si prestano magnificamente come contenitori di archiviazione dati allo stato puro, del tutto esenti da mutazioni o collisioni con proprietà predefinite ereditate dalla catena prototipale standard.
+
+#### Polyfill per ambienti Pre-ES5 e Funzionalità aggiuntive
+
+L'introduzione di `Object.create()` risale a ES5. L'uso nei vecchi browser (oggi ormai rari ma degni di menzione accademica) necessitava della riscrittura (polyfill) parziale della sua funzionalità base.
+Tale polyfill si serve classicamente di una funzione vuota "getta-via", chiamata per convenienza `F`, ri-saldandone il `.prototype` e restituendone un'istanza col `new`, replicando di fatto la pulizia del link in assenza del metodo built-in.
+
+```javascript
+if (!Object.create) {
+  Object.create = function (o) {
+    function F() {}
+    F.prototype = o;
+    return new F();
+  };
+}
+```
+
+Esiste tuttavia un modulo avanzato del built-in `Object.create()` di ES5, raramente utilizzato poiché, a differenza del precedente, non può ricevere polyfill in vecchi contesti storici. Consiste in un secondo argomento in ingresso per l'impostazione fine delle configurazioni sulle specifiche proprietà (descriptors) del nuovo oggetto generato.
+
+```javascript
+const anotherObject = {
+  a: 2,
+};
+
+// Utilizzo avanzato per impostare i descrittori contestualmente
+const myObject = Object.create(anotherObject, {
+  b: {
+    enumerable: false,
+    writable: true,
+    configurable: false,
+    value: 3,
+  },
+  c: {
+    enumerable: true,
+    writable: false,
+    configurable: false,
+    value: 4,
+  },
+});
+
+console.log(myObject.a); // 2 (Delegato)
+console.log(myObject.b); // 3 (Impostato localmente)
+```
+
+Queste specifiche di Property Descriptors (es. `enumerable`, `writable`, ecc.) appaiono nativamente su ES5 e, non potendone emulare la logica interna nel vecchio linguaggio, il polyfill completo è fattualmente inapplicabile.
+Tuttavia, nell'architettura front-end odierna, il target `ES5` è di base supportato virtualmente in ogni browser moderno, rendendo tale limitazione un ricordo accademico. Pertanto usare `Object.create()` risulta uno standard solido ed elegantissimo per l'architettura a delega in JavaScript.

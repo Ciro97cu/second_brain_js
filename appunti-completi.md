@@ -13587,3 +13587,65 @@ Il collegamento basilare più comune si consolida quando interviene la parola ch
 Sebbene le peculiarità concettuali del linguaggio ricordino l'istanziazione o l'ereditarietà proveniente da paradigmi storici strutturati a Classi (Class-Oriented languages), va riaffermata la discrepanza fondante e cruciale: **in JavaScript nessun oggetto ne copia un altro**.
 
 I legami generati dal motore JavaScript creano ponti di comunicazione. Usare terminologie derivative come "ereditarietà" ed "ereditarietà prototipale" spesso confonde e costringe l'architettura a piegarsi su concetti non nativi (copiature, mixins complessi, finti costruttori). La definizione in assoluto più appropriata, logica e indicativa di questo comportamento è **Delegazione** (o _Behavior Delegation_). L'idea che gli oggetti non dipendano per via genetica l'uno dall'altro, bensì deleghino in maniera volontaria e a ritroso alcune responsabilità e comportamenti agli oggetti "colleghi" che si trovano alle loro spalle.
+
+## 9. Delegazione di Comportamento (Behavior Delegation)
+
+### 9.1 Verso un Design Orientato alla Delegazione
+
+Come analizzato in precedenza, il meccanismo del `[[Prototype]]` consiste fondamentalmente in un collegamento interno (link) che unisce un oggetto a un altro. Quando si cerca di accedere a una proprietà o a un metodo inesistente sul primo oggetto, il motore JavaScript segue questo collegamento per cercarlo nell'oggetto delegato, creando quella che viene definita la "catena dei prototipi" (_prototype chain_).
+
+L'essenza di questa funzionalità si riduce a un singolo concetto chiave: **in JavaScript l'architettura ruota attorno a oggetti direttamente collegati ad altri oggetti**. Riconoscere questa verità è vitale perché introduce uno schema progettuale (_design pattern_) radicalmente diverso rispetto a quello tradizionale a cui abituano le classi.
+
+Per sfruttare l'espressività dei prototipi senza incorrere in incomprensioni, è necessario cambiare mentalità, spostandosi dal paradigma dell'ereditarietà a cascata al pattern della **delegazione di comportamento** (_behavior delegation_).
+
+> **Nota**: Questo non significa abbandonare del tutto le sane abitudini ingegneristiche in generale (es. i concetti dell'incapsulamento rimangono potenti anche con i delegati), ma esige un approccio distaccato dalle mere repliche d'informazione previste dalle classi.
+
+### 9.2 La Teoria delle Classi
+
+Per comprendere esattamente cosa la delegazione intende rimpiazzare, si esamini uno scenario generico orientato alle classi. Se il software dovesse elaborare alcune attività o mansioni ("Task XYZ", "Task ABC"), l'approccio classico porterebbe a questa strada:
+
+1. Creare una classe genitore base (`Task`), adibita all'astrazione dei comportamenti generici e dei tracciati condivisi.
+2. Definire delle classi figlie (`XYZ` e `ABC`), le quali "ereditano" da `Task`.
+3. Includere in ciascuna figlia specializzazioni per le relative mansioni.
+
+L'approccio _Class-Oriented_ incoraggia estensivamente il polimorfismo (_method overriding_). Questo spinge il programmatore a coprire e specializzare i metodi parentali in quelli giovanili, sfruttando magari la chiamata generica (in questo caso identificabile classicamente col `super()`) per non dover riscrivere a mano la base del metodo.
+
+Si veda questo pseudocodice di natura generica a classi:
+
+```javascript
+/* Pseudocodice Class-Oriented (Scenario "Task") */
+
+class Task {
+  id;
+
+  // costruttore generale
+  Task(ID) {
+    id = ID;
+  }
+
+  outputTask() {
+    output( id );
+  }
+}
+
+class XYZ inherits Task {
+  label;
+
+  // costruttore specializzato
+  XYZ(ID, Label) {
+    super( ID );
+    label = Label;
+  }
+
+  outputTask() {
+    super();
+    output( label );
+  }
+}
+
+class ABC inherits Task {
+  // altre specializzazioni...
+}
+```
+
+In tale situazione, si provvederebbe successivamente a generare una o più **copie** (ossia astrazioni istanziate) della classe `XYZ` per poi usarle durante il ciclo vitale del software. Ciascuna istanza deterrebbe letteralmente e fisicamente il bagaglio delle informazioni definite nella classe madri unite a quelle figlie. Di norma, l'interazione pratica non sfiora più la sorgente, ma passa unicamente da e verso l'istanza.

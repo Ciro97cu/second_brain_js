@@ -13649,3 +13649,157 @@ class ABC inherits Task {
 ```
 
 In tale situazione, si provvederebbe successivamente a generare una o più **copie** (ossia astrazioni istanziate) della classe `XYZ` per poi usarle durante il ciclo vitale del software. Ciascuna istanza deterrebbe letteralmente e fisicamente il bagaglio delle informazioni definite nella classe madri unite a quelle figlie. Di norma, l'interazione pratica non sfiora più la sorgente, ma passa unicamente da e verso l'istanza.
+
+### 9.3 La Teoria della Delegazione e il Pattern OLOO
+
+Affrontando lo stesso problema (le generiche attività "XYZ" o "ABC") attraverso la prospettiva della delegazione di comportamento, lo scenario muta radicalmente base architetturale.
+
+Invece di concepire classi o funzioni astratte volte all'istanziazione, si va a comporre un singolo e tangibile oggetto (es. `Task`) preposto a ospitare alcune funzionalità di utilità generica. Successivamente, per ogni mansione specifica, si definiscono in solitaria degli altri oggetti (es. `XYZ`) mirati a inglobare esclusivamente i dati specifici a quella mansione.
+Fatto ciò, ci si assicura che gli oggetti specifici siano formalmente linkati (via `[[Prototype]]`) all'oggetto contenitore di utilità `Task`, ponendoli nella condizione di potergli delegare il lavoro qualora ve ne fosse la necessità.
+
+In questo quadro mentale, gli oggetti sono concepiti come entità affiancate "alla pari" (_peer objects_) o fratelli collaborativi, piuttosto che strutture avvolte l'una sull'altra in verticale dalla genealogia o da copie classiste. Questo stile è battezzato col nome di **OLOO** (_Objects Linked to Other Objects_ - Oggetti Collegati ad Altri Oggetti).
+
+```javascript
+/* Architettura basata sul collegamento di pura utilità (OLOO) */
+
+// Oggetto Delegato (utilità generale)
+const Task = {
+  setID: function (ID) {
+    this.id = ID;
+  },
+  outputID: function () {
+    console.log(this.id);
+  },
+};
+
+// L'oggetto ricevente XYZ viene collegato nativamente a Task
+const XYZ = Object.create(Task);
+
+// XYZ mantiene metodi squisitamente specifici
+XYZ.prepareTask = function (ID, Label) {
+  this.setID(ID); // Delega "magicamente" la chiamata a Task.setID()
+  this.label = Label;
+};
+
+XYZ.outputTaskDetails = function () {
+  this.outputID(); // Delega a Task.outputID()
+  console.log(this.label);
+};
+
+// Anche altre mansioni possono allinearsi puntando allo stesso oggetto base
+// const ABC = Object.create(Task);
+```
+
+Non usando classi né funzioni (mascherate da costruttori come accade diffusamente con la keyword `new`), questo design nativo spicca per efficienza in tre peculiarità distaccate dall'orientamento agli oggetti classico:
+
+1. **Gestione dello Stato**: Le proprietà o lo stato logico di dominio (nell'esempio gli attributi `id` e `label`) appaiono in memoria sempre e solo sugli oggetti **delegatori** in testa (ossia `XYZ`), mai sull'oggetto **delegato** in coda (`Task`).
+2. **Ripudio dell'Overriding (No Shadowing)**: Mentre il modello orientato alle classi incoraggia l'uso sovrapposto dello stesso nome per un metodo genitore/figlio (e.g. entrambi col nome `outputTask()`) per sfruttare i vantaggi meccanici del polimorfismo, lo stile a delegazione predica il netto contrario. Si fugge attivamente dall'assegnare nomi uguali nei vari livelli della catena dei prototipi per contrastare il noto effetto denominato _Shadowing_. Anziché offuscare o sovrascrivere un'etichetta comune, si invitano nomi decisamente più descrittivi che spiegano a chiare lettere la differenziazione comportamentale (come `outputTaskDetails()`), producendo un software incredibilmente più auto-documentato (_self-documenting_).
+3. **Impeccabilità del `this`**: Quando la riga `this.setID(ID)` viene eseguita all'interno di `XYZ`, l'interprete si accerta prima che tale proprietà esista internamente in quest'ultimo oggetto. Avendo un risultato negativo, scala il ramo del `[[Prototype]]` e la rintraccia con successo in `Task`. Tuttavia, data la ferrea ed elegante regola dell'identificatore `this`, il legame d'esecuzione resta saldato all'oggetto da cui essa ha preso inizialmente il via: `XYZ`. Qualunque calcolo o immagazzinamento fatto dal metodo base, pioverà concretamente e fluidamente sopra l'oggetto in linea per il client.
+
+### 9.4 Delegazione Reciproca (Disabilitata)
+
+È preclusa ed interdetta ai motori la possibilità di erigere referenziazioni cicliche (_mutual delegation_). Se un oggetto `B` viene linkato a monte su `A`, diventa materialmente impossibile delegare di contro `A` su `B` nello stesso istante. Un incrocio bidirezionale lancia inesorabile un errore bloccante.
+
+Sebbene un ipotetico intreccio perfetto dei metodi in entrambe le postazioni non spingerebbe la catena necessariamente in stallo, basterebbe la chiamata verso una sola proprietà inespressa in tutte e due le compagini per sfociare un letale loop infinito alle risorse architetturali (`[[Get]]`). Per tutelare in toto le performance prestazionali, ogni controllo d'infinità viene stroncato in via preconcetta non appena l'esecutore rileva l'intenzione d'impostazioni simmetricamente direzionate in fase temporale d'analisi.
+
+### 9.5 Debugging e Nomenclatura del Costruttore
+
+Quando si ispeziona un oggetto nella console degli strumenti per sviluppatori (come in Chrome), il browser cerca di aiutare il programmatore mostrando il nome della funzione che ha generato quell'oggetto.
+
+Questo genera comportamenti visivi diversi a seconda di come si scrive il codice:
+
+- Se si usano finte classi o funzioni costruttore (`let a1 = new Foo()`), Chrome riconosce la funzione di origine e stampa in console `Foo {}`.
+- Se si usa il pattern della delegazione con `Object.create(Foo)`, non c'è nessuna "funzione costruttore" tracciabile. Di conseguenza, Chrome si limita a stampare un generico ed anonimo `Object {}`.
+
+A prima vista, perdere questa "etichetta" con il nome dell'oggetto per vedere solo un generico `Object {}` potrebbe sembrare uno svantaggio o una scomodità del pattern OLOO.
+
+In realtà, non lo è. Cercare a tutti i costi l'etichetta del "nome del costruttore" ha senso solo se si sta cercando di forzare un'architettura basata sulle classi (dove è importante sapere "chi ha istanziato chi").
+Nel paradigma della delegazione, questo concetto è del tutto irrilevante. L'unica cosa che conta davvero è **verso quale oggetto vengono delegate le richieste** (il collegamento `[[Prototype]]`). Pertanto, ottenere come output visivo `Object {}` è perfettamente normale e corretto per questo stile di programmazione.
+
+### 9.6 Modelli Mentali a Confronto (OO vs OLOO)
+
+Avendo delineato le differenze teoriche tra "classi" e "delegazione", risulta utile valutare quale impatto abbiano questi modelli sulle architetture mentali degli sviluppatori.
+Si analizzino i due stili a confronto implementando lo stesso comportamento: un'astrazione `Foo` e una specializzazione `Bar`.
+
+#### Lo Stile Orientato agli Oggetti (OO)
+
+```javascript
+// Costruttore Genitore astratto
+function Foo(who) {
+  this.me = who;
+}
+Foo.prototype.identify = function () {
+  return "Io sono " + this.me;
+};
+
+// Costruttore "figlio" specializzato
+function Bar(who) {
+  Foo.call(this, who);
+}
+// Connessione mascherata da ereditarietà
+Bar.prototype = Object.create(Foo.prototype);
+
+Bar.prototype.speak = function () {
+  console.log("Ciao, " + this.identify() + ".");
+};
+
+const b1 = new Bar("b1");
+const b2 = new Bar("b2");
+
+b1.speak();
+b2.speak();
+```
+
+In questo scenario, la finta classe genitore `Foo` "viene ereditata" dalla figlia `Bar`, e da questa si creano due istanze. L'oggetto finale `b1` delega a `Bar.prototype`, il quale delega a sua volta a `Foo.prototype`.
+
+#### Lo Stile a Delegazione Pura (OLOO)
+
+```javascript
+// Utilità delegata nativa (nessun costruttore astratto)
+const Foo = {
+  init: function (who) {
+    this.me = who;
+  },
+  identify: function () {
+    return "Io sono " + this.me;
+  },
+};
+
+const Bar = Object.create(Foo);
+
+Bar.speak = function () {
+  console.log("Ciao, " + this.identify() + ".");
+};
+
+const b1 = Object.create(Bar);
+b1.init("b1");
+
+const b2 = Object.create(Bar);
+b2.init("b2");
+
+b1.speak();
+b2.speak();
+```
+
+Il traguardo funzionale raggiunto non cambia in nulla: `b1` delega a `Bar`, che delega a `Foo`. Sono esattamente i medesimi tre oggetti collegati lungo la catena.
+La disparità sostanziale risiede nella drastica riduzione dell'infrastruttura ingannevole. Adottando questa impostazione, non è necessario mantenere la parvenza delle classi sfruttando accrocchi legati al costruttore, ai prototipi mascherati e alla keyword `new`.
+
+#### Rappresentazione del Costrutto Architetturale
+
+La differenza di bagaglio cognitivo richiesto per comprendere e manutenere i due snippet appare in tutta la sua forza analizzando un digramma del Modello Mentale innescato.
+
+Il primo snippet (OO), se esaminato nel suo totale insieme di relazioni e collegamenti meccanici sottintesi costantemente dal motore JS, implica in background questa complessa ragnatela mentale:
+
+![Modello mentale OO completo](assets/mental_models_compared_1.png)
+
+Tale diagramma risulta in apparenza fin troppo ingiusto nei confronti del coder base, eppure descrive in modo speculare cosa fa concretamente il linguaggio. Se si depura il grafico trattenendo solamente le entità minime indispensabili ad uno sviluppatore coscienzioso per potersi orientare, lo schema si riduce a questo:
+
+![Modello mentale OO semplificato](assets/mental_models_compared_2.png)
+
+Nonostante la semplificazione, rimane sensibilmente stratificato e ricco di diramazioni che forzano logiche inesistenti (evidenziate dalle linee tratteggiate come correzione dei riferimenti `constructor`). Vi è letteralmente "tanto da giocolare" mentalmente ogni volta che si instaura questo finto approccio.
+
+Applicando invece la pura architettura relazionale promossa dallo snippet a delegazione (OLOO), il panorama si traduce in questa trasparente linearità:
+
+![Modello mentale OLOO](assets/mental_models_compared_3.png)
+
+Il confronto visivo svela una potentissima semplificazione ingegneristica. Eliminando l'impalcatura che maschera in vano l'assenza intrinseca delle classi, e sposando il banale sistema di collegamento, si preserva l'identica prestazione funzionale ma abbattendo in toto il carico e la confusione progettuale.

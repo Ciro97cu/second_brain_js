@@ -4246,7 +4246,7 @@ In entrambi i modi in cui `this` viene cambiato inaspettatamente, **non si ha re
 
 ##### 3. Explicit Binding
 
-Con l'implicit binding abbiamo visto che era necessario includere un riferimento alla funzione come proprietà dell'oggetto stesso, e usare quella proprietà per legare (implicitamente) `this` all'oggetto.
+Con l'implicit binding si è osservata la necessità di includere un riferimento alla funzione come proprietà dell'oggetto stesso, usando quella proprietà per legare (implicitamente) `this` all'oggetto.
 
 Ma cosa succede se si vuole **forzare** una chiamata di funzione a usare un particolare oggetto per il binding di `this`, **senza dover mettere** un riferimento alla funzione sull'oggetto?
 
@@ -4502,7 +4502,7 @@ Ogni chiamata con `new` crea un **nuovo oggetto separato**, e `this` dentro `Per
 
 ##### 5. Tutto in Ordine: Precedenza delle Regole
 
-Ora che abbiamo scoperto le quattro regole per il binding di `this` nelle chiamate di funzione, tutto ciò che serve è **trovare il call-site e ispezionarlo** per vedere quale regola si applica. Ma cosa succede se il call-site ha **più regole eleggibili**? Deve esserci un **ordine di precedenza** tra queste regole.
+Dopo aver delineato le quattro regole per il binding di `this` nelle chiamate di funzione, tutto ciò che serve è **trovare il call-site e ispezionarlo** per vedere quale regola si applica. Ma cosa succede se il call-site presenta **più regole eleggibili**? Deve esserci un **ordine di precedenza** tra queste regole.
 
 **🔍 Ordine di Precedenza:**
 
@@ -7361,7 +7361,7 @@ Per comprendere a fondo il concetto di Scope, è utile immaginarlo come il risul
 
 Il cast di questi "personaggi" è il seguente:
 
-- **Engine (Motore)** → È il responsabile principale dell'intero processo. Gestisce la compilazione e l'esecuzione del codice JavaScript dall'inizio alla fine. Potremmo vederlo come il "capo" che coordina tutte le operazioni.
+- **Engine (Motore)** → È il responsabile principale dell'intero processo. Gestisce la compilazione e l'esecuzione del codice JavaScript dall'inizio alla fine. Può essere descritto come il coordinatore centrale di tutte le operazioni.
 
 - **Compiler (Compilatore)** → È uno stretto collaboratore dell'Engine. Si occupa di tutto il lavoro "sporco" di analizzare il codice (parsing) e generare la versione eseguibile (code-generation), come discusso in precedenza.
 
@@ -10607,11 +10607,11 @@ console.log("Fuori funzione:", contatore); // 1
 ```
 
 ```javascript
-// REGOLA: Non puoi ri-dichiarare con let/const nello STESSO scope
+// REGOLA: Non è permesso ri-dichiarare con let/const nello STESSO scope
 let y = 10;
 // let y = 20;  // ❌ SyntaxError: Identifier 'y' has already been declared
 
-// Ma puoi farlo in SCOPE DIVERSI (shadowing)
+// Ma è consentito farlo in SCOPE DIVERSI (shadowing)
 {
   let y = 20; // ✅ OK, è uno scope diverso (shadowing)
   console.log(y); // 20
@@ -10858,8 +10858,8 @@ elaboraDati([1, 2, 3]); // 3
 
 **In sintesi:**
 
-- **ReferenceError** = "Non ho trovato la variabile" (problema di scope)
-- **TypeError** = "Ho trovato la variabile, ma non puoi farci quello che stai cercando di fare" (problema di tipo/operazione)
+- **ReferenceError** = "Variabile non trovata" (problema di scope)
+- **TypeError** = "La variabile è stata trovata, ma l'operazione richiesta non è consentita" (problema di tipo/operazione)
 
 #### Hoisting
 
@@ -13718,13 +13718,13 @@ Nel paradigma della delegazione, questo concetto è del tutto irrilevante. L'uni
 
 ### 9.6 Modelli Mentali a Confronto (OO vs OLOO)
 
-Avendo delineato le differenze teoriche tra "classi" e "delegazione", risulta utile valutare quale impatto abbiano questi modelli sulle architetture mentali degli sviluppatori.
-Si analizzino i due stili a confronto implementando lo stesso comportamento: un'astrazione `Foo` e una specializzazione `Bar`.
+Dopo aver visto la teoria su "classi" e "delegazione", è utile capire come questi due concetti cambino il modo di pensare e scrivere il codice.
+Per farlo, si può scrivere lo stesso comportamento in due modi: usando l'approccio classico con un oggetto base `Foo` e un oggetto specifico `Bar`.
 
 #### Lo Stile Orientato agli Oggetti (OO)
 
 ```javascript
-// Costruttore Genitore astratto
+// Funzione costruttore base
 function Foo(who) {
   this.me = who;
 }
@@ -13732,11 +13732,11 @@ Foo.prototype.identify = function () {
   return "Io sono " + this.me;
 };
 
-// Costruttore "figlio" specializzato
+// Funzione costruttore specifica
 function Bar(who) {
   Foo.call(this, who);
 }
-// Connessione mascherata da ereditarietà
+// Collega i prototipi
 Bar.prototype = Object.create(Foo.prototype);
 
 Bar.prototype.speak = function () {
@@ -13750,12 +13750,12 @@ b1.speak();
 b2.speak();
 ```
 
-In questo scenario, la finta classe genitore `Foo` "viene ereditata" dalla figlia `Bar`, e da questa si creano due istanze. L'oggetto finale `b1` delega a `Bar.prototype`, il quale delega a sua volta a `Foo.prototype`.
+In questo codice, sembra che la classe `Bar` erediti dalla classe `Foo`. In realtà, l'oggetto `b1` è solo collegato a `Bar.prototype`, che a sua volta è collegato a `Foo.prototype`.
 
 #### Lo Stile a Delegazione Pura (OLOO)
 
 ```javascript
-// Utilità delegata nativa (nessun costruttore astratto)
+// Semplice oggetto base
 const Foo = {
   init: function (who) {
     this.me = who;
@@ -13765,12 +13765,14 @@ const Foo = {
   },
 };
 
+// Bar viene creato collegandolo direttamente a Foo
 const Bar = Object.create(Foo);
 
 Bar.speak = function () {
   console.log("Ciao, " + this.identify() + ".");
 };
 
+// Creazione degli oggetti finali
 const b1 = Object.create(Bar);
 b1.init("b1");
 
@@ -13781,25 +13783,307 @@ b1.speak();
 b2.speak();
 ```
 
-Il traguardo funzionale raggiunto non cambia in nulla: `b1` delega a `Bar`, che delega a `Foo`. Sono esattamente i medesimi tre oggetti collegati lungo la catena.
-La disparità sostanziale risiede nella drastica riduzione dell'infrastruttura ingannevole. Adottando questa impostazione, non è necessario mantenere la parvenza delle classi sfruttando accrocchi legati al costruttore, ai prototipi mascherati e alla keyword `new`.
+Il risultato è lo stesso: `b1` delega a `Bar`, che a sua volta delega a `Foo`.
+La differenza è che il secondo approccio (OLOO) nasconde meno la realtà. Evita costrutti complicati, catene di ereditarietà fittizie e si basa unicamente sul collegamento tra oggetti.
 
-#### Rappresentazione del Costrutto Architetturale
+#### Schema Mentale del Codice
 
-La differenza di bagaglio cognitivo richiesto per comprendere e manutenere i due snippet appare in tutta la sua forza analizzando un digramma del Modello Mentale innescato.
+La differenza di approccio è più evidente se si guarda la complessità dei collegamenti.
 
-Il primo snippet (OO), se esaminato nel suo totale insieme di relazioni e collegamenti meccanici sottintesi costantemente dal motore JS, implica in background questa complessa ragnatela mentale:
+Lo stile a Oggetti (OO) crea dietro le quinte questa fitta rete di connessioni:
 
 ![Modello mentale OO completo](assets/mental_models_compared_1.png)
 
-Tale diagramma risulta in apparenza fin troppo ingiusto nei confronti del coder base, eppure descrive in modo speculare cosa fa concretamente il linguaggio. Se si depura il grafico trattenendo solamente le entità minime indispensabili ad uno sviluppatore coscienzioso per potersi orientare, lo schema si riduce a questo:
+Questo è ciò che accade realmente in memoria. Eliminando il superfluo, lo schema essenziale diventa questo:
 
 ![Modello mentale OO semplificato](assets/mental_models_compared_2.png)
 
-Nonostante la semplificazione, rimane sensibilmente stratificato e ricco di diramazioni che forzano logiche inesistenti (evidenziate dalle linee tratteggiate come correzione dei riferimenti `constructor`). Vi è letteralmente "tanto da giocolare" mentalmente ogni volta che si instaura questo finto approccio.
+Resta comunque molto articolato. Costringe a tenere a mente collegamenti innaturali e complicate strutture interne (`constructor`) solo per imitare le classi.
 
-Applicando invece la pura architettura relazionale promossa dallo snippet a delegazione (OLOO), il panorama si traduce in questa trasparente linearità:
+Al contrario, lo schema relazionale dello stile a delegazione (OLOO) risulta estremamente lineare e pulito:
 
 ![Modello mentale OLOO](assets/mental_models_compared_3.png)
 
-Il confronto visivo svela una potentissima semplificazione ingegneristica. Eliminando l'impalcatura che maschera in vano l'assenza intrinseca delle classi, e sposando il banale sistema di collegamento, si preserva l'identica prestazione funzionale ma abbattendo in toto il carico e la confusione progettuale.
+Il paragone è lampante: eliminando la finta sintassi delle classi si preserva la funzionalità, ma con un notevole risparmio di fatica. Il codice risulta logico, pulito e trasparente.
+
+### 9.7 Classi vs Oggetti: Un Caso Pratico (Widget UI)
+
+Un buon esempio per notare quanto sia ingombrante forzare le classi in JavaScript è la creazione di pulsanti per l'interfaccia grafica.
+Nello stile Classico (OO), si tende a creare una finta \`Classe Base\` (es: `Widget`) e una \`Classe Figlia\` (es: `Button`).
+
+#### Il Metodo Classico (OO pre-ES6)
+
+Senza ES6, la finta ereditarietà si creava con strane concatenazioni di chiamate:
+
+```javascript
+// Classe base
+function Widget(width, height) {
+  this.width = width || 50;
+  this.height = height || 50;
+  this.$elem = null;
+}
+
+Widget.prototype.render = function ($where) {
+  if (this.$elem) {
+    this.$elem.css({
+        width: this.width + "px",
+        height: this.height + "px",
+      }).appendTo($where);
+  }
+};
+
+// Classe figlia
+function Button(width, height, label) {
+  // Richiamo macchinoso del costruttore pariente
+  Widget.call(this, width, height);
+  this.label = label || "Default";
+  this.$elem = $("<button>").text(this.label);
+}
+
+// Emulare l'ereditarietà connettendo prototipi
+Button.prototype = Object.create(Widget.prototype);
+
+// Tenta di fare override di 'render'
+Button.prototype.render = function ($where) {
+  // Chiamata esplicita, lunga e ingombrante
+  Widget.prototype.render.call(this, $where);
+  this.$elem.click(this.onClick.bind(this));
+};
+
+Button.prototype.onClick = function (evt) {
+  console.log("Cliccato il bottone '" + this.label + "'!");
+};
+
+$(document).ready(function () {
+  var $body = $(document.body);
+  var btn1 = new Button(125, 30, "Hello");
+  var btn2 = new Button(150, 40, "World");
+
+  btn1.render($body);
+  btn2.render($body);
+});
+```
+
+Questo snippet fa notare quanto sia grezzo invocare un "genitore" usando passaggi lunghi come `Widget.prototype.render.call(this)`.
+
+#### L'Approccio con Classi ES6
+
+Per nascondere il codice ingombrante, ECMAScript 6 ha inserito lo zucchero sintattico `class` e `super`.
+
+```javascript
+class Widget {
+  constructor(width, height) {
+    this.width = width || 50;
+    this.height = height || 50;
+    this.$elem = null;
+  }
+
+  render($where) {
+    if (this.$elem) {
+      this.$elem.css({ width: this.width + "px", height: this.height + "px" }).appendTo($where);
+    }
+  }
+}
+
+class Button extends Widget {
+  constructor(width, height, label) {
+    super(width, height);
+    this.label = label || "Default";
+    this.$elem = $("<button>").text(this.label);
+  }
+
+  render($where) {
+    super.render($where); // Sintassi compatta ed elegante
+    this.$elem.click(this.onClick.bind(this));
+  }
+
+  onClick(evt) {
+    console.log("Cliccato '" + this.label + "'!");
+  }
+}
+
+$(document).ready(function () {
+  var $body = $(document.body);
+  var btn1 = new Button(125, 30, "Hello");
+  var btn2 = new Button(150, 40, "World");
+
+  btn1.render($body);
+  btn2.render($body);
+});
+```
+
+È molto più bello da vedere, ma il trucco c'è: **JavaScript non possiede vere classi**. Sottotraccia, sta ancora usando i prototipi originari. Costringe a pensare come in un normale sistema di classi (come in Java), ma al primo bug il codice farà i conti con la natura vera degli oggetti JavaScript.
+
+### 9.8 Delegazione degli Oggetti (Il Caso Pratico con OLOO)
+
+Se invece si progetta la stessa UI sposando il format OLOO (Objects Linked to Other Objects), le finzioni scompaiono. Si abbandonano nomi errati come "Padri/Figli" e si creano solo banali Oggetti in rapporto fra loro.
+
+```javascript
+// Widget è un oggetto JavaScript comunissimo, niente new o Class!
+var Widget = {
+  init: function (width, height) {
+    this.width = width || 50;
+    this.height = height || 50;
+    this.$elem = null;
+  },
+  insert: function ($where) {
+    if (this.$elem) {
+      this.$elem.css({ width: this.width + "px", height: this.height + "px" }).appendTo($where);
+    }
+  },
+};
+
+// Si crea un oggetto Button collegato logicamente a Widget
+var Button = Object.create(Widget);
+
+Button.setup = function (width, height, label) {
+  // Delega a Widget pulita:
+  this.init(width, height);
+  this.label = label || "Default";
+  this.$elem = $("<button>").text(this.label);
+};
+
+Button.build = function ($where) {
+  // Delega a Widget molto pulita:
+  this.insert($where);
+  this.$elem.click(this.onClick.bind(this));
+};
+
+Button.onClick = function (evt) {
+  console.log("Cliccato '" + this.label + "'!");
+};
+
+$(document).ready(function () {
+  var $body = $(document.body);
+
+  // 1- Solo creazione
+  var btn1 = Object.create(Button);
+  // 2- Impostazione solo dopo!
+  btn1.setup(125, 30, "Hello");
+
+  var btn2 = Object.create(Button);
+  btn2.setup(150, 40, "World");
+
+  btn1.build($body);
+  btn2.build($body);
+});
+```
+
+#### Vantaggi del Metodo OLOO
+
+Abbandonando la lotta contro la natura asimmetrica di JS, si ottengono questi vantaggi:
+
+1. **Parità tra gli Elementi:** Nessun genitore, nessuna classe base, ma solo oggetti semplici. Se `Button` non trova le funzioni che gli servono, delega la ricerca a `Widget`.
+2. **Si Evita l'omonimia (No Shadowing):** Imporre nomi predefiniti (es. \`render\`) tra livelli diversi impone poi trucchi scomodi. Differenziando le azioni (\`insert\` per `Widget` e \`build\` per `Button`), il codice diventa chiaro a prima vista senza farsi calpestare dai cloni.
+3. **Meno sintassi spazzatura:** Sono state escluse chiamate incomprensibili legati al \`new\`, l'utilizzo di finti costruttori derivati da \`prototype\` e trucchetti in formato classe sfuggenti. L'ossatura relazionale è priva di distrazioni visive.
+4. **Dividere i momenti Costruttivi/Configurativi:** Se si utilizzano i nuovi costruttori, l'istanziamento (`new Button`) costringe anche alla dichiarazione degli argomenti annessi tutto in un colpo. In OLOO si fa appello in un frammento limitato la formattazione `Object.create()`, ma è possibile richiamare gli asset di avvio `setup()` mesi o perfino anni prima di presentarne a video l'esibizione finale. Un processo assai più comodo se occorre ritardare o anticipare un settaggio.
+
+
+### 9.9 Architettura del Codice: I Limiti del Design OO
+
+Oltre a semplificare la sintassi, il pattern OLOO (delegazione strutturata) aiuta a mantenere l'intera architettura del programma più pulita. Per capirne il motivo, è utile analizzare uno scenario un po' più elaborato: la gestione di un login.
+
+Si immagini di aver bisogno di due controllori separati: uno per gestire la schermata del modulo utente (`LoginController`) e uno per occuparsi della comunicazione col server (`AuthController`).
+
+Nel classico modello Orientato agli Oggetti (OO), si crea di solito una classe padre generica (`Controller`) che contiene i messaggi di base (come mostrare una finestra di successo o di errore), e poi due classi figlie che ne ereditano le funzioni.
+
+```javascript
+// Costruttore della classe padre
+function Controller() {
+  this.errors = [];
+}
+
+Controller.prototype.showDialog = function(title, msg) {
+  // Mostra titolo e messaggio all'utente...
+};
+
+Controller.prototype.success = function(msg) {
+  this.showDialog("Successo", msg);
+};
+
+Controller.prototype.failure = function(err) {
+  this.errors.push(err);
+  this.showDialog("Errore", err);
+};
+
+// Classe figlia per il modulo di login
+function LoginController() {
+  Controller.call(this); // Richiama il genitore
+}
+// Collega i prototipi per "l'ereditarietà"
+LoginController.prototype = Object.create(Controller.prototype);
+
+LoginController.prototype.getUser = function() {
+  return document.getElementById("login_username").value;
+};
+
+LoginController.prototype.getPassword = function() {
+  return document.getElementById("login_password").value;
+};
+
+LoginController.prototype.validateEntry = function(user, pw) {
+  user = user || this.getUser();
+  pw = pw || this.getPassword();
+
+  if (!(user && pw)) {
+    return this.failure("Inserire nome utente e password!");
+  } else if (user.length < 5) {
+    return this.failure("La password deve avere almeno 5 caratteri!");
+  }
+  return true;
+};
+
+// Sovrascrive il metodo base failure()
+LoginController.prototype.failure = function(err) {
+  // Chiamata faticosa al metodo genitore (finto "super")
+  Controller.prototype.failure.call(this, "Login non valido: " + err);
+};
+
+// Classe figlia per l'autenticazione vera e propria
+function AuthController(login) {
+  Controller.call(this); // Richiama il genitore
+  // Oltre all'ereditarietà, serve una composizione manuale
+  this.login = login;
+}
+// Collega i prototipi
+AuthController.prototype = Object.create(Controller.prototype);
+
+AuthController.prototype.server = function(url, data) {
+  return $.ajax({ url: url, data: data });
+};
+
+AuthController.prototype.checkAuth = function() {
+  var user = this.login.getUser();
+  var pw = this.login.getPassword();
+
+  if (this.login.validateEntry(user, pw)) {
+    this.server("/check-auth", { user: user, pw: pw })
+      .then(this.success.bind(this))
+      .fail(this.failure.bind(this));
+  }
+};
+
+// Sovrascrive il metodo base success()
+AuthController.prototype.success = function() {
+  Controller.prototype.success.call(this, "Autenticato!");
+};
+
+// Sovrascrive il metodo base failure()
+AuthController.prototype.failure = function(err) {
+  Controller.prototype.failure.call(this, "Autenticazione fallita: " + err);
+};
+
+// --- Esempio d'uso ---
+// Si passa l'istanza di Login dentro Auth (Composizione!)
+var auth = new AuthController(new LoginController());
+auth.checkAuth();
+```
+
+#### I Problemi Pratici di questa Struttura
+
+Se si osserva con attenzione l'architettura appena costruita, emergono due grandi complicazioni:
+
+1. **Sovrascritture goffe:** Le classi figlie hanno il disperato bisogno di modificare leggermente i messaggi inviati dalla classe padre (`success` e `failure`). Per farlo, sono costrette a sovrascrivere il metodo base chiamandolo con sintassi lunghissime e confusionarie come `Controller.prototype.failure.call(this, ...)`.
+2. **Mischiare Ereditarietà e Composizione:** Dato che `AuthController` ha bisogno di usare i dati intercettati da `LoginController`, i due elementi devono collaborare. Tuttavia, non possono ereditare l'uno dall'altro, perché logicamente uno non è un derivato dell'altro (sarebbe un grave errore logico di design). La soluzione adottata è la cosiddetta *composizione*: si crea il `LoginController` e glielo si passa fisicamente dentro, salvandolo in una variabile `this.login`.
+
+Il risultato è un'infrastruttura rigida, piena di parentesi incrociate, "bende" per far funzionare i distaccamenti e collegamenti artificiali tra oggetti. Invece di semplificare il lavoro, il costrutto fittizio delle "classi" in JavaScript appesantisce inutilmente il quadro generale del progetto.

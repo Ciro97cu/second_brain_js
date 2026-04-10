@@ -14087,3 +14087,257 @@ Se si osserva con attenzione l'architettura appena costruita, emergono due grand
 2. **Mischiare Ereditarietà e Composizione:** Dato che `AuthController` ha bisogno di usare i dati intercettati da `LoginController`, i due elementi devono collaborare. Tuttavia, non possono ereditare l'uno dall'altro, perché logicamente uno non è un derivato dell'altro (sarebbe un grave errore logico di design). La soluzione adottata è la cosiddetta *composizione*: si crea il `LoginController` e glielo si passa fisicamente dentro, salvandolo in una variabile `this.login`.
 
 Il risultato è un'infrastruttura rigida, piena di parentesi incrociate, "bende" per far funzionare i distaccamenti e collegamenti artificiali tra oggetti. Invece di semplificare il lavoro, il costrutto fittizio delle "classi" in JavaScript appesantisce inutilmente il quadro generale del progetto.
+
+
+### 9.10 Architettura del Codice: La Semplicità di OLOO
+
+Dopo aver visto le complicazioni del modello Orientato agli Oggetti (OO) nel gestire pannelli e comunicazioni col server, è possibile risolvere lo stesso identico problema sfruttando la delegazione pura (OLOO). 
+
+Non c'è più bisogno di inventare finte classi genitore astratte (come `Controller`), non serve l'ereditarietà e non c'è alcun bisogno di mischiare le cose usando la composizione. Si possono banalmente definire due oggetti paritetici.
+
+```javascript
+var LoginController = {
+  errors: [],
+  getUser: function() {
+    return document.getElementById("login_username").value;
+  },
+  getPassword: function() {
+    return document.getElementById("login_password").value;
+  },
+  validateEntry: function(user, pw) {
+    user = user || this.getUser();
+    pw = pw || this.getPassword();
+
+    if (!(user && pw)) {
+      return this.failure("Inserire nome utente e password!");
+    } else if (user.length < 5) {
+      return this.failure("La password deve avere almeno 5 caratteri!");
+    }
+    // Dati validati
+    return true;
+  },
+  showDialog: function(title, msg) {
+    // Mostra un messaggio all'utente...
+  },
+  failure: function(err) {
+    this.errors.push(err);
+    this.showDialog("Errore", "Login non valido: " + err);
+  }
+};
+
+// Si crea AuthController collegandolo direttamente a LoginController
+var AuthController = Object.create(LoginController);
+AuthController.errors = [];
+
+AuthController.checkAuth = function() {
+  var user = this.getUser();
+  var pw = this.getPassword();
+
+  if (this.validateEntry(user, pw)) {
+    this.server("/check-auth", { user: user, pw: pw })
+      .then(this.accepted.bind(this))
+      .fail(this.rejected.bind(this));
+  }
+};
+
+AuthController.server = function(url, data) {
+  return $.ajax({ url: url, data: data });
+};
+
+AuthController.accepted = function() {
+  this.showDialog("Successo", "Autenticato!");
+};
+
+AuthController.rejected = function(err) {
+  this.failure("Autenticazione fallita: " + err);
+};
+```
+
+Siccome `AuthController` è già un oggetto reale e pronto all'uso (esattamente come `LoginController`), non è necessario "costruirlo" tramite la parola chiave `new`. Per avviare il processo basta eseguire direttamente:
+
+```javascript
+AuthController.checkAuth();
+```
+
+Se in futuro servissero più istanze di questo stesso controllore per compiti diversi, basterebbe creare nuovi oggetti delegati, mantenendo il codice pulitissimo:
+
+```javascript
+var controller1 = Object.create(AuthController);
+var controller2 = Object.create(AuthController);
+```
+
+#### I Vantaggi del Design OLOO
+
+Il fulcro di questa soluzione è che `LoginController` e `AuthController` sono solo oggetti, compagni alla pari, e non sono incastrati in logiche genitore/figlio. `AuthController` si limita a chiedere aiuto a `LoginController` (delega) quando non trova una funzione al proprio interno.
+
+I vantaggi di questa architettura rispetto a quella classica sono enormi:
+
+1. **Meno elementi da gestire:** Si è passati da tre classi separate (un genitore `Controller` e due figli) a soli due oggetti essenziali. Nessuno ha dovuto simulare comportamenti generici per "condividerli".
+2. **Nessuna composizione forzata:** `AuthController` può usare liberamente le funzioni dell'altro oggetto sfruttando il semplice legame di delega, senza doversi salvare al proprio interno una copia del modulo di login (evitando la complessa operazione vista nell'esempio OO).
+3. **Nomi specifici (nessun conflitto):** Invece di usare gli stessi nomi generici (`success` e `failure`) ovunque e doverli sovrascrivere richiamando scomodamente la funzione base originale, si usano nomi chiari, specifici e diversi. Si ha `accepted` e `rejected` per l'autenticazione, `showDialog` e `failure` per il form di base. Meno sovrapposizioni equivalgono a meno fatica mentale e a una lettura molto più fluida.
+
+Il risultato finale offre le medesime capacità dello script precedente, ma con un'impalcatura drasticamente più logica e trasparente. Questa è la vera forza del codice in stile OLOO.
+
+
+### 9.11 OLOO e Sintassi ES6: Metodi Concisi e Limiti
+
+Uno dei motivi principali per cui le classi introdotte con ES6 attraggono molti programmatori è la loro sintassi pulita, in particolare la possibilità di omettere la parola chiave `function` quando si dichiarano i metodi.
+
+Fortunatamente, questa comodità sintattica non è un'esclusiva delle finte classi. ECMAScript 6 permette di usare i cosiddetti "metodi concisi" (concise methods) all'interno di qualsiasi oggetto letterale comunissimo. Questo rende il codice scritto in stile OLOO altrettanto pulito ed elegante.
+
+```javascript
+var LoginController = {
+  errors: [],
+  getUser() { // La parola "function" è sparita!
+    return document.getElementById("login_username").value;
+  },
+  getPassword() {
+    return document.getElementById("login_password").value;
+  }
+};
+```
+
+Inoltre, per evitare di dichiarare i metodi uno ad uno su un oggetto delegato (come visto nel blocco precedente per `AuthController`), si possono sfruttare i metodi concisi raggruppando tutto assieme dentro le parentesi graffe dell'oggetto. Una volta creato l'oggetto in forma pulita, lo si può collegare al suo delegato tramite il comando nativo `Object.setPrototypeOf()`.
+
+```javascript
+// Si usa la sintassi compatta per creare prima l'intero oggetto
+var AuthController = {
+  errors: [],
+  checkAuth() {
+    // ...
+  },
+  server(url, data) {
+    // ...
+  }
+};
+
+// ORA si interviene per collegare AuthController al suo appoggio LoginController
+Object.setPrototypeOf(AuthController, LoginController);
+```
+
+In questo modo si ottiene il meglio di entrambi i fronti: la forza strutturale della delegazione pura e l'eleganza estetica dell'ultimo standard JavaScript, senza il pesante bagaglio richiesto dalla keyword `class`.
+
+#### Il Difetto dei Metodi Concisi (Funzioni Anonime)
+
+Esiste tuttavia un dettaglio insidioso nell'adottare questa scorciatoia sintattica. Quando si scrive un metodo in forma concisa, il motore JavaScript lo valuta e traduce sotto il cofano come una normalissima funzione anonima.
+
+```javascript
+var Foo = {
+  // Metodo conciso (diventa anonimo in memoria)
+  bar() { /* .. */ },
+  
+  // Metodo esplicito con funzione nominata
+  baz: function baz() { /* .. */ }
+};
+```
+
+Il fatto che `bar()` equivalga a `bar: function() { ... }` comporta un limite pratico. Priva di un nome interno (identificatore lessicale), risulta enormemente difficile per la funzione stessa auto-referenziarsi. Riferirsi a sé stessi è essenziale quando una funzione deve comportarsi in modo ricorsivo (chiamare sé stessa) o quando deve rimuovere il proprio stesso ascolto da un evento del DOM (unbinding).
+
+```javascript
+var Foo = {
+  bar: function(x) {
+    if (x < 10) {
+      // Ci si deve affidare al percorso intero Foo.bar(x*2)
+      // Una soluzione fragile che fallisce facilmente
+      // se le deleghe cambiano o il `this` si sposta
+      return Foo.bar(x * 2);
+    }
+    return x;
+  },
+  baz: function baz(x) {
+    if (x < 10) {
+      // Il nome interno "baz" è un aggancio sempre sicuro 
+      // e indistruttibile, non dipende dal contenitore
+      return baz(x * 2);
+    }
+    return x;
+  }
+};
+```
+
+Se insorge mai la necessità di far richiamare una funzione a sé stessa, la soluzione più matura e responsabile è rinunciare all'eleganza della sintassi concisa solo per quel preciso metodo, preferendo la vecchia forma estesa e sicura: `nome: function nome() { ... }`.
+
+
+### 9.12 Il Riconoscimento degli Oggetti (Introspezione)
+
+Chi programma utilizzando l'approccio Orientato agli Oggetti (OO) è solito usare l'introspezione (type introspection): un controllo per ispezionare un'istanza e capire da quale struttura è stata generata, in modo da sapere in anticipo quali funzioni può utilizzare.
+
+Nello stile a classi in JavaScript, questo controllo si esegue comunemente con l'operatore `instanceof`.
+
+```javascript
+function Foo() { /* ... */ }
+Foo.prototype.something = function() { /* ... */ };
+
+var a1 = new Foo();
+
+// Controllo per capire se a1 è un'istanza di Foo
+if (a1 instanceof Foo) {
+  a1.something();
+}
+```
+
+Sebbene la sintassi sembri ovvia, `instanceof` inganna meccanicamente chi legge. Non sta davvero verificando se `a1` è una "figlia" creata dalla classe `Foo`. Sta solo controllando se `a1` è collegato fisicamente a uno specifico oggetto distaccato, ovvero a `Foo.prototype`.
+
+La confusione ed il disagio visivo esplodono quando si cerca di controllare le relazioni tra intere catene di finti padri/figli (ad esempio un genitore `Foo`, un figlio `Bar` e l'oggetto finale `b1`). Per ispezionare le parentele, il codice impone sintassi pesantissime:
+
+```javascript
+// Controllo la relazione tra la "classe genitore" Foo e il "figlio" Bar
+Bar.prototype instanceof Foo; // true
+Object.getPrototypeOf(Bar.prototype) === Foo.prototype; // true
+Foo.prototype.isPrototypeOf(Bar.prototype); // true
+
+// Controllo la relazione tra l'oggetto prodotto b1 e le sue "classi"
+b1 instanceof Foo; // true
+b1 instanceof Bar; // true
+Object.getPrototypeOf(b1) === Bar.prototype; // true
+Foo.prototype.isPrototypeOf(b1); // true
+Bar.prototype.isPrototypeOf(b1); // true
+```
+
+È evidente come tutto questo appoggiarsi a `.prototype` renda la lettura del software macchinosa e frustrante. Un approccio logico che dovrebbe essere intuitivo (chiedersi banalmente se "Bar è un Foo") in JavaScript richiede sforzi e accrocchi semantici.
+
+#### Il Duck Typing (Tipizzazione a Papera)
+
+Per evitare la bruttura o la complessità di `instanceof`, moltissimi programmatori preferiscono affidarsi al pattern detto "Duck Typing". La regola d'oro si basa su un celebre detto: *"se sembra una papera, e fa quack come una papera, allora deve essere una papera"*.
+
+Seguendo questo concetto, invece di interrogare l'oggetto per capire le sue origini e il suo creatore, si controlla banalmente se in quel momento possiede l'azione che si vuole innescare:
+
+```javascript
+// Se l'oggetto ha il metodo "something", lo eseguo a prescindere dal suo passato
+if (a1.something) {
+  a1.something();
+}
+```
+
+Questo approccio è popolarissimo proprio per la sua rapidità sintattica, ma comporta un rischio strutturale profondo. Presumere la vera natura di un file o di un blocco di dati solo perché possiede per coincidenza una funzione con un certo nome crea design molto fragili. 
+Un caso clamoroso riguarda le Promise (le promesse asincrone) in JavaScript: originariamente il linguaggio stabilì che un oggetto venisse considerato una promessa legittima semplicemente assicurandosi che possedesse un metodo chiamato `then()`. Pertanto, se nel codice esiste un normalissimo oggetto privo di legami asincroni che però ha un banale metodo chiamato casualmente `.then()`, la piattaforma correva il rischio scambiarlo ciecamente per una Promise, innescando crash inspiegabili. Il Duck Typing va perciò gestito con severissima attenzione e circoscritto ad ambienti chiusi in cui gli elementi scambiati sono noti.
+
+#### L'Introspezione Limpida del Pattern OLOO
+
+Abbracciando l'ormai noto stile della delegazione comportamentale (OLOO - Objects Linked to Other Objects), ispezionare le reti tra dati diventa un'operazione tersa.
+Appoggiandosi solo su puri oggetti legati tra loro (grazie a `Object.create()`), evaporano le fittizie costruzioni con la parola new e l'ambiguo operatore `instanceof`.
+
+```javascript
+// Creazione pura, priva di costruttori
+var Foo = { /* ... */ };
+var Bar = Object.create(Foo);
+var b1 = Object.create(Bar);
+
+// Relazioni di ispezione immediate, senza l'uso di .prototype!
+Foo.isPrototypeOf(Bar); // true
+Object.getPrototypeOf(Bar) === Foo; // true
+
+Foo.isPrototypeOf(b1); // true
+Bar.isPrototypeOf(b1); // true
+Object.getPrototypeOf(b1) === Bar; // true
+```
+
+Non occorre più scervellarsi sul perché aggiungere `.prototype` per fare un controllo che a rigore di logica non lo richiederebbe. Ci si limita a domandare all'esecutore: *"Sei tu per caso un delegato in soccorso di questo oggetto?"* usando `isPrototypeOf()`. Si smaschera la finzione delle classi in favore della precisione oggettuale.
+
+### 9.13 Riepilogo: Classi vs Delegazione (OLOO)
+
+A chiusura del ragionamento, ne emerge un forte quadro logico. Adottare il pattern a Classi e ad Ereditarietà è solamente una scelta architetturale tra le decine esistenti nel software, non una legge universale e non necessariamente "l'unica strada giusta".
+
+Eppure, in un ambiente peculiare come JavaScript, lo scenario di fondo è cristallino. Il meccanismo centrale `[[Prototype]]` che permette a JS di funzionare è una creatura progettata costituzionalmente e unicamente per innescare **la delegazione comportamentale**.
+
+Di fronte alla natura fisiologica del linguaggio, un programmatore consapevole siede dinanzi a due percorsi. Può intestardirsi nel simulare ardue meccaniche legate alle Classi, scontrandosi immancabilmente con trabocchetti visivi ed eccezioni ingannevoli generati dal motore JavaScript nel disperato tentativo di obbedirgli; oppure, più proficuamente, può allentare la presa assecondando la natura del delegato. Organizzando il lavoro sotto le vesti del pattern OLOO (oggetti paritetici affiancati e deleganti orizzontali), non sfumerà alcun potenziale del software, ottenendo per puro compenso sintassi dirette e un codice straordinariamente logico e sostenibile.

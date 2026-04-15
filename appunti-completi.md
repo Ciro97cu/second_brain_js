@@ -14341,3 +14341,136 @@ A chiusura del ragionamento, ne emerge un forte quadro logico. Adottare il patte
 Eppure, in un ambiente peculiare come JavaScript, lo scenario di fondo è cristallino. Il meccanismo centrale `[[Prototype]]` che permette a JS di funzionare è una creatura progettata costituzionalmente e unicamente per innescare **la delegazione comportamentale**.
 
 Di fronte alla natura fisiologica del linguaggio, un programmatore consapevole siede dinanzi a due percorsi. Può intestardirsi nel simulare ardue meccaniche legate alle Classi, scontrandosi immancabilmente con trabocchetti visivi ed eccezioni ingannevoli generati dal motore JavaScript nel disperato tentativo di obbedirgli; oppure, più proficuamente, può allentare la presa assecondando la natura del delegato. Organizzando il lavoro sotto le vesti del pattern OLOO (oggetti paritetici affiancati e deleganti orizzontali), non sfumerà alcun potenziale del software, ottenendo per puro compenso sintassi dirette e un codice straordinariamente logico e sostenibile.
+
+
+## 10. Le Classi in ES6: Sintassi e Insidie
+
+### 10.1 I Vantaggi Formali
+
+L'introduzione della parola chiave `class` nello standard ECMAScript 6 ha lo scopo di fornire una sintassi più pulita per chi proviene da linguaggi orientati agli oggetti tradizionali.
+
+Riprendendo l'esempio dei widget per l'interfaccia utente (UI), l'implementazione con la nuova sintassi appare molto più snella rispetto alla manipolazione manuale dei prototipi:
+
+```javascript
+class Widget {
+  constructor(width, height) {
+    this.width = width || 50;
+    this.height = height || 50;
+    this.$elem = null;
+  }
+  
+  render($where) {
+    if (this.$elem) {
+      this.$elem.css({
+        width: this.width + "px",
+        height: this.height + "px"
+      }).appendTo($where);
+    }
+  }
+}
+
+class Button extends Widget {
+  constructor(width, height, label) {
+    // Chiama il costruttore del genitore
+    super(width, height);
+    this.label = label || "Default";
+    this.$elem = $("<button>").text(this.label);
+  }
+  
+  render($where) {
+    // Chiama il metodo render del genitore
+    super($where);
+    this.$elem.click(this.onClick.bind(this));
+  }
+  
+  onClick(evt) {
+    console.log("Pulsante '" + this.label + "' cliccato!");
+  }
+}
+```
+
+Oltre al netto miglioramento estetico, questa sintassi risolve diverse criticità strutturali:
+
+1. **Scomparsa dei prototipi**: I fastidiosi riferimenti diretti a `.prototype` vengono per lo più nascosti.
+2. **Ereditarietà semplificata**: L'operatore `extends` collega automaticamente gli oggetti senza dover ricorrere a complesse operazioni manuali (come `Object.create()`).
+3. **Polimorfismo relativo**: La funzione `super()` permette di invocare agilmente metodi o costruttori dell'oggetto genitore, risolvendo il vecchio problema delle funzioni slegate dalle loro stesse classi.
+4. **Protezione dei dati**: La sintassi permette di dichiarare solo metodi e non proprietà pubbliche. Questo ostacola la creazione imprevista di stati condivisi tra le istanze, confinando i dati ai costruttori.
+5. **Estensione dei tipi nativi**: Grazie a `extends` diventa facilissimo espandere il comportamento degli oggetti basilari di JavaScript (come `Array` o `RegExp`), operazione in passato estremamente frustrante.
+
+### 10.2 Le Insidie Nascoste (Gotchas)
+
+Nonostante il codice appaia finalmente elegante, utilizzare le classi come pattern di design in JavaScript apre a criticità profonde. Il problema di fondo è che la parola chiave `class` finge l'esistenza di un vero sistema a classi, ma rappresenta unicamente dello "zucchero sintattico" appoggiato sulla normale delega dei prototipi.
+
+#### L'Illusione della Copia Statica
+Nei classici linguaggi orientati agli oggetti, dichiarare una classe significa creare uno stampo rigido. Quando si istanzia un oggetto, le sue funzionalità vengono copiate staticamente in memoria. 
+In JavaScript questo non avviene: i "figli" si limitano ad essere raccordati tramite `[[Prototype]]` ai genitori. Se il genitore subisce alterazioni nel tempo, queste modifiche si propagano tragicamente su tutti i figli passati e futuri.
+
+```javascript
+class C {
+  constructor() {
+    this.num = Math.random();
+  }
+  rand() {
+    console.log("Random: " + this.num);
+  }
+}
+
+var c1 = new C();
+c1.rand(); // "Random: 0.4324..."
+
+// Alterazione del metodo a sorgente tradendo la sintassi a classi
+C.prototype.rand = function() {
+  console.log("Random (arrotondato): " + Math.round(this.num * 1000));
+};
+
+var c2 = new C();
+c2.rand(); // "Random (arrotondato): 867"
+
+// OPS: anche l'istanza vecchia, c1, subisce la mutazione in tempo reale!
+c1.rand(); // "Random (arrotondato): 432"
+```
+
+Appoggiarsi ad una facciata che mima un linguaggio classico per poi scoprire che la struttura crolla davanti a comportamenti peculiari del linguaggio rende vano l'uso stesso di `class`.
+
+#### Esposizione dei Dettagli (Leakage)
+Siccome la sintassi ES6 non permette di definire proprietà scoperte condivise, qualora vi fosse l'esigenza di condividere una variabile pura tra tutte le istanze, si verrà obbligati a rinunciare all'astrazione, richiamando forzatamente il fastidioso `.prototype` all'esterno del blocco. Questo rovina totalmente il proposito per cui le classi erano state adottate.
+
+```javascript
+class C {
+  constructor() {
+    C.prototype.count++;
+    console.log("Ciao: " + this.count);
+  }
+}
+
+// Si espone dolorosamente l'infrastruttura tecnica
+C.prototype.count = 0;
+
+var c1 = new C(); // Ciao: 1
+var c2 = new C(); // Ciao: 2
+```
+
+Inoltre, persiste il grave pericolo dello Shadowing Accidentale (mascheramento): se nel costruttore si crea involontariamente una variabile con lo stesso nome di un metodo della classe, la logica andrà in errore, poiché il valore sovrascriverà la funzione.
+
+```javascript
+class C {
+  constructor(id) {
+    // Errore logico: this.id nasconde e distrugge il metodo id()
+    this.id = id; 
+  }
+  id() {
+    console.log("Id: " + this.id);
+  }
+}
+
+var c1 = new C("mio_id");
+c1.id(); // TypeError: c1.id non è più una funzione, è diventato la stringa "mio_id"
+```
+
+#### L'Ambiguità Dinamica di "super"
+Il comportamento di `super` crea aspettative tradite. Considerato lo stretto rapporto di parentela con la parola chiave `this` (che varia agilmente in modo dinamico a seconda delle chiamate), un programmatore potrebbe presumere che anche `super` si ricalibri istantaneamente se un metodo viene prestato ad un altro oggetto delegato.
+
+Per motivi tecnici di performance, questo non accade: **il binding di `super` è statico**.
+Viene saldato ermeticamente alla classe al momento in cui quest'ultima viene dichiarata, e non si adatta alle circostanze esecutive. 
+
+Se si cerca di estrarre un metodo che fa uso di `super` per assegnarlo ad un altro oggetto, l'interprete punterà con totale ostinazione al vecchio genitore d'origine, spaccando logiche che con una normale delegazione pulita basata su `this` risolverebbero da sole il ricalcolo. Per poter forzare manualmente il rilocamento di `super`, il linguaggio costringe all'uso di funzioni manuali tortuose capaci di ricalibrare gli oggetti d'appoggio primari (i cosiddetti `[[HomeObject]]`), sconfiggendo l'obiettivo di avere una sintassi amichevole.

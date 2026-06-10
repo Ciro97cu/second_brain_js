@@ -73,19 +73,6 @@
     .search input { border: 1px solid #e6d96a; }
     .search { border-bottom: 1px solid #eee; }
     ::-webkit-scrollbar-thumb { background: var(--js-yellow-dark); border-radius: 6px; }
-
-    /* ===== Coverpage gialla ===== */
-    section.cover {
-      background: radial-gradient(circle at 50% 30%, #fff7c2 0%, #ffffff 70%) !important;
-    }
-    section.cover .cover-main .js-badge { font-size: 3.2rem; padding: .1em .25em; box-shadow: 0 6px 24px #f7df1e88; }
-    section.cover h1 { margin-top: 1rem; }
-    section.cover .cover-main > p:last-child a { border-radius: 2rem; border: 2px solid var(--js-yellow); }
-    section.cover .cover-main > p:last-child a:last-child {
-      background: var(--js-yellow); color: #000; border-color: var(--js-yellow); font-weight: 700;
-    }
-    section.cover .cover-main > p:last-child a:last-child:hover { background: #000; color: var(--js-yellow); }
-    section.cover blockquote p { font-size: 1.2rem; color: #555; }
   </style>
 </head>
 <body>
@@ -98,8 +85,6 @@
       // Sito a pagina singola: solo gli appunti completi.
       homepage: 'appunti-completi.md',
       loadSidebar: false,        // sidebar auto-generata dai titoli della pagina
-      coverpage: true,
-      onlyCover: false,
       auto2top: true,
       maxLevel: 3,               // sidebar: capitoli (##) + sottosezioni (###)
       search: {

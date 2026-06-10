@@ -79,6 +79,16 @@
   <div id="app">Caricamento...</div>
 
   <script>
+    // ===== Guard: blocca la navigazione diretta alle note atomiche =====
+    // I .md atomici restano nel repo (link intatti) ma non sono raggiungibili dalla doc pubblicata.
+    function isAllowedHash(hash) {
+      var path = (hash || '').replace(/^#/, '').split('?')[0].replace(/\/+$/, '');
+      return path === '' || path === '/' || path.indexOf('/appunti-completi') === 0;
+    }
+    function routeGuard() { if (!isAllowedHash(location.hash)) location.hash = '#/'; }
+    window.addEventListener('hashchange', routeGuard);
+    window.addEventListener('load', routeGuard);
+
     window.$docsify = {
       name: '<span class="app-name-link"><span class="js-badge">JS</span> Second Brain</span>',
       repo: 'https://github.com/Ciro97cu/second_brain_js',
@@ -88,6 +98,8 @@
       auto2top: true,
       maxLevel: 3,               // sidebar: capitoli (##) + sottosezioni (###)
       search: {
+        paths: ['/'],                  // indicizza SOLO gli appunti (home), non le note atomiche
+        namespace: 'jsbrain-appunti',  // invalida l'indice in cache che includeva le note atomiche
         placeholder: 'Cerca nelle sezioni...',
         noData: 'Nessun risultato.',
         depth: 6

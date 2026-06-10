@@ -1,0 +1,42 @@
+name: Deploy doc su GitHub Pages
+
+# Pubblica SOLO i file del sito (index.html, appunti-completi.md, assets/) sul
+# branch `gh-pages`. Le note atomiche restano su `main` ma NON finiscono online.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "appunti-completi.md"
+      - "index.html"
+      - "assets/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch: # permette l'avvio manuale dalla tab Actions
+
+permissions:
+  contents: write # serve a pushare sul branch gh-pages
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repository
+        uses: actions/checkout@v4
+
+      - name: Prepara la cartella pubblica (whitelist)
+        run: |
+          mkdir _site
+          cp index.html appunti-completi.md _site/
+          cp -r assets _site/assets
+          touch _site/.nojekyll
+
+      - name: Pubblica su gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages

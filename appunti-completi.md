@@ -1001,7 +1001,7 @@ for (let proprieta in persona) {
 // "eta: 30"
 ```
 
-È importante notare che `for...in` non è raccomandato per iterare sugli array, perché potrebbe includere proprietà inaspettate e non garantisce l'ordine degli elementi. Per gli array, `for...of` è la scelta corretta.
+È importante notare che `for...in` non è raccomandato per iterare sugli array, perché scorre tutte le proprietà enumerabili (comprese quelle ereditate dal prototipo o aggiunte manualmente), non solo gli indici numerici. Per gli array, `for...of` è la scelta corretta.
 
 #### Interrompere un Ciclo: break
 
@@ -1034,7 +1034,7 @@ L'uso dello strict mode è considerato una best practice per tutti i programmi J
 
 Per attivare lo strict mode, è sufficiente inserire la direttiva `"use strict";` (una semplice stringa) all'inizio di un file o di una funzione. La sua posizione ne determina l'ambito di applicazione.
 
-- **A livello di file (globale)** → Se inserita all'inizio di un file, l'intera sceneggiatura verrà eseguita in modalità stretta.
+- **A livello di file (globale)** → Se inserita all'inizio di un file, l'intero script verrà eseguito in modalità stretta.
 
 ```javascript
 "use strict";
@@ -1085,7 +1085,7 @@ strictMode(); // Errore bloccato subito
 
 Questo costringe lo sviluppatore a dichiarare sempre esplicitamente le proprie variabili (con `let`, `const` o `var`), prevenendo bug difficili da tracciare.
 
-Se l'attivazione dello strict mode causa problemi nel tuo programma, non è un motivo per evitarlo. Al contrario, è un segnale che il tuo codice contiene delle "cattive pratiche" che devono essere corrette. Affrontare questi problemi rende il codice più affidabile e allineato agli standard moderni.
+Se l'attivazione dello strict mode causa problemi nel programma, non è un motivo per evitarlo. Al contrario, è un segnale che il codice contiene delle "cattive pratiche" che devono essere corrette. Affrontare questi problemi rende il codice più affidabile e allineato agli standard moderni.
 
 ---
 
@@ -1997,7 +1997,7 @@ for (let v of mioOggetto) {
 
 Questa flessibilità permette di creare iteratori custom innumerevoli o complessi, come algoritmi che calcolano costantemente il prossimo nodo logico o generatori "infiniti" di numeri casuali intercettabili poi con l'uso dei comandi `break` o interruzioni logiche dirette dei cicli for.
 
-> **Nota sull'ordine**: Quando si scorrono gli elementi di un array, l'ordinamento è perfettamente numerico e garantito dal linguaggio. Contrariamente, quando si ispezionano o si tenta di iterare le proprietà enumerabili di un generico oggetto (come nell'iteratore custom dell'esempio), l'**ordine di iterazione delle chiavi/proprietà generiche di un oggetto non è formalmente garantito** con coerenza assoluta tra i vari engine JS mondiali (risulta impreciso contarci ad occhi chiusi).
+> **Nota sull'ordine**: Quando si scorrono gli elementi di un array, l'ordinamento è perfettamente numerico e garantito dal linguaggio. Per le proprietà di un generico oggetto, invece, dalla specifica ES2015 in poi l'ordine di iterazione è definito: prima le chiavi che sono indici interi non negativi (in ordine numerico crescente), poi le altre chiavi stringa nell'ordine di inserimento. Resta comunque buona norma non basare la logica sull'ordine quando l'unico scopo è leggere i valori.
 
 #### Sottotipi di Oggetto: Array e Funzioni
 
@@ -2845,10 +2845,10 @@ La sintassi di una IIFE può sembrare insolita a prima vista, ma è molto logica
   console.log("IIFE con nome");
 })();
 
-// Sintassi alternativa (parentesi di chiamata dentro)
+// Sintassi alternativa (parentesi di invocazione DENTRO)
 (function () {
   console.log("Sintassi alternativa");
-})();
+}());
 
 // Con arrow function (ES6+)
 (() => {
@@ -3627,7 +3627,7 @@ ES6 introduce un supporto sintattico di prima classe per il concetto di moduli. 
 
 A differenza dei moduli basati su funzioni, che non sono un pattern staticamente riconosciuto dal compilatore (e la cui semantica viene considerata solo a runtime), le API dei moduli ES6 sono statiche. Questo significa che l'API non cambia a runtime. Poiché il compilatore è a conoscenza di ciò, può verificare durante la compilazione (e il caricamento del file) che un riferimento a un membro di un modulo importato esista effettivamente. Se il riferimento non esiste, il compilatore solleva un errore "early" al momento della compilazione, invece di attendere la risoluzione dinamica a runtime.
 
-I moduli ES6 non hanno un formato "inline"; devono essere definiti in file separati (uno per modulo). I browser e gli engine dispongono di un "module loader" predefinito che carica in modo sincrono un file di modulo quando viene importato.
+I moduli ES6 non hanno un formato "inline"; devono essere definiti in file separati (uno per modulo). I browser e gli engine dispongono di un "module loader" predefinito che carica i file di modulo in modo asincrono quando vengono importati, risolvendone le dipendenze prima dell'esecuzione.
 
 Si consideri il seguente esempio suddiviso in file:
 
@@ -3638,14 +3638,14 @@ function hello(who) {
   return "Let me introduce: " + who;
 }
 
-export hello;
+export { hello };
 ```
 
 **foo.js**
 
 ```javascript
 // import solo `hello()` dal modulo "bar"
-import hello from "bar";
+import { hello } from "bar";
 
 var hungry = "hippo";
 
@@ -3653,23 +3653,23 @@ function awesome() {
   console.log(hello(hungry).toUpperCase());
 }
 
-export awesome;
+export { awesome };
 ```
 
 **baz.js**
 
 ```javascript
 // import dell'intero modulo "foo" e "bar"
-module foo from "foo";
-module bar from "bar";
+import * as foo from "foo";
+import * as bar from "bar";
 
 console.log(bar.hello("rhino")); // Let me introduce: rhino
 foo.awesome(); // LET ME INTRODUCE: HIPPO
 ```
 
-In questo scenario, `import` importa uno o più membri dall'API di un modulo nello Scope corrente, legandoli a una variabile (es. hello). La keyword `module` (nota: nella specifica finale ES6 standardizzata come `import * as name`) importa l'intera API del modulo. `export` esporta un identificatore (variabile, funzione) nell'API pubblica del modulo corrente.
+In questo scenario, `import { nome } from "..."` importa uno o più membri specifici dall'API di un modulo nello Scope corrente, mentre `import * as nome from "..."` importa l'intera API del modulo legandola a un singolo oggetto. `export { nome }` espone un identificatore (variabile, funzione) nell'API pubblica del modulo corrente.
 
-Il contenuto all'interno del file del modulo viene trattato come se fosse racchiuso in una Scope Closure, esattamente come accade con i moduli basati su funzioni visti in precedentemente.
+Il contenuto all'interno del file del modulo viene trattato come se fosse racchiuso in una Scope Closure, esattamente come accade con i moduli basati su funzioni visti in precedenza.
 
 ### 3.11 L'identificatore this
 
@@ -3759,7 +3759,7 @@ Esistono quattro regole principali che determinano il valore di `this`, illustra
 
 #### Confusioni
 
-Prima di spiegare come `this` funziona realmente, è necessario dissipare alcuni equivoci su come NON funziona. Il nome "this" crea confusione quando gli sviluppatori cercano di pensarlo in modo troppo letterale. Esistono due significati spesso assunti, ma entrambi sono incorretti.
+Prima di spiegare come `this` funziona realmente, è necessario dissipare alcuni equivoci su come NON funziona. Il nome "this" crea confusione quando gli sviluppatori cercano di pensarlo in modo troppo letterale. Esistono due significati spesso assunti, ma entrambi sono errati.
 
 Il principio fondamentale da comprendere è che quando una funzione contiene un riferimento a `this`, quel riferimento punta a un oggetto. Tuttavia, **l'oggetto a cui punta dipende esclusivamente da come la funzione viene chiamata** (call-site), non da dove è stata definita o scritta. Si tratta di un binding dinamico determinato al momento dell'invocazione.
 
@@ -4016,7 +4016,7 @@ Per diagnosticare il binding di `this`:
 
 Dopo aver compreso il call-site, è il momento di vedere come esso determina dove `this` punterà durante l'esecuzione di una funzione.
 
-È necessario ispezionare il call-site e determinare quale delle **quattro regole** si applica. Prima spiegheremo ciascuna delle quattro regole in modo indipendente, poi illustreremo il loro ordine di precedenza quando più regole potrebbero applicarsi allo stesso call-site.
+È necessario ispezionare il call-site e determinare quale delle **quattro regole** si applica. Di seguito ciascuna delle quattro regole viene spiegata in modo indipendente; successivamente si illustra il loro ordine di precedenza quando più regole potrebbero applicarsi allo stesso call-site.
 
 Le quattro regole sono già state introdotte in precedenza (default binding, implicit binding, explicit binding, new binding). Si esaminano ora esempi dettagliati di ciascuna.
 
@@ -4296,7 +4296,7 @@ somma.apply(utente, [5, 3]); // apply: argomenti in array
 
 **🔒 Hard Binding**
 
-Ma una variante dell'explicit binding risolve il problema. Consideriamo questo pattern:
+Ma una variante dell'explicit binding risolve il problema. Si consideri questo pattern:
 
 ```javascript
 function foo() {
@@ -4415,7 +4415,7 @@ var obj = {
 // 3 awesome
 ```
 
-Internamente, queste varie funzioni quasi certamente usano explicit binding tramite `call(..)` o `apply(..)`, risparmiandoti il lavoro.
+Internamente, queste varie funzioni quasi certamente usano explicit binding tramite `call(..)` o `apply(..)`, evitando di doverlo scrivere a mano.
 
 ##### 4. New Binding
 
@@ -4749,7 +4749,7 @@ bar(3); // a:2, b:3
 
 Entrambe queste utility richiedono un binding per `this` come primo parametro. Se le funzioni in questione **non si preoccupano di `this`**, è necessario un valore placeholder, e `null` potrebbe sembrare una scelta ragionevole come mostrato in questi snippet.
 
-**📝 Nota ES6+**: ES6 ha l'operatore **spread `...`**, che ti permette di "spargere" sintatticamente un array come parametri senza bisogno di `apply(..)`:
+**📝 Nota ES6+**: ES6 ha l'operatore **spread `...`**, che permette di "spargere" sintatticamente un array come parametri senza bisogno di `apply(..)`:
 
 ```javascript
 foo(...[1, 2]); // equivale a foo(1,2)
@@ -5585,7 +5585,7 @@ user.isActive = true;
 
 #### Il Sistema di Tipi in JavaScript
 
-Gli oggetti sono uno dei blocchi costruttivi fondamentali su cui è edificata gran parte di JavaScript. Fanno parte dei **sei tipi primari** (chiamati "language types" nella specifica ECMAScript) del linguaggio:
+Gli oggetti sono uno dei blocchi costruttivi fondamentali su cui è edificata gran parte di JavaScript. Fanno parte dei **sette tipi primari** (chiamati "language types" nella specifica ECMAScript) del linguaggio:
 
 1. **string**
 2. **number**
@@ -5593,6 +5593,7 @@ Gli oggetti sono uno dei blocchi costruttivi fondamentali su cui è edificata gr
 4. **null**
 5. **undefined**
 6. **object**
+7. **symbol** (introdotto in ES6; ES2020 ha poi aggiunto un ottavo tipo, **bigint**)
 
 ##### Primitivi Non Sono Oggetti
 
@@ -5951,7 +5952,7 @@ myObject["foobar"]; // "hello"
 myObject["foobaz"]; // "world"
 ```
 
-L'utilizzo più comune per i nomi di proprietà computati riguarderà probabilmente i **Symbols** (introdotti in ES6). In breve, un _Symbol_ è un tipo di dato primitivo che ha un valore opaco e non intuibile (tecnicamente una stringa). Poiché operare con il valore reale di un _Symbol_ è fortemente sconsigliato (visto che teoricamente potrebbe differire tra engine JS separati), si utilizza solitamente il nome associato ad esso (es. `Symbol.Something`):
+L'utilizzo più comune per i nomi di proprietà computati riguarderà probabilmente i **Symbols** (introdotti in ES6). In breve, un _Symbol_ è un tipo di dato primitivo con un valore interno opaco e non intuibile, garantito unico. Poiché tale valore non è leggibile né confrontabile direttamente, si utilizza sempre il nome associato al Symbol (es. `Symbol.Something`):
 
 ```javascript
 /*
@@ -6035,7 +6036,7 @@ myArray.baz; // "baz"
 
 > **Nota**: Sebbene tecnicamente si possa utilizzare un array alla stregua di un oggetto per contenere coppie chiave/valore ed astenersi dall'usare gli indici, questa pratica è fortemente sconsigliata. Gli array posseggono logiche interne e ottimizzazioni studiate per interfacciarsi agli indici numerici. Per i dettagli sulle best practice e il paragone strutturale con gli oggetti, si consiglia la lettura della sezione [3.7 Array](#array).
 
-È necessario prestare tuttavia attenzione quando si tenta di aggiungere una proprietà a un array usando una stringa che **appare in tutto e per tutto convertibile in un numero logico e rientrante negli estremi dell'indice** (es. la stringa `"3"`). In tale eventualità, essa non verrà salvata banalmente come proprietà testuale generica, bensì verrà elaborata come un reale indice numerico aggiornando la truttura e alterandone la lunghezza.
+È necessario prestare tuttavia attenzione quando si tenta di aggiungere una proprietà a un array usando una stringa che **appare in tutto e per tutto convertibile in un numero logico e rientrante negli estremi dell'indice** (es. la stringa `"3"`). In tale eventualità, essa non verrà salvata banalmente come proprietà testuale generica, bensì verrà elaborata come un reale indice numerico aggiornando la struttura e alterandone la lunghezza.
 
 ```javascript
 /*
@@ -6358,15 +6359,15 @@ In questo stadio la struttura è fissa, sebbene i valori preesistenti rimangano 
 
 Il livello apicale di restrizione nativa è il _congelamento_. `Object.freeze(..)` prende un oggetto e applica ad esso la medesima traccia di un `Object.seal(..)`, per poi iterare tra esso marcando tutte le proprietà d'accesso con attributo descrittore `writable: false`.
 
-Si ottiene pertanto un oggetto corazzato e statico in modo totale al livello base (nessuna neo proprietà, cancellazione, ridefinizione ed ora, nemmeno modifica di volore).
+Si ottiene pertanto un oggetto corazzato e statico al livello base (nessuna nuova proprietà, nessuna cancellazione, nessuna ridefinizione e nemmeno modifica di valore).
 
 Come chiarito inizialmente, un'immutabilità assoluta e profonda che travalichi la _shallow copy_ si otterrebbe logicamente applicando un `freeze(..)` iniziale e susseguente ricorsione logica di richiamo verso ogni oggetto ad albero contenuto; un'operazione da considerare con molta attenzione per la sua tendenza a freezare indiscriminatamente diramazioni potenzialmente condivise con altre parti dell'applicazione non contemplate.
 
-#### Operazioni Interne: [[Get]] e [[Put]]
+#### Operazioni Interne: `[[Get]]` e `[[Put]]`
 
 In JavaScript, l'accesso e l'assegnamento ai valori di un oggetto non si limitano a una banale lettura o scrittura nella memoria. Sotto il cofano, il motore delega queste azioni a due specifiche operazioni interne al linguaggio: `[[Get]]` e `[[Put]]`.
 
-**Che cos'è l'operazione [[Get]]?**
+**Che cos'è l'operazione `[[Get]]`?**
 L'operazione interna `[[Get]]` è un meccanismo che si attiva automaticamente ogni volta che si cerca di leggere il valore di una proprietà da un oggetto (ad esempio scrivendo `myObject.a`).
 
 Quando scatta, `[[Get]]` per prima cosa cerca la proprietà direttamente dentro l'oggetto. Se la trova, restituisce il valore. Se non la trova, non si ferma, ma continua a cercare risalendo la catena del `[[Prototype]]` (che verrà approfondito nelle sezioni successive).
@@ -6396,7 +6397,7 @@ console.log(myObject.b); // undefined
 
 > **Nota**: Questo comportamento tollerante può creare ambiguità. Se il risultato è `undefined` (es. `console.log(myObj.a) === undefined`), non si può capire a colpo d'occhio se la proprietà non esiste affatto, o se esiste ma le è stato assegnato volontariamente il valore `undefined`. Ci sono tecniche specifiche per capire l'effettiva "esistenza" di una proprietà (spiegate nei prossimi paragrafi).
 
-**Che cos'è l'operazione [[Put]]?**
+**Che cos'è l'operazione `[[Put]]`?**
 Proprio come esiste `[[Get]]` per leggere, esiste la sua controparte per scrivere: `[[Put]]`. Questa operazione interna si innesca quando si tenta di creare o modificare una proprietà (ad esempio `myObject.a = 5`). Il suo compito non è solo "salvare" il dato, ma fare da vigile e controllare se l'assegnamento è permesso.
 
 Il modo in cui agisce il `[[Put]]` dipende in primis da una semplice domanda: la proprietà esiste già nell'oggetto?
@@ -6449,7 +6450,7 @@ console.log(myObject.a); // 2
 console.log(myObject.b); // 4
 ```
 
-Come si nota dall'esempio precedente, si è creata una proprietà che di fatto non "contiene" un valore in sé. Ogni volta che la si legge, scatta di nascosto la funzione getter, e ciò che la funzione blocca o calcola col `return` diventa il risultato finale.
+Come si nota dall'esempio precedente, si è creata una proprietà che di fatto non "contiene" un valore in sé. Ogni volta che la si legge, scatta di nascosto la funzione getter, e ciò che essa restituisce col `return` diventa il risultato finale.
 
 **Il problema dei Getter orfani**
 Nell'esempio qui sopra è stato definito solo il getter per `a`, senza alcun setter. Se si provasse a cambiare il valore assegnandone uno nuovo, l'operazione non darebbe alcun errore ma fallirebbe silenziosamente.
@@ -6481,15 +6482,15 @@ myObject.a = 2; // Innesca il setter (valore * 2 e lo salva in _a_)
 console.log(myObject.a); // 4 (Innesca il getter che lo va a leggere)
 ```
 
-In quest'ultimo esempio pratico, il valore effettivo viene tenuto al sicuro in un'altra proprietà chiamata `_a_`. È fondamentale capire che usare il trattino basso (`_`) è **solo una convenzione** usata e capita tra programmatori per dirti "ehi, non toccare questa proprietà, è per uso interno". Dietro le quinte non ha alcun potere magico: è una normalissima proprietà che fa da magazzino per i dati in transito dai metodi di accesso.
+In quest'ultimo esempio pratico, il valore effettivo viene tenuto al sicuro in un'altra proprietà chiamata `_a_`. È fondamentale capire che usare il trattino basso (`_`) è **solo una convenzione** condivisa tra programmatori per segnalare che la proprietà è a uso interno e non va modificata dall'esterno. Dietro le quinte non ha alcun potere magico: è una normalissima proprietà che fa da magazzino per i dati in transito dai metodi di accesso.
 
 ---
 
 ## 4. Variabili
 
-Un programma ha bisogno di "ricordare" dei valori che possono cambiare durante la sua esecuzione. Per fare ciò, si utilizzano le variabili: contenitori simbolici a cui viene assegnato un nome e che possono contenere dati. La funzione primaria delle variabili è gestire lo stato (state) del programma, ovvero tenere traccia dei valori mentre cambiano.
+Un programma ha bisogno di "ricordare" dei valori che possono cambiare durante la sua esecuzione. Per fare ciò, si utilizzano le variabili: contenitori simbolici a cui viene assegnato un nome e che possono contenere dati. La funzione primaria delle variabili è gestire lo stato (state) del programma, ovvero tenere traccia dei valori mentre cambiano. Poiché JavaScript è a tipizzazione dinamica, una variabile non è legata a un tipo fisso e può cambiare contenuto durante l'esecuzione: l'argomento è trattato in dettaglio nella [sezione 3.2](#32-tipizzazione-dinamica-dynamic-typing).
 
-### Dichiarazione → let, const e var
+### 4.1 Dichiarazione Variabili: let, const, var
 
 In JavaScript, le variabili vengono "create" tramite una dichiarazione. Le parole chiave moderne per farlo sono let e const.
 
@@ -6602,145 +6603,7 @@ const LIMITE_MODERNO = 100;
 
 ---
 
-### Tipizzazione Dinamica (Dynamic Typing)
-
-JavaScript è un linguaggio a tipizzazione dinamica. Questo significa che una variabile non è legata a un tipo di dato specifico. La stessa variabile può contenere un number in un momento, e una string in un momento successivo. Questa flessibilità permette di usare una singola variabile per rappresentare un valore che cambia forma nel corso del programma.
-
-#### Esempi di Codice
-
-```javascript
-/*
- * 1. Tipizzazione dinamica - Cambio di tipo
- */
-
-let valore = 42; // Number
-console.log(typeof valore); // "number"
-
-valore = "Ciao"; // String
-console.log(typeof valore); // "string"
-
-valore = true; // Boolean
-console.log(typeof valore); // "boolean"
-
-valore = { nome: "Mario" }; // Object
-console.log(typeof valore); // "object"
-
-valore = [1, 2, 3]; // Array (tipo object)
-console.log(typeof valore); // "object"
-
-valore = function () {
-  return 42;
-}; // Function
-console.log(typeof valore); // "function"
-```
-
-```javascript
-/*
- * 2. Esempio pratico - Variabile che cambia tipo durante l'esecuzione
- */
-
-function elaboraDato(input) {
-  let risultato;
-
-  if (typeof input === "number") {
-    risultato = input * 2; // risultato è un number
-    console.log("Doppio:", risultato);
-  } else if (typeof input === "string") {
-    risultato = input.toUpperCase(); // risultato è una string
-    console.log("Maiuscolo:", risultato);
-  } else if (typeof input === "boolean") {
-    risultato = input ? "Vero" : "Falso"; // risultato è una string
-    console.log("Testo:", risultato);
-  } else {
-    risultato = null; // risultato è null
-    console.log("Tipo non supportato");
-  }
-
-  return risultato;
-}
-
-elaboraDato(10); // "Doppio: 20"
-elaboraDato("hello"); // "Maiuscolo: HELLO"
-elaboraDato(true); // "Testo: Vero"
-```
-
-```javascript
-/*
- * 3. Conversioni implicite (coercion)
- */
-
-// JavaScript converte automaticamente i tipi quando necessario
-let numero = 5;
-let testo = "10";
-
-// Concatenazione: numero viene convertito in stringa
-console.log(numero + testo); // "510"
-
-// Sottrazione: testo viene convertito in numero
-console.log(testo - numero); // 5
-
-// Confronto  con conversione
-console.log("5" == 5); // true - uguaglianza con conversione
-console.log("5" === 5); // false - uguaglianza stretta (tipo diverso)
-```
-
-```javascript
-/*
- * 4. Array che contiene tipi misti
- */
-
-let collezione = [42, "testo", true, { nome: "Mario" }, [1, 2, 3], null];
-
-for (let item of collezione) {
-  console.log(item, "->", typeof item);
-}
-// 42 -> number
-// testo -> string
-// true -> boolean
-// { nome: 'Mario' } -> object
-// [1, 2, 3] -> object
-// null -> object (peculiarità di JavaScript)
-```
-
-```javascript
-/*
- * 5. Vantaggi e svantaggi della tipizzazione dinamica
- */
-
-// ✅ Vantaggio: Flessibilità
-function stampa(valore) {
-  console.log(valore); // Accetta qualsiasi tipo
-}
-
-stampa(42);
-stampa("Hello");
-stampa([1, 2, 3]);
-
-// ⚠️ Svantaggio: Errori a runtime
-function somma(a, b) {
-  return a + b;
-}
-
-console.log(somma(5, 10)); // 15 - OK
-console.log(somma("5", 10)); // "510" - concatenazione invece di somma!
-console.log(somma(5, null)); // 5 - null diventa 0
-console.log(somma(5, undefined)); // NaN - undefined non è convertibile
-
-// ✅ Soluzione: Validazione esplicita
-function sommaValidata(a, b) {
-  if (typeof a !== "number" || typeof b !== "number") {
-    throw new Error("Entrambi i parametri devono essere numeri");
-  }
-  return a + b;
-}
-
-console.log(sommaValidata(5, 10)); // 15
-// console.log(sommaValidata("5", 10)); // Errore!
-```
-
----
-
-### Nomi delle Variabili e Identificatori
+### 4.2 Nomi delle Variabili e Identificatori
 
 La scelta di un buon nome per una variabile o una funzione è cruciale per la leggibilità del codice. In JavaScript, questi nomi devono essere identificatori validi (valid identifiers) e seguire regole precise.
 
@@ -7024,7 +6887,7 @@ console.log(syntax["for"]); // "loop"
 
 ---
 
-### Hoisting delle Variabili
+### 4.3 Hoisting delle Variabili
 
 L'hoisting (letteralmente "sollevamento") è un meccanismo di JavaScript che riguarda il modo in cui le dichiarazioni di variabili vengono processate dal motore del linguaggio. Durante la fase di compilazione, che precede l'esecuzione, è come se le dichiarazioni venissero concettualmente "sollevate" in cima al loro scope di appartenenza.
 
@@ -7643,11 +7506,11 @@ foo(2);
 
 ##### Variabili Globali e l'Oggetto `window`
 
-È importante notare che le variabili globali sono anche **proprietà dell'oggetto globale** (l'oggetto `window` nei browser). Questo permette di accedere a una variabile globale anche se è stata "mascherata" da una variabile locale, utilizzando la notazione `window.nomeVariabile`. Tuttavia, questo trucco non funziona per le variabili mascherate che non sono globali; esse rimangono inaccessibili.
+È importante notare che le variabili globali dichiarate con `var` (e le dichiarazioni di funzione) diventano anche **proprietà dell'oggetto globale** (l'oggetto `window` nei browser); quelle dichiarate con `let` e `const`, invece, restano globali ma NON diventano proprietà di `window`. Nel primo caso questo permette di accedere a una variabile globale anche se è stata "mascherata" da una variabile locale, usando la notazione `window.nomeVariabile`. Il trucco non funziona invece per le variabili mascherate che non sono globali: esse rimangono inaccessibili.
 
 ```javascript
 // Accesso a variabili globali tramite window
-let varGlobale = "Sono globale";
+var varGlobale = "Sono globale";
 
 function test() {
   let varGlobale = "Sono locale"; // Shadows
@@ -8233,7 +8096,7 @@ function calcolaDinamico(espressione) {
   return eval(espressione); // PERICOLOSO e LENTO
 }
 
-// ✅ USA Function constructor (più sicuro) o parser dedicati
+// ✅ USA un parser dedicato; new Function è solo leggermente più sicuro di eval (non vede lo scope locale, ma resta rischioso con input non fidato)
 function calcolaDinamico(espressione) {
   // Usa librerie come math.js, expr-eval, etc.
   // O implementa un parser sicuro
@@ -8366,7 +8229,7 @@ Per visualizzare meglio il processo di risoluzione dello scope annidato, si può
 
 ![Scope](assets/scope.png)
 
-Si immagini che questo edificio rappresenti l'insieme delle regole dello scope del nostro programma:
+Si immagini che questo edificio rappresenti l'insieme delle regole dello scope di un programma:
 
 - Il **primo piano** (il piano terra) rappresenta lo scope corrente in cui ci troviamo in un dato momento dell'esecuzione.
 - L'**ultimo piano** dell'edificio rappresenta lo scope globale.
@@ -9888,7 +9751,7 @@ Esiste una leggera variazione stilistica in cui le **parentesi di invocazione** 
 // STILE 2: Parentesi di invocazione DENTRO (meno comune)
 (function () {
   console.log("Stile 2");
-})();
+}());
 
 // Entrambi funzionano identicamente
 ```
@@ -10252,7 +10115,7 @@ let totale2 = calcolaTassaCorretto(100);
 
 Questa è considerata una pessima pratica perché "inquina" lo scope globale e può portare a bug difficili da tracciare, dove parti diverse del codice modificano involontariamente la stessa variabile globale.
 
-La regola fondamentale è: dichiara sempre formalmente le tue variabili. L'uso dello "strict mode" (che vedremo più avanti) aiuta a prevenire questo problema, trasformando questi casi in errori.
+La regola fondamentale è: dichiarare sempre formalmente le proprie variabili. L'uso dello "strict mode" (che si vedrà più avanti) aiuta a prevenire questo problema, trasformando questi casi in errori.
 
 ```javascript
 // STRICT MODE previene le variabili globali accidentali
@@ -11019,7 +10882,7 @@ function test(condition) {
 - **ES6+ strict mode**: block scope (come `let`)
 - **Modalità non-strict**: comportamento imprevedibile
 
-**Soluzione consigliata**: Usa function expressions con `let`/`const`:
+**Soluzione consigliata**: usare function expressions con `let`/`const`:
 
 ```javascript
 // ✅ SICURO E PREVEDIBILE
@@ -11063,7 +10926,7 @@ La TDZ esiste per prevenire errori logici e rendere il codice più prevedibile, 
 
 Gli operatori (operators) sono simboli speciali che eseguono azioni su variabili e valori. Permettono di effettuare calcoli, assegnare valori, confrontare dati e combinare condizioni logiche.
 
-### Operatori di Assegnamento (Assignment)
+### 5.1 Operatori di Assegnamento (Assignment)
 
 L'operatore di assegnamento base è `=`. La sua funzione è memorizzare il valore dell'espressione a destra all'interno della variabile a sinistra.
 
@@ -11130,7 +10993,7 @@ messaggio += "utente!";
 console.log(messaggio); // "Benvenuto utente!"
 ```
 
-### Operatori Matematici (Arithmetic)
+### 5.2 Operatori Matematici (Arithmetic)
 
 Eseguono le classiche operazioni aritmetiche. I principali sono:
 
@@ -11245,7 +11108,7 @@ for (let i = 0; i < 6; i++) {
 }
 ```
 
-### Operatori di Confronto ed Uguaglianza (Comparison & Equality)
+### 5.3 Operatori di Confronto ed Uguaglianza (Comparison & Equality)
 
 Gli operatori di confronto sono essenziali per la logica condizionale, poiché restituiscono un valore booleano (true o false) basato sulla relazione tra due valori. Si dividono principalmente in operatori di uguaglianza e di disuguaglianza (o relazionali).
 
@@ -11556,7 +11419,7 @@ console.log(puòGuidare(15)); // false
 console.log(puòGuidare("venti")); // false
 ```
 
-### Operatori Logici (Logical)
+### 5.4 Operatori Logici (Logical)
 
 Combinano espressioni booleane.
 
@@ -11714,7 +11577,7 @@ console.log(ottieniCitta(p2)); // undefined (si ferma a persona.indirizzo)
 console.log(ottieniCitta(p3)); // null (si ferma a persona)
 ```
 
-### Operatore Condizionale (Ternario)
+### 5.5 Operatore Condizionale (Ternario)
 
 L'operatore ternario (`? :`) è una scorciatoia per un'istruzione if-else. La sua sintassi è:
 
@@ -11813,7 +11676,7 @@ let messaggioPassword =
 console.log(messaggioPassword); // "Password troppo corta"
 ```
 
-### Operatore di Coalescenza Nullish (??)
+### 5.6 Operatore di Coalescenza Nullish (??)
 
 Questo operatore restituisce il valore a destra solo se quello a sinistra è `null` o `undefined`. È perfetto per assegnare valori di default, perché a differenza di `||`, non scarta valori falsy validi come `0` o una stringa vuota `""`.
 
@@ -11839,7 +11702,7 @@ console.log(testo2); // "" (Corretto!)
 // CONFRONTO DIRETTO
 let numero = 0;
 console.log(numero || 100); // 100 (|| tratta 0 come falsy)
-console.log(numero ?? 100); // 0 (!! accetta 0 come valido)
+console.log(numero ?? 100); // 0 (?? accetta 0 come valido)
 
 let testoVuoto = "";
 console.log(testoVuoto || "nessun testo"); // "nessun testo"
@@ -11927,7 +11790,7 @@ console.log(processaForm({}));
 // { nome: "Sconosciuto", cognome: "", età: null, bio: "" }
 ```
 
-### L'idioma del Doppio NOT (!!)
+### 5.7 L'idioma del Doppio NOT (!!)
 
 `!!` non è un operatore, ma un modo di usare l'operatore `!` due volte per convertire esplicitamente qualsiasi valore nel suo equivalente booleano. È una tecnica per verificare se un valore è truthy (cioè si comporta come true) o falsy (false, 0, "", null, undefined, NaN).
 
@@ -12048,7 +11911,7 @@ console.log(haProprietà(persona, "età")); // false (età è 0! ⚠️)
 console.log(haProprietà(persona, "cognome")); // false
 ```
 
-### Precedenza degli Operatori (Operator Precedence)
+### 5.8 Precedenza degli Operatori (Operator Precedence)
 
 La precedenza stabilisce l'ordine in cui gli operatori vengono eseguiti in un'espressione. Ad esempio, la moltiplicazione ha la precedenza sull'addizione. Per controllare l'ordine di valutazione si usano le parentesi `()`, che hanno la priorità più alta.
 
@@ -12167,14 +12030,14 @@ if (puòGuidare || èAnziano) {
 ```javascript
 // BEST PRACTICE: usare parentesi per chiarezza
 
-// ❌ Non chiaro (anche se tecnicamente corretto)
-let risultato = a + (b * c) / d - e;
+// ❌ Non chiaro (ci si affida alla precedenza implicita)
+let risultato = a + b * c / d - e;
 
-// ✅ Chiaro (esplicita l'intenzione)
-let risultato = a + (b * c) / d - e;
+// ✅ Chiaro (le parentesi esplicitano l'intenzione)
+let risultato = a + ((b * c) / d) - e;
 
-// ❌ Confuso
-let condizione = (x > 5 && y < 10) || (z === 0 && w !== null);
+// ❌ Confuso (senza parentesi ci si affida alla precedenza di && su ||)
+let condizione = x > 5 && y < 10 || z === 0 && w !== null;
 
 // ✅ Leggibile
 let condizione = (x > 5 && y < 10) || (z === 0 && w !== null);
@@ -13329,7 +13192,7 @@ console.log(a1.constructor === Foo); // false!
 console.log(a1.constructor === Object); // true!
 ```
 
-Il risultato rovescia del tutto le carte in tavola. Che l'oggetto si sia costruito da solo attraverso la funzione nativa `Object()`? Assolutamente no, è stato indubbiamente invocato e costruito da `Foo()`. Tuttavia, `a1` cerca `.constructor` internamente e non lo trova; passa palla al neonato e vuoto `Foo.prototype` e non lo trova neanche lì; sale ulteriormente la gerarchia riversando per un'ultima rocambolesca volta il collegamento, spiaggiandosi sulla cima globale del linguaggio `Object.prototype`. Questo lo possiede di default, per cui risponde orgoglioso risolvendo il percorso.
+Il risultato è solo apparentemente paradossale. L'oggetto non è stato costruito da `Object()`, ma da `Foo()`. Quando però si legge `a1.constructor`, il motore cerca la proprietà su `a1` (non c'è), poi sul vuoto `Foo.prototype` (non c'è) e infine risale fino a `Object.prototype`, che possiede `.constructor` di default: per questo restituisce `Object`.
 
 Questo dimostra fisicamente quanto il paradigma basato sul concetto "è stato costruito da..." fallisca del tutto.
 
@@ -14379,7 +14242,7 @@ class Button extends Widget {
   
   render($where) {
     // Chiama il metodo render del genitore
-    super($where);
+    super.render($where);
     this.$elem.click(this.onClick.bind(this));
   }
   
@@ -14449,6 +14312,8 @@ C.prototype.count = 0;
 var c1 = new C(); // Ciao: 1
 var c2 = new C(); // Ciao: 2
 ```
+
+> **Nota (ES2022)**: I limiti descritti qui riflettono la sintassi originale di ES6 (2015). Dalla versione ES2022, la specifica ha introdotto i _class fields_, che permettono di dichiarare proprietà direttamente nel corpo della classe — sia di istanza (es. `count = 0;`) sia condivise tra tutte le istanze tramite la parola chiave `static` (es. `static count = 0;`) — oltre ai _private fields_ con il prefisso `#`. Lo stato condiviso si esprime così con un campo `static` interno alla classe, senza dover esporre `.prototype` all'esterno come nell'esempio precedente; di conseguenza non è più vero che la sintassi `class` consenta di dichiarare "solo metodi".
 
 Inoltre, persiste il grave pericolo dello Shadowing Accidentale (mascheramento): se nel costruttore si crea involontariamente una variabile con lo stesso nome di un metodo della classe, la logica andrà in errore, poiché il valore sovrascriverà la funzione.
 

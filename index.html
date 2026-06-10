@@ -2,15 +2,12 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>JS Second Brain</title>
+  <title>JS Second Brain — Appunti Completi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
-  <meta name="description" content="Second Brain su JavaScript — note interconnesse, metodo Zettelkasten." />
+  <meta name="description" content="Appunti completi di JavaScript — documento unico, navigabile per sezioni." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23f7df1e'/%3E%3Ctext x='16' y='24' font-family='Arial' font-weight='bold' font-size='16' text-anchor='middle' fill='%23000'%3EJS%3C/text%3E%3C/svg%3E" />
 
-  <!-- Base theme (docsify-themeable, theming via CSS vars) -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css" />
-  <!-- TOC laterale -->
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-plugin-toc@1.3.1/dist/light.css" />
 
   <style>
     /* ===== Tema JS: light + accenti gialli (#f7df1e) ===== */
@@ -20,10 +17,9 @@
       --js-link: #9a7d00;
       --theme-color: #f7df1e;
       --base-font-size: 16px;
-      --content-max-width: 50em;
+      --content-max-width: 52em;
 
-      /* sidebar */
-      --sidebar-width: 18rem;
+      --sidebar-width: 19rem;
       --sidebar-background: #fafafa;
       --sidebar-nav-link-color: #333;
       --sidebar-nav-link-color--active: #000;
@@ -31,21 +27,16 @@
       --sidebar-nav-link-font-weight--active: 700;
       --sidebar-nav-pagelink-background-image--active: none;
 
-      /* link */
       --link-color: var(--js-link);
       --link-color--hover: #000;
-
-      /* heading */
       --heading-h1-color: #111;
       --heading-h2-color: #111;
 
-      /* code */
       --code-inline-background: #fff8cc;
       --code-inline-color: #6b5800;
       --code-theme-background: #f7f7f4;
     }
 
-    /* nome app + logo badge */
     .app-name-link { display: flex; align-items: center; gap: .5rem; font-weight: 700; }
     .js-badge {
       display: inline-block; background: var(--js-yellow); color: #000;
@@ -62,38 +53,25 @@
       background: #fffbe0;
       padding-left: .6rem;
     }
-    /* cartelle (bold) della sidebar */
-    .sidebar-nav > ul > li > strong,
-    .sidebar-nav strong { color: #000; }
 
     /* heading con accento giallo */
     .markdown-section h1 { border-bottom: 3px solid var(--js-yellow); padding-bottom: .2em; }
-    .markdown-section h2 {
-      border-left: 5px solid var(--js-yellow); padding-left: .5rem; margin-top: 2rem;
-    }
+    .markdown-section h2 { border-left: 5px solid var(--js-yellow); padding-left: .5rem; margin-top: 2.4rem; }
     .markdown-section h3 { color: #222; }
 
     /* link: sottolineatura gialla */
     .markdown-section a { text-decoration: none; border-bottom: 2px solid #f7df1e66; transition: all .15s; }
     .markdown-section a:hover { border-bottom-color: var(--js-yellow); background: #fffbe0; }
 
-    /* blockquote / Nota */
     .markdown-section blockquote {
       border-left: 4px solid var(--js-yellow); background: #fffdf0; color: #444;
     }
-
-    /* tabelle: header giallo */
     .markdown-section tr:first-child th,
     .markdown-section thead th { background: #fff6b8; }
-
-    /* code block: barra superiore gialla sottile */
     .markdown-section pre { border-top: 3px solid var(--js-yellow); }
 
-    /* search box */
     .search input { border: 1px solid #e6d96a; }
     .search { border-bottom: 1px solid #eee; }
-
-    /* scrollbar accents (webkit) */
     ::-webkit-scrollbar-thumb { background: var(--js-yellow-dark); border-radius: 6px; }
 
     /* ===== Coverpage gialla ===== */
@@ -102,9 +80,7 @@
     }
     section.cover .cover-main .js-badge { font-size: 3.2rem; padding: .1em .25em; box-shadow: 0 6px 24px #f7df1e88; }
     section.cover h1 { margin-top: 1rem; }
-    section.cover .cover-main > p:last-child a {
-      border-radius: 2rem; border: 2px solid var(--js-yellow);
-    }
+    section.cover .cover-main > p:last-child a { border-radius: 2rem; border: 2px solid var(--js-yellow); }
     section.cover .cover-main > p:last-child a:last-child {
       background: var(--js-yellow); color: #000; border-color: var(--js-yellow); font-weight: 700;
     }
@@ -113,83 +89,34 @@
   </style>
 </head>
 <body>
-  <div id="app">Caricamento…</div>
+  <div id="app">Caricamento...</div>
 
   <script>
-    // ===== Plugin wikilink: [[target|alias]] / [[target#anchor]] -> link Markdown
-    // Protegge code block (``` ```) e inline code (` `) per non rompere notazioni tipo [[Prototype]].
-    function wikilinkPlugin(hook) {
-      hook.beforeEach(function (content) {
-        var stash = [];
-        // 1) estrai e proteggi i blocchi di codice
-        content = content.replace(/(```[\s\S]*?```|`[^`\n]*`)/g, function (m) {
-          stash.push(m);
-          return "@@WL" + (stash.length - 1) + "@@";
-        });
-        // 2) converti i wikilink nel testo rimanente
-        content = content.replace(
-          /\[\[([^\]|#]+)(#[^\]|]+)?(?:\|([^\]]+))?\]\]/g,
-          function (_m, target, anchor, alias) {
-            var label = (alias || target).trim();
-            var url = target.trim();
-            if (!/\.md$/i.test(url)) url += ".md";
-            return "[" + label + "](" + url + (anchor || "") + ")";
-          }
-        );
-        // 3) ripristina i blocchi di codice
-        content = content.replace(/@@WL(\d+)@@/g, function (_m, i) {
-          return stash[+i];
-        });
-        return content;
-      });
-    }
-
     window.$docsify = {
       name: '<span class="app-name-link"><span class="js-badge">JS</span> Second Brain</span>',
       repo: 'https://github.com/Ciro97cu/second_brain_js',
-      loadSidebar: true,
+      // Sito a pagina singola: solo gli appunti completi.
+      homepage: 'appunti-completi.md',
+      loadSidebar: false,        // sidebar auto-generata dai titoli della pagina
       coverpage: true,
       onlyCover: false,
       auto2top: true,
-      relativePath: true,
-      maxLevel: 4,
-      subMaxLevel: 2,
-      homepage: 'README.md',
-      // usa l'unico _sidebar.md / _coverpage.md di root anche nelle sottocartelle
-      alias: {
-        '/.*/_sidebar.md': '/_sidebar.md',
-        '/.*/_coverpage.md': '/_coverpage.md'
-      },
+      maxLevel: 3,               // sidebar: capitoli (##) + sottosezioni (###)
       search: {
-        placeholder: 'Cerca…',
+        placeholder: 'Cerca nelle sezioni...',
         noData: 'Nessun risultato.',
         depth: 6
-      },
-      pagination: {
-        previousText: '← Precedente',
-        nextText: 'Successivo →',
-        crossChapter: true
-      },
-      toc: {
-        scope: '.markdown-section',
-        headings: 'h2, h3',
-        title: 'In questa pagina'
-      },
-      plugins: [wikilinkPlugin]
+      }
     };
   </script>
 
-  <!-- docsify core -->
+  <!-- docsify core + theming -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-  <!-- theming -->
   <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/js/docsify-themeable.min.js"></script>
   <!-- plugins -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@3"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1/dist/docsify-sidebar-collapse.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-plugin-toc@1.3.1/dist/docsify-plugin-toc.min.js"></script>
-  <!-- syntax highlight extra -->
+  <!-- syntax highlight -->
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>

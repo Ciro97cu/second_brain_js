@@ -4,8 +4,7 @@
 
 # Second Brain <small>JavaScript</small>
 
-> Una rete di note interconnesse su JavaScript — metodo Zettelkasten.
+> Appunti completi di JavaScript — un unico documento, navigabile per sezioni.
 
-[🚀 Inizia](README.md)
-[📖 Appunti Completi](appunti-completi.md)
+[📖 Apri gli appunti](appunti-completi.md)
 [GitHub](https://github.com/Ciro97cu/second_brain_js)

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>JS Second Brain — Appunti Completi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+  <meta name="description" content="Appunti completi di JavaScript — documento unico, navigabile per sezioni." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23f7df1e'/%3E%3Ctext x='16' y='24' font-family='Arial' font-weight='bold' font-size='16' text-anchor='middle' fill='%23000'%3EJS%3C/text%3E%3C/svg%3E" />
+
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css" />
+
+  <style>
+    /* ===== Tema JS: light + accenti gialli (#f7df1e) ===== */
+    :root {
+      --js-yellow: #f7df1e;
+      --js-yellow-dark: #d9c400;
+      --js-link: #9a7d00;
+      --theme-color: #f7df1e;
+      --base-font-size: 16px;
+      --content-max-width: 52em;
+
+      --sidebar-width: 19rem;
+      --sidebar-background: #fafafa;
+      --sidebar-nav-link-color: #333;
+      --sidebar-nav-link-color--active: #000;
+      --sidebar-nav-link-border-color--active: var(--js-yellow);
+      --sidebar-nav-link-font-weight--active: 700;
+      --sidebar-nav-pagelink-background-image--active: none;
+
+      --link-color: var(--js-link);
+      --link-color--hover: #000;
+      --heading-h1-color: #111;
+      --heading-h2-color: #111;
+
+      --code-inline-background: #fff8cc;
+      --code-inline-color: #6b5800;
+      --code-theme-background: #f7f7f4;
+    }
+
+    .app-name-link { display: flex; align-items: center; gap: .5rem; font-weight: 700; }
+    .js-badge {
+      display: inline-block; background: var(--js-yellow); color: #000;
+      font-weight: 800; font-family: Arial, Helvetica, sans-serif;
+      border-radius: 6px; padding: .15em .35em; line-height: 1; letter-spacing: -1px;
+    }
+
+    /* voce attiva sidebar: pill gialla a sinistra */
+    .sidebar .sidebar-nav li.active > a,
+    .sidebar .sidebar-nav a.active {
+      color: #000 !important;
+      font-weight: 700;
+      border-left: 4px solid var(--js-yellow);
+      background: #fffbe0;
+      padding-left: .6rem;
+    }
+
+    /* heading con accento giallo */
+    .markdown-section h1 { border-bottom: 3px solid var(--js-yellow); padding-bottom: .2em; }
+    .markdown-section h2 { border-left: 5px solid var(--js-yellow); padding-left: .5rem; margin-top: 2.4rem; }
+    .markdown-section h3 { color: #222; }
+
+    /* link: sottolineatura gialla */
+    .markdown-section a { text-decoration: none; border-bottom: 2px solid #f7df1e66; transition: all .15s; }
+    .markdown-section a:hover { border-bottom-color: var(--js-yellow); background: #fffbe0; }
+
+    .markdown-section blockquote {
+      border-left: 4px solid var(--js-yellow); background: #fffdf0; color: #444;
+    }
+    .markdown-section tr:first-child th,
+    .markdown-section thead th { background: #fff6b8; }
+    .markdown-section pre { border-top: 3px solid var(--js-yellow); }
+
+    .search input { border: 1px solid #e6d96a; }
+    .search { border-bottom: 1px solid #eee; }
+    ::-webkit-scrollbar-thumb { background: var(--js-yellow-dark); border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div id="app">Caricamento...</div>
+
+  <script>
+    // ===== Guard: blocca la navigazione diretta alle note atomiche =====
+    // I .md atomici restano nel repo (link intatti) ma non sono raggiungibili dalla doc pubblicata.
+    function isAllowedHash(hash) {
+      var path = (hash || '').replace(/^#/, '').split('?')[0].replace(/\/+$/, '');
+      return path === '' || path === '/' || path.indexOf('/appunti-completi') === 0;
+    }
+    function routeGuard() { if (!isAllowedHash(location.hash)) location.hash = '#/'; }
+    window.addEventListener('hashchange', routeGuard);
+    window.addEventListener('load', routeGuard);
+
+    window.$docsify = {
+      name: '<span class="app-name-link"><span class="js-badge">JS</span> Second Brain</span>',
+      repo: 'https://github.com/Ciro97cu/second_brain_js',
+      // Sito a pagina singola: solo gli appunti completi.
+      homepage: 'appunti-completi.md',
+      loadSidebar: false,        // sidebar auto-generata dai titoli della pagina
+      auto2top: true,
+      maxLevel: 3,               // sidebar: capitoli (##) + sottosezioni (###)
+      search: {
+        paths: ['/'],                  // indicizza SOLO gli appunti (home), non le note atomiche
+        namespace: 'jsbrain-appunti',  // invalida l'indice in cache che includeva le note atomiche
+        placeholder: 'Cerca nelle sezioni...',
+        noData: 'Nessun risultato.',
+        depth: 6
+      }
+    };
+  </script>
+
+  <!-- docsify core + theming -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/js/docsify-themeable.min.js"></script>
+  <!-- plugins -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@3"></script>
+  <!-- syntax highlight -->
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+</body>
+</html>

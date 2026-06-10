@@ -53,9 +53,11 @@
       border-radius: 6px; padding: .15em .35em; line-height: 1; letter-spacing: -1px;
     }
 
-    /* barra superiore voce attiva sidebar: pill gialla a sinistra */
+    /* voce attiva sidebar: pill gialla a sinistra */
     .sidebar .sidebar-nav li.active > a,
-    .sidebar .sidebar-nav li > a.active {
+    .sidebar .sidebar-nav a.active {
+      color: #000 !important;
+      font-weight: 700;
       border-left: 4px solid var(--js-yellow);
       background: #fffbe0;
       padding-left: .6rem;
